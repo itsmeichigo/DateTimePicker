@@ -17,7 +17,7 @@ class DateCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         
         dayLabel = UILabel(frame: CGRect(x: 5, y: 15, width: frame.width - 10, height: 20))
-        dayLabel.font = UIFont.boldSystemFont(ofSize: 10)
+        dayLabel.font = UIFont.systemFont(ofSize: 10)
         dayLabel.textAlignment = .center
     
         numberLabel = UILabel(frame: CGRect(x: 5, y: 30, width: frame.width - 10, height: 40))
