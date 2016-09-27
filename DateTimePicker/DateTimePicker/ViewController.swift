@@ -18,7 +18,11 @@ class ViewController: UIViewController {
     }
 
     @IBAction func showDateTimePicker(sender: AnyObject) {
-        DateTimePicker.show()
+        DateTimePicker.show() { date in
+            let formatter = DateFormatter()
+            formatter.dateFormat = "HH:mm dd/MM/YYYY"
+            self.timeLabel.text = formatter.string(from: date)
+        }
     }
 
 }

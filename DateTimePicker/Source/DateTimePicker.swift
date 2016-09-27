@@ -52,6 +52,9 @@ let contentHeight: CGFloat = 310
         }
     }
     
+    public var todayButtonTitle = "Today"
+    public var doneButtonTitle = "DONE"
+    
     // private vars
     internal var hourTableView: UITableView!
     internal var minuteTableView: UITableView!
@@ -60,6 +63,7 @@ let contentHeight: CGFloat = 310
     private var contentView: UIView!
     private var dateTitleLabel: UILabel!
     private var todayButton: UIButton!
+    private var completionHandler: ((Date)->Void)?
     
     internal var calendar = Calendar.current
     internal var dates: [Date]! = []
@@ -76,13 +80,16 @@ let contentHeight: CGFloat = 310
     }
     
     
-    @objc open class func show() {
+    @objc open class func show(completionHandler: ((Date)->Void)?=nil) -> DateTimePicker {
         let dateTimePicker = DateTimePicker(frame: CGRect(x: 0,
                                                           y: 0,
                                                           width: screenWidth,
                                                           height: screenHeight))
         dateTimePicker.configureView()
+        dateTimePicker.completionHandler = completionHandler
         UIApplication.shared.keyWindow?.addSubview(dateTimePicker)
+        
+        return dateTimePicker
     }
     
     private func configureView() {
@@ -95,6 +102,7 @@ let contentHeight: CGFloat = 310
         contentView.layer.shadowOffset = CGSize(width: 0, height: -2.0);
         contentView.layer.shadowRadius = 1.5
         contentView.layer.shadowOpacity = 0.5
+        contentView.backgroundColor = .white
         addSubview(contentView)
         
         // title view
@@ -112,7 +120,7 @@ let contentHeight: CGFloat = 310
         
         todayButton = UIButton(type: .system)
         todayButton.frame = CGRect(x: contentView.frame.width - 60, y: 0, width: 60, height: 44)
-        todayButton.setTitle("Today", for: .normal)
+        todayButton.setTitle(todayButtonTitle, for: .normal)
         todayButton.setTitleColor(highlightColor, for: .normal)
         todayButton.addTarget(self, action: #selector(DateTimePicker.setToday), for: .touchUpInside)
         titleView.addSubview(todayButton)
@@ -144,7 +152,7 @@ let contentHeight: CGFloat = 310
         // done button
         let doneButton = UIButton(type: .system)
         doneButton.frame = CGRect(x: 10, y: contentView.frame.height - 10 - 44, width: contentView.frame.width - 20, height: 44)
-        doneButton.setTitle("DONE", for: .normal)
+        doneButton.setTitle(doneButtonTitle, for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
         doneButton.backgroundColor = darkColor.withAlphaComponent(0.5)
         doneButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
@@ -154,9 +162,9 @@ let contentHeight: CGFloat = 310
         contentView.addSubview(doneButton)
         
         // hour table view
-        hourTableView = UITableView(frame: CGRect(x: contentView.frame.width / 2 - 60,
+        hourTableView = UITableView(frame: CGRect(x: contentView.frame.width / 2 - 55,
                                                   y: borderBottomView.frame.origin.y + 2,
-                                                  width: 60,
+                                                  width: 55,
                                                   height: doneButton.frame.origin.y - borderBottomView.frame.origin.y - 10))
         hourTableView.rowHeight = 36
         hourTableView.contentInset = UIEdgeInsetsMake(hourTableView.frame.height / 2, 0, hourTableView.frame.height / 2, 0)
@@ -164,13 +172,12 @@ let contentHeight: CGFloat = 310
         hourTableView.separatorStyle = .none
         hourTableView.delegate = self
         hourTableView.dataSource = self
-        hourTableView.clipsToBounds = true
         contentView.addSubview(hourTableView)
         
         // minute table view
         minuteTableView = UITableView(frame: CGRect(x: contentView.frame.width / 2,
                                                     y: borderBottomView.frame.origin.y + 2,
-                                                    width: 60,
+                                                    width: 55,
                                                     height: doneButton.frame.origin.y - borderBottomView.frame.origin.y - 10))
         minuteTableView.rowHeight = 36
         minuteTableView.contentInset = UIEdgeInsetsMake(minuteTableView.frame.height / 2, 0, minuteTableView.frame.height / 2, 0)
@@ -178,7 +185,6 @@ let contentHeight: CGFloat = 310
         minuteTableView.separatorStyle = .none
         minuteTableView.delegate = self
         minuteTableView.dataSource = self
-        minuteTableView.clipsToBounds = true
         contentView.addSubview(minuteTableView)
         
         // colon
@@ -204,6 +210,8 @@ let contentHeight: CGFloat = 310
         
         // fill date
         fillDates(fromDate: minimumDate, toDate: maximumDate)
+        updateCollectionView(to: selectedDate)
+        
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/YYYY"
         for i in 0..<dates.count {
@@ -227,6 +235,7 @@ let contentHeight: CGFloat = 310
     func setToday() {
         selectedDate = Date()
         components = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: selectedDate)
+        updateCollectionView(to: selectedDate)
     }
     
     private func resetDateTitle() {
@@ -268,6 +277,18 @@ let contentHeight: CGFloat = 310
         }
     }
     
+    func updateCollectionView(to currentDate: Date) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/YYYY"
+        for i in 0..<dates.count {
+            let date = dates[i]
+            if formatter.string(from: date) == formatter.string(from: currentDate) {
+                dayCollectionView.selectItem(at: IndexPath(row: i, section: 0), animated: true, scrollPosition: .centeredHorizontally)
+                break
+            }
+        }
+    }
+    
     func dismissView() {
         UIView.animate(withDuration: 0.3, animations: {
             // animate to show contentView
@@ -276,6 +297,9 @@ let contentHeight: CGFloat = 310
                                             width: self.frame.width,
                                             height: contentHeight)
         }) { (completed) in
+            if let completionHandler = self.completionHandler {
+                completionHandler(self.selectedDate)
+            }
             self.removeFromSuperview()
         }
     }
@@ -302,8 +326,6 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         cell.textLabel?.textColor = darkColor.withAlphaComponent(0.4)
         cell.textLabel?.highlightedTextColor = highlightColor
         cell.textLabel?.text = String(format: "%02i", indexPath.row)
-        
-        cell.contentView.backgroundColor = .clear
         
         return cell
     }
@@ -335,13 +357,7 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
         
         let date = dates[indexPath.item]
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE"
-        cell.dayLabel.text = dateFormatter.string(from: date).uppercased()
-        
-        let numberFormatter = DateFormatter()
-        numberFormatter.dateFormat = "d"
-        cell.numberLabel.text = numberFormatter.string(from: date)
+        cell.populateItem(date: date, highlightColor: highlightColor, darkColor: darkColor)
         
         return cell
     }
