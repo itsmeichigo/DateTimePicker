@@ -24,10 +24,13 @@ let contentHeight: CGFloat = 310
     public var highlightColor = UIColor(red: 0/255.0, green: 199.0/255.0, blue: 194.0/255.0, alpha: 1) {
         didSet {
             todayButton.setTitleColor(highlightColor, for: .normal)
+            colonLabel.textColor = highlightColor
         }
     }
     
     public var darkColor = UIColor(red: 0, green: 22.0/255.0, blue: 39.0/255.0, alpha: 1)
+    
+    public var daysBackgroundColor = UIColor(red: 239.0/255.0, green: 243.0/255.0, blue: 244.0/255.0, alpha: 1)
     
     public var selectedDate = Date() {
         didSet {
@@ -54,6 +57,7 @@ let contentHeight: CGFloat = 310
     
     public var todayButtonTitle = "Today"
     public var doneButtonTitle = "DONE"
+    public var completionHandler: ((Date)->Void)?
     
     // private vars
     internal var hourTableView: UITableView!
@@ -63,7 +67,7 @@ let contentHeight: CGFloat = 310
     private var contentView: UIView!
     private var dateTitleLabel: UILabel!
     private var todayButton: UIButton!
-    private var completionHandler: ((Date)->Void)?
+    private var colonLabel: UILabel!
     
     internal var calendar = Calendar.current
     internal var dates: [Date]! = []
@@ -80,13 +84,12 @@ let contentHeight: CGFloat = 310
     }
     
     
-    @objc open class func show(completionHandler: ((Date)->Void)?=nil) -> DateTimePicker {
+    @objc open class func show() -> DateTimePicker {
         let dateTimePicker = DateTimePicker(frame: CGRect(x: 0,
                                                           y: 0,
                                                           width: screenWidth,
                                                           height: screenHeight))
         dateTimePicker.configureView()
-        dateTimePicker.completionHandler = completionHandler
         UIApplication.shared.keyWindow?.addSubview(dateTimePicker)
         
         return dateTimePicker
@@ -123,6 +126,7 @@ let contentHeight: CGFloat = 310
         todayButton.setTitle(todayButtonTitle, for: .normal)
         todayButton.setTitleColor(highlightColor, for: .normal)
         todayButton.addTarget(self, action: #selector(DateTimePicker.setToday), for: .touchUpInside)
+        todayButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         titleView.addSubview(todayButton)
         
         // day collection view
@@ -133,7 +137,7 @@ let contentHeight: CGFloat = 310
         layout.itemSize = CGSize(width: 75, height: 80)
         
         dayCollectionView = UICollectionView(frame: CGRect(x: 0, y: 44, width: contentView.frame.width, height: 100), collectionViewLayout: layout)
-        dayCollectionView.backgroundColor = UIColor(red: 239.0/255.0, green: 243.0/255.0, blue: 244.0/255.0, alpha: 1)
+        dayCollectionView.backgroundColor = daysBackgroundColor
         dayCollectionView.showsHorizontalScrollIndicator = false
         dayCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
         dayCollectionView.dataSource = self
@@ -142,11 +146,11 @@ let contentHeight: CGFloat = 310
         
         // top & bottom borders on day collection view
         let borderTopView = UIView(frame: CGRect(x: 0, y: titleView.frame.height, width: titleView.frame.width, height: 1))
-        borderTopView.backgroundColor = UIColor(red: 204.0/255.0, green: 208.0/255.0, blue: 211.0/255.0, alpha: 1)
+        borderTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
         contentView.addSubview(borderTopView)
         
         let borderBottomView = UIView(frame: CGRect(x: 0, y: dayCollectionView.frame.origin.y + dayCollectionView.frame.height, width: titleView.frame.width, height: 1))
-        borderBottomView.backgroundColor = UIColor(red: 204.0/255.0, green: 208.0/255.0, blue: 211.0/255.0, alpha: 1)
+        borderBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
         contentView.addSubview(borderBottomView)
         
         // done button
@@ -188,7 +192,7 @@ let contentHeight: CGFloat = 310
         contentView.addSubview(minuteTableView)
         
         // colon
-        let colonLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 10, height: 36))
+        colonLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 10, height: 36))
         colonLabel.center = CGPoint(x: contentView.frame.width / 2,
                                     y: (doneButton.frame.origin.y - borderBottomView.frame.origin.y - 10) / 2 + borderBottomView.frame.origin.y)
         colonLabel.text = ":"
@@ -297,9 +301,7 @@ let contentHeight: CGFloat = 310
                                             width: self.frame.width,
                                             height: contentHeight)
         }) { (completed) in
-            if let completionHandler = self.completionHandler {
-                completionHandler(self.selectedDate)
-            }
+            self.completionHandler?(self.selectedDate)
             self.removeFromSuperview()
         }
     }

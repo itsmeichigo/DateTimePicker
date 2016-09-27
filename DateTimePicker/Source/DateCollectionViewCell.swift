@@ -61,7 +61,8 @@ class DateCollectionViewCell: UICollectionViewCell {
         numberLabel.text = numberFormatter.string(from: date)
         numberLabel.textColor = isSelected == true ? .white : darkColor
         
-        contentView.layer.borderColor = darkColor.withAlphaComponent(0.3).cgColor
+        contentView.layer.borderColor = darkColor.withAlphaComponent(0.2).cgColor
+        contentView.backgroundColor = isSelected == true ? highlightColor : .white
     }
     
 }
