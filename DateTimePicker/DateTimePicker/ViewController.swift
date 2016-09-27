@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var item: UINavigationItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,11 +19,11 @@ class ViewController: UIViewController {
 
     @IBAction func showDateTimePicker(sender: AnyObject) {
         let picker = DateTimePicker.show()
-        picker.highlightColor = UIColor(red: 246.0/255.0, green: 236.0/255.0, blue: 102.0/255.0, alpha: 1)
+        picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
         picker.completionHandler = { date in
             let formatter = DateFormatter()
             formatter.dateFormat = "HH:mm dd/MM/YYYY"
-            self.timeLabel.text = formatter.string(from: date)
+            self.item.title = formatter.string(from: date)
         }
     }
 
