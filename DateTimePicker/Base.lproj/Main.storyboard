@@ -22,7 +22,7 @@
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r58-hn-CBP">
                                 <items>
                                     <navigationItem title="Demo" id="75S-s8-xfT">
-                                        <barButtonItem key="rightBarButtonItem" style="plain" id="89D-jd-p2l">
+                                        <barButtonItem key="rightBarButtonItem" title="Item" style="plain" id="89D-jd-p2l">
                                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Ubf-01-ZmP">
                                                 <rect key="frame" x="294" y="7" width="65" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
