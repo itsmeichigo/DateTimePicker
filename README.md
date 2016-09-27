@@ -14,7 +14,7 @@ A nicer iOS UI component for picking date and time.
 #### Using Cocoapod
 
 Just add the following to your `podfile`
-> pod 'URLPreview'
+> pod 'DateTimePicker'
 
 #### Manual install
 
