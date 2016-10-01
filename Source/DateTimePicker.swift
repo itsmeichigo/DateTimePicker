@@ -44,17 +44,6 @@ let contentHeight: CGFloat = 310
         }
     }
     
-    public var minimumDate = Date(timeIntervalSinceNow: -3600 * 24 * 365 * 20) {
-        didSet {
-            fillDates(fromDate: minimumDate, toDate: maximumDate)
-        }
-    }
-    public var maximumDate = Date(timeIntervalSinceNow: 3600 * 24 * 365 * 20) {
-        didSet {
-            fillDates(fromDate: minimumDate, toDate: maximumDate)
-        }
-    }
-    
     public var todayButtonTitle = "Today"
     public var doneButtonTitle = "DONE"
     public var completionHandler: ((Date)->Void)?
@@ -68,6 +57,9 @@ let contentHeight: CGFloat = 310
     private var dateTitleLabel: UILabel!
     private var todayButton: UIButton!
     private var colonLabel: UILabel!
+    
+    private var minimumDate: Date!
+    private var maximumDate: Date!
     
     internal var calendar = Calendar.current
     internal var dates: [Date]! = []
@@ -84,11 +76,15 @@ let contentHeight: CGFloat = 310
     }
     
     
-    @objc open class func show() -> DateTimePicker {
+    @objc open class func show(minimumDate: Date?=nil, maximumDate: Date?=nil) -> DateTimePicker {
         let dateTimePicker = DateTimePicker(frame: CGRect(x: 0,
                                                           y: 0,
                                                           width: screenWidth,
                                                           height: screenHeight))
+        dateTimePicker.minimumDate = minimumDate ?? Date(timeIntervalSinceNow: -3600 * 24 * 365 * 20)
+        dateTimePicker.maximumDate = maximumDate ?? Date(timeIntervalSinceNow: 3600 * 24 * 365 * 20)
+        assert(dateTimePicker.minimumDate.compare(dateTimePicker.maximumDate) == .orderedAscending, "Minimum date should be earlier than maximum date")
+        
         dateTimePicker.configureView()
         UIApplication.shared.keyWindow?.addSubview(dateTimePicker)
         
@@ -252,18 +248,13 @@ let contentHeight: CGFloat = 310
     
     func fillDates(fromDate: Date, toDate: Date) {
         
-        if fromDate.compare(toDate) != .orderedAscending {
-            return
-        }
-        
         var dates: [Date] = []
         var days = DateComponents()
         
         var dayCount = 0
         repeat {
-            dayCount += 1
             days.day = dayCount
-            
+            dayCount += 1
             guard let date = calendar.date(byAdding: days, to: fromDate) else {
                 break;
             }
