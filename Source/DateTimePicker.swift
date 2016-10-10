@@ -162,9 +162,9 @@ let contentHeight: CGFloat = 310
         contentView.addSubview(doneButton)
         
         // hour table view
-        hourTableView = UITableView(frame: CGRect(x: contentView.frame.width / 2 - 55,
+        hourTableView = UITableView(frame: CGRect(x: contentView.frame.width / 2 - 60,
                                                   y: borderBottomView.frame.origin.y + 2,
-                                                  width: 55,
+                                                  width: 60,
                                                   height: doneButton.frame.origin.y - borderBottomView.frame.origin.y - 10))
         hourTableView.rowHeight = 36
         hourTableView.contentInset = UIEdgeInsetsMake(hourTableView.frame.height / 2, 0, hourTableView.frame.height / 2, 0)
@@ -177,7 +177,7 @@ let contentHeight: CGFloat = 310
         // minute table view
         minuteTableView = UITableView(frame: CGRect(x: contentView.frame.width / 2,
                                                     y: borderBottomView.frame.origin.y + 2,
-                                                    width: 55,
+                                                    width: 60,
                                                     height: doneButton.frame.origin.y - borderBottomView.frame.origin.y - 10))
         minuteTableView.rowHeight = 36
         minuteTableView.contentInset = UIEdgeInsetsMake(minuteTableView.frame.height / 2, 0, minuteTableView.frame.height / 2, 0)
