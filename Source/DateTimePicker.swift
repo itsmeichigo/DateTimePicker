@@ -44,8 +44,16 @@ let contentHeight: CGFloat = 310
         }
     }
     
-    public var todayButtonTitle = "Today"
-    public var doneButtonTitle = "DONE"
+    public var todayButtonTitle = "Today" {
+        didSet {
+            todayButton.setTitle(todayButtonTitle, for: .normal)
+        }
+    }
+    public var doneButtonTitle = "DONE" {
+        didSet {
+            doneButton.setTitle(doneButtonTitle, for: .normal)
+        }
+    }
     public var completionHandler: ((Date)->Void)?
     
     // private vars
@@ -56,6 +64,7 @@ let contentHeight: CGFloat = 310
     private var contentView: UIView!
     private var dateTitleLabel: UILabel!
     private var todayButton: UIButton!
+    private var doneButton: UIButton!
     private var colonLabel: UILabel!
     
     private var minimumDate: Date!
@@ -76,14 +85,17 @@ let contentHeight: CGFloat = 310
     }
     
     
-    @objc open class func show(minimumDate: Date?=nil, maximumDate: Date?=nil) -> DateTimePicker {
+    @objc open class func show(selected: Date? = nil, minimumDate: Date? = nil, maximumDate: Date? = nil) -> DateTimePicker {
         let dateTimePicker = DateTimePicker(frame: CGRect(x: 0,
                                                           y: 0,
                                                           width: screenWidth,
                                                           height: screenHeight))
+        dateTimePicker.selectedDate = selected ?? Date()
         dateTimePicker.minimumDate = minimumDate ?? Date(timeIntervalSinceNow: -3600 * 24 * 365 * 20)
         dateTimePicker.maximumDate = maximumDate ?? Date(timeIntervalSinceNow: 3600 * 24 * 365 * 20)
         assert(dateTimePicker.minimumDate.compare(dateTimePicker.maximumDate) == .orderedAscending, "Minimum date should be earlier than maximum date")
+        assert(dateTimePicker.minimumDate.compare(dateTimePicker.selectedDate) != .orderedDescending, "Selected date should be later or equal to minimum date")
+        assert(dateTimePicker.selectedDate.compare(dateTimePicker.maximumDate) != .orderedDescending, "Selected date should be earlier or equal to maximum date")
         
         dateTimePicker.configureView()
         UIApplication.shared.keyWindow?.addSubview(dateTimePicker)
@@ -150,7 +162,7 @@ let contentHeight: CGFloat = 310
         contentView.addSubview(borderBottomView)
         
         // done button
-        let doneButton = UIButton(type: .system)
+        doneButton = UIButton(type: .system)
         doneButton.frame = CGRect(x: 10, y: contentView.frame.height - 10 - 44, width: contentView.frame.width - 20, height: 44)
         doneButton.setTitle(doneButtonTitle, for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
@@ -239,6 +251,9 @@ let contentHeight: CGFloat = 310
     }
     
     private func resetDateTitle() {
+        guard dateTitleLabel != nil else {
+            return
+        }
         let formatter = DateFormatter()
         formatter.dateFormat = dateFormat
         dateTitleLabel.text = formatter.string(from: selectedDate)
