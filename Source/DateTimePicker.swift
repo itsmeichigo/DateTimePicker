@@ -8,11 +8,10 @@
 
 import UIKit
 
-let screenWidth = UIScreen.main.bounds.size.width
-let screenHeight = UIScreen.main.bounds.size.height
-let contentHeight: CGFloat = 310
 
 @objc public class DateTimePicker: UIView {
+    
+    let contentHeight: CGFloat = 310
     
     // public vars
     public var backgroundViewColor = UIColor.clear {
@@ -32,6 +31,18 @@ let contentHeight: CGFloat = 310
     
     public var daysBackgroundColor = UIColor(red: 239.0/255.0, green: 243.0/255.0, blue: 244.0/255.0, alpha: 1)
     
+    var didLayoutAtOnce = false
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        // For the first time view will be layouted manually before show
+        // For next times we need relayout it because of screen rotation etc.
+        if !didLayoutAtOnce {
+            didLayoutAtOnce = true
+        } else {
+            self.configureView()
+        }
+    }
+    
     public var selectedDate = Date() {
         didSet {
             resetDateTitle()
@@ -47,6 +58,8 @@ let contentHeight: CGFloat = 310
     public var todayButtonTitle = "Today" {
         didSet {
             todayButton.setTitle(todayButtonTitle, for: .normal)
+            let size = todayButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width + 10.0
+            todayButton.frame = CGRect(x: contentView.frame.width - size, y: 0, width: size, height: 44)
         }
     }
     public var doneButtonTitle = "DONE" {
@@ -86,10 +99,7 @@ let contentHeight: CGFloat = 310
     
     
     @objc open class func show(selected: Date? = nil, minimumDate: Date? = nil, maximumDate: Date? = nil) -> DateTimePicker {
-        let dateTimePicker = DateTimePicker(frame: CGRect(x: 0,
-                                                          y: 0,
-                                                          width: screenWidth,
-                                                          height: screenHeight))
+        let dateTimePicker = DateTimePicker()
         dateTimePicker.selectedDate = selected ?? Date()
         dateTimePicker.minimumDate = minimumDate ?? Date(timeIntervalSinceNow: -3600 * 24 * 365 * 20)
         dateTimePicker.maximumDate = maximumDate ?? Date(timeIntervalSinceNow: 3600 * 24 * 365 * 20)
@@ -104,6 +114,15 @@ let contentHeight: CGFloat = 310
     }
     
     private func configureView() {
+        if self.contentView != nil {
+            self.contentView.removeFromSuperview()
+        }
+        let screenSize = UIScreen.main.bounds.size
+        self.frame = CGRect(x: 0,
+                            y: 0,
+                            width: screenSize.width,
+                            height: screenSize.height)
+        
         // content view
         contentView = UIView(frame: CGRect(x: 0,
                                            y: frame.height,
@@ -114,6 +133,7 @@ let contentHeight: CGFloat = 310
         contentView.layer.shadowRadius = 1.5
         contentView.layer.shadowOpacity = 0.5
         contentView.backgroundColor = .white
+        contentView.isHidden = true
         addSubview(contentView)
         
         // title view
@@ -130,11 +150,12 @@ let contentHeight: CGFloat = 310
         titleView.addSubview(dateTitleLabel)
         
         todayButton = UIButton(type: .system)
-        todayButton.frame = CGRect(x: contentView.frame.width - 60, y: 0, width: 60, height: 44)
         todayButton.setTitle(todayButtonTitle, for: .normal)
         todayButton.setTitleColor(highlightColor, for: .normal)
         todayButton.addTarget(self, action: #selector(DateTimePicker.setToday), for: .touchUpInside)
         todayButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
+        let size = todayButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width + 10.0
+        todayButton.frame = CGRect(x: contentView.frame.width - size, y: 0, width: size, height: 44)
         titleView.addSubview(todayButton)
         
         // day collection view
@@ -234,13 +255,14 @@ let contentHeight: CGFloat = 310
             }
         }
         components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: selectedDate)
+        contentView.isHidden = false
         
         // animate to show contentView
         UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.4, options: .curveEaseIn, animations: {
             self.contentView.frame = CGRect(x: 0,
-                                            y: self.frame.height - contentHeight,
+                                            y: self.frame.height - self.contentHeight,
                                             width: self.frame.width,
-                                            height: contentHeight)
+                                            height: self.contentHeight)
         }, completion: nil)
     }
     
@@ -305,7 +327,7 @@ let contentHeight: CGFloat = 310
             self.contentView.frame = CGRect(x: 0,
                                             y: self.frame.height,
                                             width: self.frame.width,
-                                            height: contentHeight)
+                                            height: self.contentHeight)
         }) { (completed) in
             self.completionHandler?(self.selectedDate)
             self.removeFromSuperview()
