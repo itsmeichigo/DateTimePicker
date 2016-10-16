@@ -154,6 +154,7 @@ import UIKit
         todayButton.setTitleColor(highlightColor, for: .normal)
         todayButton.addTarget(self, action: #selector(DateTimePicker.setToday), for: .touchUpInside)
         todayButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
+        todayButton.isHidden = self.minimumDate.compare(Date()) == .orderedDescending || self.maximumDate.compare(Date()) == .orderedAscending
         let size = todayButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width + 10.0
         todayButton.frame = CGRect(x: contentView.frame.width - size, y: 0, width: size, height: 44)
         titleView.addSubview(todayButton)
