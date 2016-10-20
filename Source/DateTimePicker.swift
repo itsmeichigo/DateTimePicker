@@ -14,7 +14,7 @@ import UIKit
     let contentHeight: CGFloat = 310
     
     // public vars
-    public var backgroundViewColor = UIColor.clear {
+    public var backgroundViewColor: UIColor = .clear {
         didSet {
             backgroundColor = backgroundViewColor
         }
@@ -83,7 +83,7 @@ import UIKit
     private var minimumDate: Date!
     private var maximumDate: Date!
     
-    internal var calendar = Calendar.current
+    internal var calendar: Calendar = .current
     internal var dates: [Date]! = []
     internal var components: DateComponents! {
         didSet {
@@ -129,7 +129,7 @@ import UIKit
                                            width: frame.width,
                                            height: contentHeight))
         contentView.layer.shadowColor = UIColor(white: 0, alpha: 0.3).cgColor
-        contentView.layer.shadowOffset = CGSize(width: 0, height: -2.0);
+        contentView.layer.shadowOffset = CGSize(width: 0, height: -2.0)
         contentView.layer.shadowRadius = 1.5
         contentView.layer.shadowOpacity = 0.5
         contentView.backgroundColor = .white
