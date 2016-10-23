@@ -6,7 +6,7 @@ A nicer iOS UI component for picking date and time.
 
 ## Requirements
 
-- Swift 3.0 & xCode 8
+- Swift 3.0 & Xcode 8
 - iOS 9 and later
 
 ## Installation
