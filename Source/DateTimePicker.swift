@@ -48,6 +48,13 @@ import UIKit
             resetDateTitle()
         }
     }
+
+    /// Time interval, in minutes
+    public var timeInterval = 1 {
+        didSet {
+            resetDateTitle()
+        }
+    }
     
     public var dateFormat = "HH:mm dd/MM/YYYY" {
         didSet {
@@ -92,17 +99,19 @@ import UIKit
             }
             
             if let minute = components.minute {
-                minuteTableView.selectRow(at: IndexPath(row: minute, section: 0), animated: true, scrollPosition: .middle)
+                minuteTableView.selectRow(at: IndexPath(row: minute / timeInterval, section: 0), animated: true, scrollPosition: .middle)
             }
         }
     }
     
     
-    @objc open class func show(selected: Date? = nil, minimumDate: Date? = nil, maximumDate: Date? = nil) -> DateTimePicker {
+    @objc open class func show(selected: Date? = nil, minimumDate: Date? = nil, maximumDate: Date? = nil, timeInterval: Int = 1) -> DateTimePicker {
         let dateTimePicker = DateTimePicker()
+        dateTimePicker.timeInterval = timeInterval
         dateTimePicker.selectedDate = selected ?? Date()
-        dateTimePicker.minimumDate = minimumDate ?? Date(timeIntervalSinceNow: -3600 * 24 * 365 * 20)
-        dateTimePicker.maximumDate = maximumDate ?? Date(timeIntervalSinceNow: 3600 * 24 * 365 * 20)
+        let defaultDateBound: TimeInterval = 3600 * 24 * 365 * 20 // 20 years ago-from now
+        dateTimePicker.minimumDate  = minimumDate ?? Date(timeIntervalSinceNow: -defaultDateBound)
+        dateTimePicker.maximumDate = maximumDate ?? Date(timeIntervalSinceNow: defaultDateBound)
         assert(dateTimePicker.minimumDate.compare(dateTimePicker.maximumDate) == .orderedAscending, "Minimum date should be earlier than maximum date")
         assert(dateTimePicker.minimumDate.compare(dateTimePicker.selectedDate) != .orderedDescending, "Selected date should be later or equal to minimum date")
         assert(dateTimePicker.selectedDate.compare(dateTimePicker.maximumDate) != .orderedDescending, "Selected date should be earlier or equal to maximum date")
@@ -345,7 +354,7 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         if tableView == hourTableView {
             return 24
         }
-        return 60
+        return 60 / timeInterval
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -356,7 +365,12 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         cell.textLabel?.textColor = darkColor.withAlphaComponent(0.4)
         cell.textLabel?.highlightedTextColor = highlightColor
-        cell.textLabel?.text = String(format: "%02i", indexPath.row)
+
+        if tableView == hourTableView {
+            cell.textLabel?.text = String(format: "%02i", indexPath.row)
+        } else {
+            cell.textLabel?.text = String(format: "%02i", indexPath.row * timeInterval)
+        }
         
         return cell
     }
@@ -435,14 +449,14 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
             if tableView == hourTableView {
                 row = max(min(row, 23), 0)
             } else if tableView == minuteTableView {
-                row = max(min(row, 59), 0)
+                row = max(min(row, (59 / CGFloat(timeInterval)).rounded(.down)), 0)
             }
             tableView.selectRow(at: IndexPath(row: Int(row), section: 0), animated: true, scrollPosition: .middle)
-            
+
             if tableView == hourTableView {
                 components.hour = Int(row)
             } else if tableView == minuteTableView {
-                components.minute = Int(row)
+                components.minute = Int(row) * timeInterval
             }
             
             if let selected = calendar.date(from: components) {
