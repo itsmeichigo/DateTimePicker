@@ -86,14 +86,13 @@ import UIKit
     internal var calendar: Calendar = .current
     internal var dates: [Date]! = []
     internal var components: DateComponents! {
-        // add 24 to hour and 60 to minute, because datasource now has buffer at top and bottom.
         didSet {
             if let hour = components.hour {
-                hourTableView.selectRow(at: IndexPath(row: hour + 24, section: 0), animated: true, scrollPosition: .middle)
+                hourTableView.selectRow(at: IndexPath(row: hour, section: 0), animated: true, scrollPosition: .middle)
             }
             
             if let minute = components.minute {
-                minuteTableView.selectRow(at: IndexPath(row: minute + 60, section: 0), animated: true, scrollPosition: .middle)
+                minuteTableView.selectRow(at: IndexPath(row: minute, section: 0), animated: true, scrollPosition: .middle)
             }
         }
     }
@@ -344,11 +343,9 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tableView == hourTableView {
-            // need triple of origin storage to scroll infinitely
-            return 24 * 3
+            return 24
         }
-        // need triple of origin storage to scroll infinitely
-        return 60 * 3
+        return 60
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -359,37 +356,21 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         cell.textLabel?.textColor = darkColor.withAlphaComponent(0.4)
         cell.textLabel?.highlightedTextColor = highlightColor
-        // add module operation to set value same
-        cell.textLabel?.text = String(format: "%02i", indexPath.row % (tableView == hourTableView ? 24 : 60))
+        cell.textLabel?.text = String(format: "%02i", indexPath.row)
         
         return cell
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print( "senected row : [\(indexPath)]")
         tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
         if tableView == hourTableView {
-            components.hour = indexPath.row - 24
-//            tableView.selectRow(at: IndexPath(row: indexPath.row + 24, section: indexPath.section), animated: true, scrollPosition: .middle)
+            components.hour = indexPath.row
         } else if tableView == minuteTableView {
-            components.minute = indexPath.row - 60
-//            tableView.selectRow(at: IndexPath(row: indexPath.row + 60, section: indexPath.section), animated: true, scrollPosition: .middle)
+            components.minute = indexPath.row
         }
         
         if let selected = calendar.date(from: components) {
             selectedDate = selected
-        }
-    }
-    
-    // for infinite scrolling, use modulo operation.
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let totalHeight = scrollView.contentSize.height
-        let visibleHeight = totalHeight / 3.0
-        if scrollView.contentOffset.y < visibleHeight || scrollView.contentOffset.y > visibleHeight + visibleHeight {
-            let positionValueLoss = scrollView.contentOffset.y - CGFloat(Int(scrollView.contentOffset.y))
-            let heightValueLoss = visibleHeight - CGFloat(Int(visibleHeight))
-            let modifiedPotisionY = CGFloat(Int( scrollView.contentOffset.y ) % Int( visibleHeight ) + Int( visibleHeight )) - positionValueLoss - heightValueLoss
-            scrollView.contentOffset.y = modifiedPotisionY
         }
     }
 }
@@ -449,22 +430,19 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
                 }
             }
         } else if let tableView = scrollView as? UITableView {
-            let relativeOffset = CGPoint(x: 0, y: tableView.contentOffset.y + tableView.contentInset.top )
-            // change row from var to let.
-            let row = round(relativeOffset.y / tableView.rowHeight)
-            // table view became infinite, so do not need this code anymore.
-//            if tableView == hourTableView {
-//                row = max(min(row, 23), 0)
-//            } else if tableView == minuteTableView {
-//                row = max(min(row, 59), 0)
-//            }
+            let relativeOffset = CGPoint(x: 0, y: tableView.contentOffset.y + tableView.contentInset.top)
+            var row = round(relativeOffset.y / tableView.rowHeight)
+            if tableView == hourTableView {
+                row = max(min(row, 23), 0)
+            } else if tableView == minuteTableView {
+                row = max(min(row, 59), 0)
+            }
             tableView.selectRow(at: IndexPath(row: Int(row), section: 0), animated: true, scrollPosition: .middle)
             
-            // add 24 to hour and 60 to minute, because datasource now has buffer at top and bottom.
             if tableView == hourTableView {
-                components.hour = Int(row - 24)
+                components.hour = Int(row)
             } else if tableView == minuteTableView {
-                components.minute = Int(row - 60)
+                components.minute = Int(row)
             }
             
             if let selected = calendar.date(from: components) {
