@@ -85,18 +85,7 @@ import UIKit
     
     internal var calendar: Calendar = .current
     internal var dates: [Date]! = []
-    internal var components: DateComponents! {
-        // add 24 to hour and 60 to minute, because datasource now has buffer at top and bottom.
-        didSet {
-            if let hour = components.hour {
-                hourTableView.selectRow(at: IndexPath(row: hour + 24, section: 0), animated: true, scrollPosition: .middle)
-            }
-            
-            if let minute = components.minute {
-                minuteTableView.selectRow(at: IndexPath(row: minute + 60, section: 0), animated: true, scrollPosition: .middle)
-            }
-        }
-    }
+    internal var components: DateComponents!
     
     
     @objc open class func show(selected: Date? = nil, minimumDate: Date? = nil, maximumDate: Date? = nil) -> DateTimePicker {
@@ -259,6 +248,8 @@ import UIKit
         components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: selectedDate)
         contentView.isHidden = false
         
+        setToday()
+        
         // animate to show contentView
         UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.4, options: .curveEaseIn, animations: {
             self.contentView.frame = CGRect(x: 0,
@@ -271,6 +262,13 @@ import UIKit
     func setToday() {
         selectedDate = Date()
         components = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: selectedDate)
+        if let hour = components.hour {
+            hourTableView.selectRow(at: IndexPath(row: hour + 24, section: 0), animated: true, scrollPosition: .middle)
+        }
+        
+        if let minute = components.minute {
+            minuteTableView.selectRow(at: IndexPath(row: minute + 60, section: 0), animated: true, scrollPosition: .middle)
+        }
         updateCollectionView(to: selectedDate)
     }
     
@@ -369,11 +367,9 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         print( "senected row : [\(indexPath)]")
         tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
         if tableView == hourTableView {
-            components.hour = indexPath.row - 24
-//            tableView.selectRow(at: IndexPath(row: indexPath.row + 24, section: indexPath.section), animated: true, scrollPosition: .middle)
+            components.hour = (indexPath.row - 24)%24
         } else if tableView == minuteTableView {
-            components.minute = indexPath.row - 60
-//            tableView.selectRow(at: IndexPath(row: indexPath.row + 60, section: indexPath.section), animated: true, scrollPosition: .middle)
+            components.minute = (indexPath.row - 60)%60
         }
         
         if let selected = calendar.date(from: components) {
@@ -383,6 +379,9 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
     
     // for infinite scrolling, use modulo operation.
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView != dayCollectionView else {
+            return
+        }
         let totalHeight = scrollView.contentSize.height
         let visibleHeight = totalHeight / 3.0
         if scrollView.contentOffset.y < visibleHeight || scrollView.contentOffset.y > visibleHeight + visibleHeight {
@@ -452,19 +451,13 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
             let relativeOffset = CGPoint(x: 0, y: tableView.contentOffset.y + tableView.contentInset.top )
             // change row from var to let.
             let row = round(relativeOffset.y / tableView.rowHeight)
-            // table view became infinite, so do not need this code anymore.
-//            if tableView == hourTableView {
-//                row = max(min(row, 23), 0)
-//            } else if tableView == minuteTableView {
-//                row = max(min(row, 59), 0)
-//            }
             tableView.selectRow(at: IndexPath(row: Int(row), section: 0), animated: true, scrollPosition: .middle)
             
             // add 24 to hour and 60 to minute, because datasource now has buffer at top and bottom.
             if tableView == hourTableView {
-                components.hour = Int(row - 24)
+                components.hour = Int(row - 24)%24
             } else if tableView == minuteTableView {
-                components.minute = Int(row - 60)
+                components.minute = Int(row - 60)%60
             }
             
             if let selected = calendar.date(from: components) {
