@@ -162,6 +162,9 @@ import UIKit
         dayCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
         dayCollectionView.dataSource = self
         dayCollectionView.delegate = self
+        
+        let inset = (dayCollectionView.frame.width - 75) / 2
+        dayCollectionView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
         contentView.addSubview(dayCollectionView)
         
         // top & bottom borders on day collection view
@@ -364,7 +367,6 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print( "senected row : [\(indexPath)]")
         tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
         if tableView == hourTableView {
             components.hour = (indexPath.row - 24)%24
@@ -412,7 +414,15 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        //workaround to center to every cell including ones near margins
+        if let cell = collectionView.cellForItem(at: indexPath) {
+            let inset = (collectionView.frame.width - cell.frame.width) / 2
+            collectionView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
+            let offset = CGPoint(x: cell.center.x - collectionView.frame.width / 2, y: 0)
+            collectionView.setContentOffset(offset, animated: true)
+        }
+        
+        // update selected dates
         let date = dates[indexPath.item]
         let dayComponent = calendar.dateComponents([.day, .month, .year], from: date)
         components.day = dayComponent.day
@@ -437,7 +447,17 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
         if let collectionView = scrollView as? UICollectionView {
             let centerPoint = CGPoint(x: collectionView.center.x + collectionView.contentOffset.x, y: 50);
             if let indexPath = collectionView.indexPathForItem(at: centerPoint) {
-                collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+                // automatically select this item and center it to the screen
+                // set animated = false to avoid unwanted effects
+                collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .top)
+                if let cell = collectionView.cellForItem(at: indexPath) {
+                    let inset = (collectionView.frame.width - cell.frame.width) / 2
+                    collectionView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
+                    let offset = CGPoint(x: cell.center.x - collectionView.frame.width / 2, y: 0)
+                    collectionView.setContentOffset(offset, animated: false)
+                }
+                
+                // update selected date
                 let date = dates[indexPath.item]
                 let dayComponent = calendar.dateComponents([.day, .month, .year], from: date)
                 components.day = dayComponent.day
