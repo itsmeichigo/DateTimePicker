@@ -417,8 +417,6 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         //workaround to center to every cell including ones near margins
         if let cell = collectionView.cellForItem(at: indexPath) {
-            let inset = (collectionView.frame.width - cell.frame.width) / 2
-            collectionView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
             let offset = CGPoint(x: cell.center.x - collectionView.frame.width / 2, y: 0)
             collectionView.setContentOffset(offset, animated: true)
         }
@@ -452,8 +450,6 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
                 // set animated = false to avoid unwanted effects
                 collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .top)
                 if let cell = collectionView.cellForItem(at: indexPath) {
-                    let inset = (collectionView.frame.width - cell.frame.width) / 2
-                    collectionView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
                     let offset = CGPoint(x: cell.center.x - collectionView.frame.width / 2, y: 0)
                     collectionView.setContentOffset(offset, animated: false)
                 }
