@@ -265,14 +265,15 @@ import UIKit
     func setToday() {
         selectedDate = Date()
         components = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: selectedDate)
+        updateCollectionView(to: selectedDate)
         if let hour = components.hour {
             hourTableView.selectRow(at: IndexPath(row: hour + 24, section: 0), animated: true, scrollPosition: .middle)
         }
         
         if let minute = components.minute {
-            minuteTableView.selectRow(at: IndexPath(row: minute + 60, section: 0), animated: true, scrollPosition: .middle)
+            let expectedRow = minute == 0 ? 120 : minute + 60 // workaround for issue when minute = 0
+            minuteTableView.selectRow(at: IndexPath(row: expectedRow, section: 0), animated: true, scrollPosition: .middle)
         }
-        updateCollectionView(to: selectedDate)
     }
     
     private func resetDateTitle() {
