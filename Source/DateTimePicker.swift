@@ -251,7 +251,7 @@ import UIKit
         components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: selectedDate)
         contentView.isHidden = false
         
-        setToday()
+        resetTime()
         
         // animate to show contentView
         UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.4, options: .curveEaseIn, animations: {
@@ -264,6 +264,10 @@ import UIKit
     
     func setToday() {
         selectedDate = Date()
+        resetTime()
+    }
+    
+    func resetTime() {
         components = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: selectedDate)
         updateCollectionView(to: selectedDate)
         if let hour = components.hour {
@@ -319,7 +323,12 @@ import UIKit
         for i in 0..<dates.count {
             let date = dates[i]
             if formatter.string(from: date) == formatter.string(from: currentDate) {
-                dayCollectionView.selectItem(at: IndexPath(row: i, section: 0), animated: true, scrollPosition: .centeredHorizontally)
+                let indexPath = IndexPath(row: i, section: 0)
+                dayCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: { 
+                    self.dayCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+                })
+                
                 break
             }
         }
