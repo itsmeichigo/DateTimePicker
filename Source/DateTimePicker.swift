@@ -442,7 +442,12 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
         components.month = dayComponent.month
         components.year = dayComponent.year
         if let selected = calendar.date(from: components) {
-            selectedDate = selected
+            if selected.compare(minimumDate) == .orderedAscending {
+                selectedDate = minimumDate
+                resetTime()
+            } else {
+                selectedDate = selected
+            }
         }
     }
     
@@ -475,7 +480,12 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
                 components.month = dayComponent.month
                 components.year = dayComponent.year
                 if let selected = calendar.date(from: components) {
-                    selectedDate = selected
+                    if selected.compare(minimumDate) == .orderedAscending {
+                        selectedDate = minimumDate
+                        resetTime()
+                    } else {
+                        selectedDate = selected
+                    }
                 }
             }
         } else if let tableView = scrollView as? UITableView {
