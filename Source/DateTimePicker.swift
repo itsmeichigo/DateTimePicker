@@ -55,10 +55,18 @@ import UIKit
         }
     }
     
+    public var cancelButtonTitle = "Cancel" {
+        didSet {
+            cancelButton.setTitle(cancelButtonTitle, for: .normal)
+            let size = cancelButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width + 20.0
+            cancelButton.frame = CGRect(x: 0, y: 0, width: size, height: 44)
+        }
+    }
+    
     public var todayButtonTitle = "Today" {
         didSet {
             todayButton.setTitle(todayButtonTitle, for: .normal)
-            let size = todayButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width + 10.0
+            let size = todayButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width + 20.0
             todayButton.frame = CGRect(x: contentView.frame.width - size, y: 0, width: size, height: 44)
         }
     }
@@ -85,6 +93,7 @@ import UIKit
     private var dateTitleLabel: UILabel!
     private var todayButton: UIButton!
     private var doneButton: UIButton!
+    private var cancelButton: UIButton!
     private var colonLabel1: UILabel!
     private var colonLabel2: UILabel!
     
@@ -147,14 +156,23 @@ import UIKit
         resetDateTitle()
         titleView.addSubview(dateTitleLabel)
         
+        cancelButton = UIButton(type: .system)
+        cancelButton.setTitle(cancelButtonTitle, for: .normal)
+        cancelButton.setTitleColor(darkColor.withAlphaComponent(0.5), for: .normal)
+        cancelButton.addTarget(self, action: #selector(DateTimePicker.dismissView(sender:)), for: .touchUpInside)
+        cancelButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
+        let cancelSize = cancelButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width + 20.0
+        cancelButton.frame = CGRect(x: 0, y: 0, width: cancelSize, height: 44)
+        titleView.addSubview(cancelButton)
+        
         todayButton = UIButton(type: .system)
         todayButton.setTitle(todayButtonTitle, for: .normal)
         todayButton.setTitleColor(highlightColor, for: .normal)
         todayButton.addTarget(self, action: #selector(DateTimePicker.setToday), for: .touchUpInside)
         todayButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         todayButton.isHidden = self.minimumDate.compare(Date()) == .orderedDescending || self.maximumDate.compare(Date()) == .orderedAscending
-        let size = todayButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width + 10.0
-        todayButton.frame = CGRect(x: contentView.frame.width - size, y: 0, width: size, height: 44)
+        let todaySize = todayButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width + 20.0
+        todayButton.frame = CGRect(x: contentView.frame.width - todaySize, y: 0, width: todaySize, height: 44)
         titleView.addSubview(todayButton)
         
         // day collection view
@@ -193,7 +211,7 @@ import UIKit
         doneButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
         doneButton.layer.cornerRadius = 3
         doneButton.layer.masksToBounds = true
-        doneButton.addTarget(self, action: #selector(DateTimePicker.dismissView), for: .touchUpInside)
+        doneButton.addTarget(self, action: #selector(DateTimePicker.dismissView(sender:)), for: .touchUpInside)
         contentView.addSubview(doneButton)
         
         // if time picker format is 12 hour, we'll need an extra tableview for am/pm
@@ -389,7 +407,7 @@ import UIKit
         }
     }
     
-    func dismissView() {
+    public func dismissView(sender: UIButton?=nil) {
         UIView.animate(withDuration: 0.3, animations: {
             // animate to show contentView
             self.contentView.frame = CGRect(x: 0,
@@ -397,7 +415,9 @@ import UIKit
                                             width: self.frame.width,
                                             height: self.contentHeight)
         }) { (completed) in
-            self.completionHandler?(self.selectedDate)
+            if sender == self.doneButton {
+                self.completionHandler?(self.selectedDate)
+            }
             self.removeFromSuperview()
         }
     }
