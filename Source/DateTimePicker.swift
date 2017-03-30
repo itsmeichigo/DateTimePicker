@@ -69,11 +69,14 @@ import UIKit
     }
     public var completionHandler: ((Date)->Void)?
     
+    public var dismissOption: Bool = false
+
     // private vars
     internal var hourTableView: UITableView!
     internal var minuteTableView: UITableView!
     internal var dayCollectionView: UICollectionView!
     
+    private var shadowView: UIView!
     private var contentView: UIView!
     private var dateTitleLabel: UILabel!
     private var todayButton: UIButton!
@@ -112,6 +115,16 @@ import UIKit
                             y: 0,
                             width: screenSize.width,
                             height: screenSize.height)
+        
+        // shadow view
+        shadowView = UIView(frame: CGRect(x: 0,
+                                          y: 0,
+                                          width: frame.width,
+                                          height: frame.height))
+        let shadowViewTap = UICustomTapGestureRecognizer(target: self, action: #selector(DateTimePicker.dismissView))
+        shadowViewTap.isCancel = true
+        shadowView.addGestureRecognizer(shadowViewTap)
+        addSubview(shadowView)
         
         // content view
         contentView = UIView(frame: CGRect(x: 0,
@@ -185,7 +198,8 @@ import UIKit
         doneButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
         doneButton.layer.cornerRadius = 3
         doneButton.layer.masksToBounds = true
-        doneButton.addTarget(self, action: #selector(DateTimePicker.dismissView), for: .touchUpInside)
+        let doneButtonTap = UICustomTapGestureRecognizer(target: self, action: #selector(DateTimePicker.dismissView))
+        doneButton.addGestureRecognizer(doneButtonTap)
         contentView.addSubview(doneButton)
         
         // hour table view
@@ -334,7 +348,9 @@ import UIKit
         }
     }
     
-    func dismissView() {
+    func dismissView(sender: UICustomTapGestureRecognizer) {
+        if !self.dismissOption && sender.isCancel { return }
+
         UIView.animate(withDuration: 0.3, animations: {
             // animate to show contentView
             self.contentView.frame = CGRect(x: 0,
@@ -342,7 +358,7 @@ import UIKit
                                             width: self.frame.width,
                                             height: self.contentHeight)
         }) { (completed) in
-            self.completionHandler?(self.selectedDate)
+            if !sender.isCancel { self.completionHandler?(self.selectedDate) }
             self.removeFromSuperview()
         }
     }
