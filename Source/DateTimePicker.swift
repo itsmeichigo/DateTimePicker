@@ -80,8 +80,8 @@ import UIKit
     private var doneButton: UIButton!
     private var colonLabel: UILabel!
     
-    private var minimumDate: Date!
-    private var maximumDate: Date!
+    internal var minimumDate: Date!
+    internal var maximumDate: Date!
     
     internal var calendar: Calendar = .current
     internal var dates: [Date]! = []
@@ -385,7 +385,12 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         }
         
         if let selected = calendar.date(from: components) {
-            selectedDate = selected
+            if selected.compare(minimumDate) == .orderedAscending {
+                selectedDate = minimumDate
+                resetTime()
+            } else {
+                selectedDate = selected
+            }
         }
     }
     
@@ -487,7 +492,13 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
             }
             
             if let selected = calendar.date(from: components) {
-                selectedDate = selected
+                if selected.compare(minimumDate) == .orderedAscending {
+                    selectedDate = minimumDate
+                    resetTime()
+                } else {
+                    selectedDate = selected
+                }
+                
             }
         }
     }
