@@ -96,6 +96,7 @@ import UIKit
     internal var amPmTableView: UITableView!
     internal var dayCollectionView: UICollectionView!
     
+    private var shadowView: UIView!
     private var contentView: UIView!
     private var dateTitleLabel: UILabel!
     private var todayButton: UIButton!
@@ -132,13 +133,23 @@ import UIKit
             self.contentView.removeFromSuperview()
         }
         let screenSize = UIScreen.main.bounds.size
-        contentHeight = isDatePickerOnly ? 208 : 310
         self.frame = CGRect(x: 0,
                             y: 0,
                             width: screenSize.width,
                             height: screenSize.height)
+        // shadow view
+        shadowView = UIView(frame: CGRect(x: 0,
+                                          y: 0,
+                                          width: frame.width,
+                                          height: frame.height))
+        shadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        shadowView.alpha = 1
+        let shadowViewTap = UITapGestureRecognizer(target: self, action: #selector(DateTimePicker.dismissView(sender:)))
+        shadowView.addGestureRecognizer(shadowViewTap)
+        addSubview(shadowView)
         
         // content view
+        contentHeight = isDatePickerOnly ? 208 : 310
         contentView = UIView(frame: CGRect(x: 0,
                                            y: frame.height,
                                            width: frame.width,
