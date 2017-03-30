@@ -11,7 +11,7 @@ import UIKit
 
 @objc public class DateTimePicker: UIView {
     
-    let contentHeight: CGFloat = 310
+    var contentHeight: CGFloat = 310
     
     // public vars
     public var backgroundViewColor: UIColor = .clear {
@@ -81,6 +81,13 @@ import UIKit
             configureView()
         }
     }
+    
+    public var isDatePickerOnly = false {
+        didSet {
+            configureView()
+        }
+    }
+    
     public var completionHandler: ((Date)->Void)?
     
     // private vars
@@ -107,9 +114,9 @@ import UIKit
     
     @objc open class func show(selected: Date? = nil, minimumDate: Date? = nil, maximumDate: Date? = nil) -> DateTimePicker {
         let dateTimePicker = DateTimePicker()
-        dateTimePicker.selectedDate = selected ?? Date()
         dateTimePicker.minimumDate = minimumDate ?? Date(timeIntervalSinceNow: -3600 * 24 * 365 * 20)
         dateTimePicker.maximumDate = maximumDate ?? Date(timeIntervalSinceNow: 3600 * 24 * 365 * 20)
+        dateTimePicker.selectedDate = selected ?? dateTimePicker.minimumDate
         assert(dateTimePicker.minimumDate.compare(dateTimePicker.maximumDate) == .orderedAscending, "Minimum date should be earlier than maximum date")
         assert(dateTimePicker.minimumDate.compare(dateTimePicker.selectedDate) != .orderedDescending, "Selected date should be later or equal to minimum date")
         assert(dateTimePicker.selectedDate.compare(dateTimePicker.maximumDate) != .orderedDescending, "Selected date should be earlier or equal to maximum date")
@@ -125,6 +132,7 @@ import UIKit
             self.contentView.removeFromSuperview()
         }
         let screenSize = UIScreen.main.bounds.size
+        contentHeight = isDatePickerOnly ? 208 : 310
         self.frame = CGRect(x: 0,
                             y: 0,
                             width: screenSize.width,
@@ -228,6 +236,7 @@ import UIKit
         hourTableView.separatorStyle = .none
         hourTableView.delegate = self
         hourTableView.dataSource = self
+        hourTableView.isHidden = isDatePickerOnly
         contentView.addSubview(hourTableView)
         
         // minute table view
@@ -241,6 +250,7 @@ import UIKit
         minuteTableView.separatorStyle = .none
         minuteTableView.delegate = self
         minuteTableView.dataSource = self
+        minuteTableView.isHidden = isDatePickerOnly
         contentView.addSubview(minuteTableView)
         
         // am/pm table view
@@ -254,7 +264,7 @@ import UIKit
         amPmTableView.separatorStyle = .none
         amPmTableView.delegate = self
         amPmTableView.dataSource = self
-        amPmTableView.isHidden = !is12HourFormat
+        amPmTableView.isHidden = !is12HourFormat || isDatePickerOnly
         contentView.addSubview(amPmTableView)
         
         
@@ -266,6 +276,7 @@ import UIKit
         colonLabel1.font = UIFont.boldSystemFont(ofSize: 18)
         colonLabel1.textColor = highlightColor
         colonLabel1.textAlignment = .center
+        colonLabel1.isHidden = isDatePickerOnly
         contentView.addSubview(colonLabel1)
         
         colonLabel2 = UILabel(frame: CGRect(x: 0, y: 0, width: 10, height: 36))
@@ -276,18 +287,20 @@ import UIKit
         var colon2Center = colonLabel1.center
         colon2Center.x += 57
         colonLabel2.center = colon2Center
-        colonLabel2.isHidden = !is12HourFormat
+        colonLabel2.isHidden = !is12HourFormat || isDatePickerOnly
         contentView.addSubview(colonLabel2)
         
         // time separators
         let separatorTopView = UIView(frame: CGRect(x: 0, y: 0, width: 90 - extraSpace * 2, height: 1))
         separatorTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
         separatorTopView.center = CGPoint(x: contentView.frame.width / 2, y: borderBottomView.frame.origin.y + 36)
+        separatorTopView.isHidden = isDatePickerOnly
         contentView.addSubview(separatorTopView)
         
         let separatorBottomView = UIView(frame: CGRect(x: 0, y: 0, width: 90 - extraSpace * 2, height: 1))
         separatorBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
         separatorBottomView.center = CGPoint(x: contentView.frame.width / 2, y: separatorTopView.frame.origin.y + 36)
+        separatorBottomView.isHidden = isDatePickerOnly
         contentView.addSubview(separatorBottomView)
         
         // fill date
