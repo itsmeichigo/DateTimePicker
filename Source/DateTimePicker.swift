@@ -23,7 +23,7 @@ import UIKit
     public var highlightColor = UIColor(red: 0/255.0, green: 199.0/255.0, blue: 194.0/255.0, alpha: 1) {
         didSet {
             todayButton.setTitleColor(highlightColor, for: .normal)
-            colonLabel.textColor = highlightColor
+            colonLabel1.textColor = highlightColor
         }
     }
     
@@ -67,18 +67,26 @@ import UIKit
             doneButton.setTitle(doneButtonTitle, for: .normal)
         }
     }
+    
+    public var is12HourFormat = false {
+        didSet {
+            configureView()
+        }
+    }
     public var completionHandler: ((Date)->Void)?
     
     // private vars
     internal var hourTableView: UITableView!
     internal var minuteTableView: UITableView!
+    internal var amPmTableView: UITableView!
     internal var dayCollectionView: UICollectionView!
     
     private var contentView: UIView!
     private var dateTitleLabel: UILabel!
     private var todayButton: UIButton!
     private var doneButton: UIButton!
-    private var colonLabel: UILabel!
+    private var colonLabel1: UILabel!
+    private var colonLabel2: UILabel!
     
     internal var minimumDate: Date!
     internal var maximumDate: Date!
@@ -188,8 +196,11 @@ import UIKit
         doneButton.addTarget(self, action: #selector(DateTimePicker.dismissView), for: .touchUpInside)
         contentView.addSubview(doneButton)
         
+        // if time picker format is 12 hour, we'll need an extra tableview for am/pm
+        // the width for this tableview will be 60, so we need extra -30 for x position of hour & minute tableview
+        let extraSpace: CGFloat = is12HourFormat ? -30 : 0
         // hour table view
-        hourTableView = UITableView(frame: CGRect(x: contentView.frame.width / 2 - 60,
+        hourTableView = UITableView(frame: CGRect(x: contentView.frame.width / 2 - 60 + extraSpace,
                                                   y: borderBottomView.frame.origin.y + 2,
                                                   width: 60,
                                                   height: doneButton.frame.origin.y - borderBottomView.frame.origin.y - 10))
@@ -202,7 +213,7 @@ import UIKit
         contentView.addSubview(hourTableView)
         
         // minute table view
-        minuteTableView = UITableView(frame: CGRect(x: contentView.frame.width / 2,
+        minuteTableView = UITableView(frame: CGRect(x: contentView.frame.width / 2 + extraSpace,
                                                     y: borderBottomView.frame.origin.y + 2,
                                                     width: 60,
                                                     height: doneButton.frame.origin.y - borderBottomView.frame.origin.y - 10))
@@ -214,23 +225,49 @@ import UIKit
         minuteTableView.dataSource = self
         contentView.addSubview(minuteTableView)
         
+        // am/pm table view
+        amPmTableView = UITableView(frame: CGRect(x: contentView.frame.width / 2 - extraSpace,
+                                                  y: borderBottomView.frame.origin.y + 2,
+                                                  width: 64,
+                                                  height: doneButton.frame.origin.y - borderBottomView.frame.origin.y - 10))
+        amPmTableView.rowHeight = 36
+        amPmTableView.contentInset = UIEdgeInsetsMake(amPmTableView.frame.height / 2, 0, amPmTableView.frame.height / 2, 0)
+        amPmTableView.showsVerticalScrollIndicator = false
+        amPmTableView.separatorStyle = .none
+        amPmTableView.delegate = self
+        amPmTableView.dataSource = self
+        amPmTableView.isHidden = !is12HourFormat
+        contentView.addSubview(amPmTableView)
+        
+        
         // colon
-        colonLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 10, height: 36))
-        colonLabel.center = CGPoint(x: contentView.frame.width / 2,
+        colonLabel1 = UILabel(frame: CGRect(x: 0, y: 0, width: 10, height: 36))
+        colonLabel1.center = CGPoint(x: contentView.frame.width / 2 + extraSpace,
                                     y: (doneButton.frame.origin.y - borderBottomView.frame.origin.y - 10) / 2 + borderBottomView.frame.origin.y)
-        colonLabel.text = ":"
-        colonLabel.font = UIFont.boldSystemFont(ofSize: 18)
-        colonLabel.textColor = highlightColor
-        colonLabel.textAlignment = .center
-        contentView.addSubview(colonLabel)
+        colonLabel1.text = ":"
+        colonLabel1.font = UIFont.boldSystemFont(ofSize: 18)
+        colonLabel1.textColor = highlightColor
+        colonLabel1.textAlignment = .center
+        contentView.addSubview(colonLabel1)
+        
+        colonLabel2 = UILabel(frame: CGRect(x: 0, y: 0, width: 10, height: 36))
+        colonLabel2.text = ":"
+        colonLabel2.font = UIFont.boldSystemFont(ofSize: 18)
+        colonLabel2.textColor = highlightColor
+        colonLabel2.textAlignment = .center
+        var colon2Center = colonLabel1.center
+        colon2Center.x += 57
+        colonLabel2.center = colon2Center
+        colonLabel2.isHidden = !is12HourFormat
+        contentView.addSubview(colonLabel2)
         
         // time separators
-        let separatorTopView = UIView(frame: CGRect(x: 0, y: 0, width: 90, height: 1))
+        let separatorTopView = UIView(frame: CGRect(x: 0, y: 0, width: 90 - extraSpace * 2, height: 1))
         separatorTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
         separatorTopView.center = CGPoint(x: contentView.frame.width / 2, y: borderBottomView.frame.origin.y + 36)
         contentView.addSubview(separatorTopView)
         
-        let separatorBottomView = UIView(frame: CGRect(x: 0, y: 0, width: 90, height: 1))
+        let separatorBottomView = UIView(frame: CGRect(x: 0, y: 0, width: 90 - extraSpace * 2, height: 1))
         separatorBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
         separatorBottomView.center = CGPoint(x: contentView.frame.width / 2, y: separatorTopView.frame.origin.y + 36)
         contentView.addSubview(separatorBottomView)
@@ -271,7 +308,25 @@ import UIKit
         components = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: selectedDate)
         updateCollectionView(to: selectedDate)
         if let hour = components.hour {
-            hourTableView.selectRow(at: IndexPath(row: hour + 24, section: 0), animated: true, scrollPosition: .middle)
+            var expectedRow = hour + 24
+            if is12HourFormat {
+                if hour < 12 {
+                    expectedRow = hour + 11
+                } else {
+                    expectedRow = hour - 1
+                }
+                
+                // workaround to fix issue selecting row when hour 12 am/pm
+                if expectedRow == 11 {
+                    expectedRow = 23
+                }
+            }
+            hourTableView.selectRow(at: IndexPath(row: expectedRow, section: 0), animated: true, scrollPosition: .middle)
+            if hour >= 12 {
+                amPmTableView.selectRow(at: IndexPath(row: 1, section: 0), animated: true, scrollPosition: .middle)
+            } else {
+                amPmTableView.selectRow(at: IndexPath(row: 0, section: 0), animated: true, scrollPosition: .middle)
+            }
         }
         
         if let minute = components.minute {
@@ -356,7 +411,9 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tableView == hourTableView {
             // need triple of origin storage to scroll infinitely
-            return 24 * 3
+            return (is12HourFormat ? 12 : 24) * 3
+        } else if tableView == amPmTableView {
+            return 2
         }
         // need triple of origin storage to scroll infinitely
         return 60 * 3
@@ -371,7 +428,18 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         cell.textLabel?.textColor = darkColor.withAlphaComponent(0.4)
         cell.textLabel?.highlightedTextColor = highlightColor
         // add module operation to set value same
-        cell.textLabel?.text = String(format: "%02i", indexPath.row % (tableView == hourTableView ? 24 : 60))
+        if tableView == amPmTableView {
+            cell.textLabel?.text = (indexPath.row == 0) ? "AM" : "PM"
+        } else if tableView == minuteTableView{
+            cell.textLabel?.text = String(format: "%02i", indexPath.row % 60)
+        } else {
+            if is12HourFormat {
+                cell.textLabel?.text = String(format: "%02i", (indexPath.row % 12) + 1)
+            } else {
+                cell.textLabel?.text = String(format: "%02i", indexPath.row % 24)
+            }
+        }
+        
         
         return cell
     }
@@ -379,9 +447,30 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
         if tableView == hourTableView {
-            components.hour = (indexPath.row - 24)%24
+            if is12HourFormat {
+                var hour = (indexPath.row - 12)%12 + 1
+                if let amPmIndexPath = amPmTableView.indexPathForSelectedRow,
+                    amPmIndexPath.row == 1 && hour < 12 {
+                    hour += 12
+                } else if let amPmIndexPath = amPmTableView.indexPathForSelectedRow,
+                    amPmIndexPath.row == 0 && hour == 12 {
+                    hour = 0
+                }
+                components.hour = hour
+            } else {
+                components.hour = (indexPath.row - 24)%24
+            }
+            
         } else if tableView == minuteTableView {
             components.minute = (indexPath.row - 60)%60
+        } else if tableView == amPmTableView {
+            if let hour = components.hour,
+                indexPath.row == 0 && hour >= 12 {
+                components.hour = hour - 12
+            } else if let hour = components.hour,
+                indexPath.row == 1 && hour < 12 {
+                components.hour = hour + 12
+            }
         }
         
         if let selected = calendar.date(from: components) {
@@ -396,7 +485,7 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
     
     // for infinite scrolling, use modulo operation.
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard scrollView != dayCollectionView else {
+        guard scrollView != dayCollectionView && scrollView != amPmTableView else {
             return
         }
         let totalHeight = scrollView.contentSize.height
@@ -491,14 +580,37 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
         } else if let tableView = scrollView as? UITableView {
             let relativeOffset = CGPoint(x: 0, y: tableView.contentOffset.y + tableView.contentInset.top )
             // change row from var to let.
-            let row = round(relativeOffset.y / tableView.rowHeight)
+            var row = round(relativeOffset.y / tableView.rowHeight)
+            if tableView == amPmTableView && row > 1{
+                row = 1
+            }
             tableView.selectRow(at: IndexPath(row: Int(row), section: 0), animated: true, scrollPosition: .middle)
             
             // add 24 to hour and 60 to minute, because datasource now has buffer at top and bottom.
             if tableView == hourTableView {
-                components.hour = Int(row - 24)%24
+                if is12HourFormat {
+                    var hour = Int(row - 12)%12 + 1
+                    if let amPmIndexPath = amPmTableView.indexPathForSelectedRow,
+                        amPmIndexPath.row == 1 && hour < 12 {
+                        hour += 12
+                    } else if let amPmIndexPath = amPmTableView.indexPathForSelectedRow,
+                        amPmIndexPath.row == 0 && hour == 12 {
+                        hour = 0
+                    }
+                    components.hour = hour
+                } else {
+                    components.hour = Int(row - 24)%24
+                }
             } else if tableView == minuteTableView {
                 components.minute = Int(row - 60)%60
+            } else if tableView == amPmTableView {
+                if let hour = components.hour,
+                    row == 0 && hour >= 12 {
+                    components.hour = hour - 12
+                } else if let hour = components.hour,
+                    row == 1 && hour < 12 {
+                    components.hour = hour + 12
+                }
             }
             
             if let selected = calendar.date(from: components) {
