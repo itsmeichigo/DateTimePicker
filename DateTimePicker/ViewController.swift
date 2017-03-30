@@ -21,7 +21,7 @@ class ViewController: UIViewController {
         picker.todayButtonTitle = "Today"
         picker.is12HourFormat = true
         picker.dateFormat = "hh:mm aa dd/MM/YYYY"
-        picker.isDatePickerOnly = true
+//        picker.isDatePickerOnly = true
         picker.completionHandler = { date in
             let formatter = DateFormatter()
             formatter.dateFormat = "hh:mm aa dd/MM/YYYY"
