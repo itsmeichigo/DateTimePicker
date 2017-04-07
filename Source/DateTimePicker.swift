@@ -14,9 +14,9 @@ import UIKit
     var contentHeight: CGFloat = 310
     
     // public vars
-    public var backgroundViewColor: UIColor = .clear {
+    public var backgroundViewColor: UIColor? = .clear {
         didSet {
-            backgroundColor = backgroundViewColor
+            shadowView.backgroundColor = backgroundViewColor
         }
     }
     
@@ -142,7 +142,7 @@ import UIKit
                                           y: 0,
                                           width: frame.width,
                                           height: frame.height))
-        shadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        shadowView.backgroundColor = backgroundViewColor ?? UIColor.black.withAlphaComponent(0.3)
         shadowView.alpha = 1
         let shadowViewTap = UITapGestureRecognizer(target: self, action: #selector(DateTimePicker.dismissView(sender:)))
         shadowView.addGestureRecognizer(shadowViewTap)
