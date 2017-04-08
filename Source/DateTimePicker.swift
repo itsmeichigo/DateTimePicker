@@ -88,6 +88,7 @@ import UIKit
         }
     }
     
+    public var timeZone = TimeZone.current
     public var completionHandler: ((Date)->Void)?
     
     // private vars
@@ -110,7 +111,11 @@ import UIKit
     
     internal var calendar: Calendar = .current
     internal var dates: [Date]! = []
-    internal var components: DateComponents!
+    internal var components: DateComponents! {
+        didSet {
+            components.timeZone = timeZone
+        }
+    }
     
     
     @objc open class func show(selected: Date? = nil, minimumDate: Date? = nil, maximumDate: Date? = nil) -> DateTimePicker {
