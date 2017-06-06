@@ -28,6 +28,7 @@ You can easily show and customize the component's colors
 ```Swift
 let picker = DateTimePicker.show()
 picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
+picker.isDatePickerOnly = true // to hide time and show only date picker
 picker.completionHandler = { date in
     // do something after tapping done
 }
