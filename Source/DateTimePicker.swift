@@ -101,6 +101,7 @@ import UIKit
     
     public var timeZone = TimeZone.current
     public var completionHandler: ((Date)->Void)?
+    public var dismissHandler: (() -> Void)?
     
     // private vars
     internal var hourTableView: UITableView!
@@ -459,9 +460,14 @@ import UIKit
                                             y: self.frame.height,
                                             width: self.frame.width,
                                             height: self.contentHeight)
-        }) { (completed) in
+        }) {[weak self] (completed) in
+            guard let `self` = self else {
+                return
+            }
             if sender == self.doneButton {
                 self.completionHandler?(self.selectedDate)
+            } else {
+                self.dismissHandler?()
             }
             self.removeFromSuperview()
         }
