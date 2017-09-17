@@ -171,7 +171,7 @@ import UIKit
         addSubview(shadowView)
         
         // content view
-        contentHeight = isDatePickerOnly ? 208 : 310
+        contentHeight = isDatePickerOnly ? 218 : 320
         contentView = UIView(frame: CGRect(x: 0,
                                            y: frame.height,
                                            width: frame.width,
@@ -200,20 +200,22 @@ import UIKit
         cancelButton = UIButton(type: .system)
         cancelButton.setTitle(cancelButtonTitle, for: .normal)
         cancelButton.setTitleColor(darkColor.withAlphaComponent(0.5), for: .normal)
+        cancelButton.contentHorizontalAlignment = .left
         cancelButton.addTarget(self, action: #selector(DateTimePicker.dismissView(sender:)), for: .touchUpInside)
         cancelButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
-        let cancelSize = cancelButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width + 20.0
-        cancelButton.frame = CGRect(x: 0, y: 0, width: cancelSize, height: 44)
+        let cancelSize = cancelButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width
+        cancelButton.frame = CGRect(x: 20, y: 0, width: cancelSize, height: 44)
         titleView.addSubview(cancelButton)
         
         todayButton = UIButton(type: .system)
         todayButton.setTitle(todayButtonTitle, for: .normal)
         todayButton.setTitleColor(highlightColor, for: .normal)
         todayButton.addTarget(self, action: #selector(DateTimePicker.setToday), for: .touchUpInside)
+        todayButton.contentHorizontalAlignment = .right
         todayButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         todayButton.isHidden = self.minimumDate.compare(Date()) == .orderedDescending || self.maximumDate.compare(Date()) == .orderedAscending
-        let todaySize = todayButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width + 20.0
-        todayButton.frame = CGRect(x: contentView.frame.width - todaySize, y: 0, width: todaySize, height: 44)
+        let todaySize = todayButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width
+        todayButton.frame = CGRect(x: contentView.frame.width - todaySize - 20, y: 0, width: todaySize, height: 44)
         titleView.addSubview(todayButton)
         
         // day collection view
@@ -245,7 +247,7 @@ import UIKit
         
         // done button
         doneButton = UIButton(type: .system)
-        doneButton.frame = CGRect(x: 10, y: contentView.frame.height - 10 - 44, width: contentView.frame.width - 20, height: 44)
+        doneButton.frame = CGRect(x: 20, y: contentView.frame.height - 10 - 44 - 10, width: contentView.frame.width - 40, height: 44)
         doneButton.setTitle(doneButtonTitle, for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
         doneButton.backgroundColor = darkColor.withAlphaComponent(0.5)
@@ -554,7 +556,6 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
     
     // for infinite scrolling, use modulo operation.
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print("offset: \(scrollView.contentOffset.y)")
         guard scrollView != dayCollectionView && scrollView != amPmTableView else {
             return
         }

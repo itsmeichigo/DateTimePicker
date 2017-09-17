@@ -10,8 +10,6 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    @IBOutlet weak var item: UINavigationItem!
-
     @IBAction func showDateTimePicker(sender: AnyObject) {
         let min = Date()
         let max = Date().addingTimeInterval(60 * 60 * 24 * 4)
@@ -26,7 +24,7 @@ class ViewController: UIViewController {
         picker.completionHandler = { date in
             let formatter = DateFormatter()
             formatter.dateFormat = "hh:mm aa dd/MM/YYYY"
-            self.item.title = formatter.string(from: date)
+            self.title = formatter.string(from: date)
         }
         
     }
