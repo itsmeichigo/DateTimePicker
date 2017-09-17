@@ -264,7 +264,6 @@ import UIKit
                                                   width: 60,
                                                   height: doneButton.frame.origin.y - borderBottomView.frame.origin.y - 10))
         hourTableView.rowHeight = 36
-        hourTableView.contentInset = UIEdgeInsetsMake(hourTableView.frame.height / 2, 0, hourTableView.frame.height / 2, 0)
         hourTableView.showsVerticalScrollIndicator = false
         hourTableView.separatorStyle = .none
         hourTableView.delegate = self
@@ -278,7 +277,6 @@ import UIKit
                                                     width: 60,
                                                     height: doneButton.frame.origin.y - borderBottomView.frame.origin.y - 10))
         minuteTableView.rowHeight = 36
-        minuteTableView.contentInset = UIEdgeInsetsMake(minuteTableView.frame.height / 2, 0, minuteTableView.frame.height / 2, 0)
         minuteTableView.showsVerticalScrollIndicator = false
         minuteTableView.separatorStyle = .none
         minuteTableView.delegate = self
@@ -556,6 +554,7 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
     
     // for infinite scrolling, use modulo operation.
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print("offset: \(scrollView.contentOffset.y)")
         guard scrollView != dayCollectionView && scrollView != amPmTableView else {
             return
         }
@@ -649,18 +648,30 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
                 }
             }
         } else if let tableView = scrollView as? UITableView {
-            let relativeOffset = CGPoint(x: 0, y: tableView.contentOffset.y + tableView.contentInset.top )
-            // change row from var to let.
-            var row = round(relativeOffset.y / tableView.rowHeight)
-            if tableView == amPmTableView && row > 1{
-                row = 1
-            }
-            tableView.selectRow(at: IndexPath(row: Int(row), section: 0), animated: true, scrollPosition: .middle)
             
+            var selectedRow = 0
+            if let firstVisibleCell = tableView.visibleCells.first,
+                tableView != amPmTableView {
+                var firstVisibleRow = 0
+                if (tableView.contentOffset.y >= firstVisibleCell.frame.origin.y + tableView.rowHeight/2 - tableView.contentInset.top) {
+                    firstVisibleRow = (tableView.indexPath(for: firstVisibleCell)?.row ?? 0) + 1
+                } else {
+                    firstVisibleRow = (tableView.indexPath(for: firstVisibleCell)?.row ?? 0)
+                }
+                selectedRow = firstVisibleRow + 1
+            } else if tableView == amPmTableView {
+                if -tableView.contentOffset.y > tableView.rowHeight/2 {
+                    selectedRow = 0
+                } else {
+                    selectedRow = 1
+                }
+            }
+            
+            tableView.selectRow(at: IndexPath(row: selectedRow, section: 0), animated: false, scrollPosition: .middle)
             // add 24 to hour and 60 to minute, because datasource now has buffer at top and bottom.
             if tableView == hourTableView {
                 if is12HourFormat {
-                    var hour = Int(row - 12)%12 + 1
+                    var hour = (selectedRow - 12)%12 + 1
                     if let amPmIndexPath = amPmTableView.indexPathForSelectedRow,
                         amPmIndexPath.row == 1 && hour < 12 {
                         hour += 12
@@ -670,16 +681,16 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
                     }
                     components.hour = hour
                 } else {
-                    components.hour = Int(row - 24)%24
+                    components.hour = (selectedRow - 24)%24
                 }
             } else if tableView == minuteTableView {
-                components.minute = Int(row - 60)%60
+                components.minute = (selectedRow - 60)%60
             } else if tableView == amPmTableView {
                 if let hour = components.hour,
-                    row == 0 && hour >= 12 {
+                    selectedRow == 0 && hour >= 12 {
                     components.hour = hour - 12
                 } else if let hour = components.hour,
-                    row == 1 && hour < 12 {
+                    selectedRow == 1 && hour < 12 {
                     components.hour = hour + 12
                 }
             }
