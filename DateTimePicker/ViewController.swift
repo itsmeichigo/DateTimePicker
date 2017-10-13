@@ -21,6 +21,7 @@ class ViewController: UIViewController {
         picker.is12HourFormat = true
         picker.dateFormat = "hh:mm aa dd/MM/YYYY"
 //        picker.isTimePickerOnly = true
+        picker.includeMonth = false // if true, it shows FullDateCollectionViewCell with month at top
         picker.completionHandler = { date in
             let formatter = DateFormatter()
             formatter.dateFormat = "hh:mm aa dd/MM/YYYY"
