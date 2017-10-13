@@ -22,7 +22,6 @@ Drag and drop folder `Source` to your project.
 
 
 ## Usage
-
 You can easily show and customize the component's colors
 
 ```Swift
@@ -33,6 +32,13 @@ picker.completionHandler = { date in
     // do something after tapping done
 }
 ```
+Dates displayed can be customized by passing in a minimum and maximum date when creating the picker. 
+```
+let min = minDate // can be Date() or another Date value
+let max = maxDate // can be Date() or another Date value
+let picker = DateTimePicker.show(selected: Date(), minimumDate: min, maximumDate: max)
+```
+If you need to show the month, set `picker.includeMonth = true`. The month will show up on the date card.
 
 ## Contributing
 
