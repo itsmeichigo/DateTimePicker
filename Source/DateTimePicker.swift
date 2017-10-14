@@ -246,11 +246,14 @@ import UIKit
         dayCollectionView = UICollectionView(frame: CGRect(x: 0, y: 44, width: contentView.frame.width, height: 100), collectionViewLayout: layout)
         dayCollectionView.backgroundColor = daysBackgroundColor
         dayCollectionView.showsHorizontalScrollIndicator = false
+        
         if includeMonth {
             dayCollectionView.register(FullDateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
+        } else if includeMonth == false {
+            dayCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
+            
         }
-        else if includeMonth == false {
-            dayCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")}
+        
         dayCollectionView.dataSource = self
         dayCollectionView.delegate = self
         dayCollectionView.isHidden = isTimePickerOnly
