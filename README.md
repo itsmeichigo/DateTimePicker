@@ -16,7 +16,7 @@ A nicer iOS UI component for picking date and time.
 
 - Picker view as a separate view, to be added in `viewDidLoad`
 - Constraint-based UI
-- Option to select month (UI idea needed)
+- Option to select month / year (UI idea needed)
 
 ## Requirements
 
