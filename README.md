@@ -4,6 +4,20 @@ A nicer iOS UI component for picking date and time.
 
 ![Screenshot](https://raw.githubusercontent.com/itsmeichigo/DateTimePicker/master/screenshot.png)
 
+## Features
+
+- Date and Time Picker / Date Picker only / Time Picker only - your choice!
+- Limit selected date within a defined range of time
+- Show or hide month on date cell
+- Inifnite scrolling for time
+- Customize colors and date format
+
+## To-dos (HELP NEEDED! 🎯)
+
+- Picker view as a separate view, to be added in `viewDidLoad`
+- Constraint-based UI
+- Option to select month / year (UI idea needed)
+
 ## Requirements
 
 - Swift 3.0 & Xcode 8
