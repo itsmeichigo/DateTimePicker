@@ -110,6 +110,12 @@ import UIKit
             configureView()
         }
     }
+
+    public var includeMonth = false {
+        didSet {
+            configureView()
+        }
+    }
     
     public var timeZone = TimeZone.current
     public var completionHandler: ((Date)->Void)?
@@ -240,7 +246,11 @@ import UIKit
         dayCollectionView = UICollectionView(frame: CGRect(x: 0, y: 44, width: contentView.frame.width, height: 100), collectionViewLayout: layout)
         dayCollectionView.backgroundColor = daysBackgroundColor
         dayCollectionView.showsHorizontalScrollIndicator = false
-        dayCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
+        if includeMonth {
+            dayCollectionView.register(FullDateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
+        }
+        else if includeMonth == false {
+            dayCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")}
         dayCollectionView.dataSource = self
         dayCollectionView.delegate = self
         dayCollectionView.isHidden = isTimePickerOnly
@@ -597,12 +607,20 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
-        
-        let date = dates[indexPath.item]
-        cell.populateItem(date: date, highlightColor: highlightColor, darkColor: darkColor)
-        
-        return cell
+        if includeMonth {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! FullDateCollectionViewCell
+            let date = dates[indexPath.item]
+            cell.populateItem(date: date, highlightColor: highlightColor, darkColor: darkColor)
+
+            return cell
+        }
+        else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
+            let date = dates[indexPath.item]
+            cell.populateItem(date: date, highlightColor: highlightColor, darkColor: darkColor)
+
+            return cell
+        }
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

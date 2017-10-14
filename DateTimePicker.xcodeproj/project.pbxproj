@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C8BBF8181F91EAA2005D807B /* FullDateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8BBF8171F91EAA2005D807B /* FullDateCollectionViewCell.swift */; };
 		DE54880F1D990C36002712DB /* DateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE54880E1D990C36002712DB /* DateCollectionViewCell.swift */; };
 		DE58808F1D9A5F2E000C93E3 /* StepCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58808E1D9A5F2E000C93E3 /* StepCollectionViewFlowLayout.swift */; };
 		DEF7C3641D8B9EBC0043D9C4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF7C3631D8B9EBC0043D9C4 /* AppDelegate.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C8BBF8171F91EAA2005D807B /* FullDateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullDateCollectionViewCell.swift; sourceTree = "<group>"; };
 		DE54880E1D990C36002712DB /* DateCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateCollectionViewCell.swift; sourceTree = "<group>"; };
 		DE58808E1D9A5F2E000C93E3 /* StepCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		DEF7C3601D8B9EBC0043D9C4 /* DateTimePicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DateTimePicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,6 +78,7 @@
 			children = (
 				DEF7C3791D8B9F590043D9C4 /* DateTimePicker.swift */,
 				DE54880E1D990C36002712DB /* DateCollectionViewCell.swift */,
+				C8BBF8171F91EAA2005D807B /* FullDateCollectionViewCell.swift */,
 				DE58808E1D9A5F2E000C93E3 /* StepCollectionViewFlowLayout.swift */,
 			);
 			path = Source;
@@ -156,6 +159,7 @@
 			files = (
 				DE54880F1D990C36002712DB /* DateCollectionViewCell.swift in Sources */,
 				DE58808F1D9A5F2E000C93E3 /* StepCollectionViewFlowLayout.swift in Sources */,
+				C8BBF8181F91EAA2005D807B /* FullDateCollectionViewCell.swift in Sources */,
 				DEF7C37A1D8B9F590043D9C4 /* DateTimePicker.swift in Sources */,
 				DEF7C3661D8B9EBC0043D9C4 /* ViewController.swift in Sources */,
 				DEF7C3641D8B9EBC0043D9C4 /* AppDelegate.swift in Sources */,
