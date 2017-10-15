@@ -70,15 +70,15 @@ import UIKit
         didSet {
             cancelButton.setTitle(cancelButtonTitle, for: .normal)
             let size = cancelButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width + 20.0
-            cancelButton.frame = CGRect(x: 0, y: 0, width: size, height: 44)
+            cancelButton.frame = CGRect(x: 20, y: 0, width: size, height: 44)
         }
     }
     
     public var todayButtonTitle = "Today" {
         didSet {
             todayButton.setTitle(todayButtonTitle, for: .normal)
-            let size = todayButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width + 20.0
-            todayButton.frame = CGRect(x: contentView.frame.width - size, y: 0, width: size, height: 44)
+            let size = todayButton.sizeThatFits(CGSize(width: 0, height: 44.0)).width
+            todayButton.frame = CGRect(x: contentView.frame.width - size - 20, y: 0, width: size, height: 44)
         }
     }
     public var doneButtonTitle = "DONE" {
