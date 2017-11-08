@@ -598,7 +598,16 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
+        var selectedRow = indexPath.row
+        var shouldAnimate = true
+        
+        // adjust selected row number for inifinite scrolling
+        if selectedRow != adjustedRowForInfiniteScrolling(tableView: tableView, selectedRow: selectedRow) {
+            selectedRow = adjustedRowForInfiniteScrolling(tableView: tableView, selectedRow: selectedRow)
+            shouldAnimate = false
+        }
+        
+        tableView.selectRow(at: IndexPath(row: selectedRow, section: 0), animated: shouldAnimate, scrollPosition: .middle)
         if tableView == hourTableView {
             if is12HourFormat {
                 var hour = (indexPath.row - 12)%12 + 1
@@ -641,24 +650,6 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         }
     }
     
-    // for infinite scrolling, use modulo operation.
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard scrollView != dayCollectionView && scrollView != amPmTableView else {
-            return
-        }
-        if scrollView == minuteTableView && timeInterval != .default {
-            return
-        }
-        
-        let totalHeight = scrollView.contentSize.height
-        let visibleHeight = totalHeight / 3.0
-        if scrollView.contentOffset.y < visibleHeight || scrollView.contentOffset.y > visibleHeight + visibleHeight {
-            let positionValueLoss = scrollView.contentOffset.y - CGFloat(Int(scrollView.contentOffset.y))
-            let heightValueLoss = visibleHeight - CGFloat(Int(visibleHeight))
-            let modifiedPotisionY = CGFloat(Int( scrollView.contentOffset.y ) % Int( visibleHeight ) + Int( visibleHeight )) - positionValueLoss - heightValueLoss
-            scrollView.contentOffset.y = modifiedPotisionY
-        }
-    }
 }
 
 extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -764,6 +755,9 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
                     selectedRow = firstVisibleRow + 1
                 }
                 
+                // adjust selected row number for inifinite scrolling
+                selectedRow = adjustedRowForInfiniteScrolling(tableView: tableView, selectedRow: selectedRow)
+                
             } else if tableView == amPmTableView {
                 if -tableView.contentOffset.y > tableView.rowHeight/2 {
                     selectedRow = 0
@@ -814,5 +808,20 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
                 
             }
         }
+    }
+    
+    func adjustedRowForInfiniteScrolling(tableView: UITableView, selectedRow: Int) -> Int {
+        if tableView == minuteTableView &&
+            timeInterval != .default {
+            return selectedRow
+        }
+        
+        let numberOfRow = self.tableView(tableView, numberOfRowsInSection: 0)
+        if selectedRow == 1 {
+            return selectedRow + numberOfRow / 3
+        } else if selectedRow == numberOfRow - 2 {
+            return selectedRow - numberOfRow / 3
+        }
+        return selectedRow
     }
 }
