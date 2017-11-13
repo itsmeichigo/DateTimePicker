@@ -80,7 +80,7 @@ extension DateTimePickerProtocol {
         }
     }
     
-    var selectedDateString: String {
+    public var selectedDateString: String {
         get {
             let formatter = DateFormatter()
             formatter.dateFormat = self.dateFormat
