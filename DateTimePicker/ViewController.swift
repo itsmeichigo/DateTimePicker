@@ -34,11 +34,6 @@ class ViewController: UIViewController, DateTimePickerProtocol {
     }
     
     func didUpdateSeletedDate() {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "hh:mm aa dd/MM/YYYY"
-        if let picker = self.picker {
-            self.title = formatter.string(from: picker.selectedDate)
-        }
-        
+        self.title = picker?.selectedDateString
     }
 }

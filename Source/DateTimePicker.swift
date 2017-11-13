@@ -80,6 +80,15 @@ extension DateTimePickerProtocol {
         }
     }
     
+    var selectedDateString: String {
+        get {
+            let formatter = DateFormatter()
+            formatter.dateFormat = self.dateFormat
+            return formatter.string(from: self.selectedDate)
+            
+        }
+    }
+    
     /// custom date format to be displayed, default to HH:mm dd/MM/YYYY
     public var dateFormat = "HH:mm dd/MM/YYYY" {
         didSet {
