@@ -8,6 +8,13 @@
 
 import UIKit
 
+protocol DateTimePickerProtocol {
+    func didUpdateSeletedDate()
+}
+
+extension DateTimePickerProtocol {
+    func didUpdateSeletedDate() {}
+}
 
 @objc public class DateTimePicker: UIView {
     
@@ -68,6 +75,7 @@ import UIKit
     /// selected date when picker is displayed, default to current date
     public var selectedDate = Date() {
         didSet {
+            self.delegate?.didUpdateSeletedDate()
             resetDateTitle()
         }
     }
@@ -150,7 +158,8 @@ import UIKit
     public var timeZone = TimeZone.current
     public var completionHandler: ((Date)->Void)?
     public var dismissHandler: (() -> Void)?
-    
+    var delegate: DateTimePickerProtocol?
+
     // private vars
     internal var hourTableView: UITableView!
     internal var minuteTableView: UITableView!
