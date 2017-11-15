@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, DateTimePickerProtocol {
+class ViewController: UIViewController, DateTimePickerDelegate {
     var picker: DateTimePicker?
     
     @IBAction func showDateTimePicker(sender: AnyObject) {
@@ -33,7 +33,7 @@ class ViewController: UIViewController, DateTimePickerProtocol {
         self.picker = picker
     }
     
-    func didUpdateSeletedDate() {
-        self.title = picker?.selectedDateString
+    func dateTimePicker(_ picker: DateTimePicker, didSelectDate: Date) {
+        title = picker.selectedDateString
     }
 }

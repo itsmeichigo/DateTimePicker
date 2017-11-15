@@ -8,12 +8,8 @@
 
 import UIKit
 
-public protocol DateTimePickerProtocol {
-    func didUpdateSeletedDate()
-}
-
-extension DateTimePickerProtocol {
-    func didUpdateSeletedDate() {}
+public protocol DateTimePickerDelegate {
+    func dateTimePicker(_ picker: DateTimePicker, didSelectDate: Date)
 }
 
 @objc public class DateTimePicker: UIView {
@@ -75,7 +71,7 @@ extension DateTimePickerProtocol {
     /// selected date when picker is displayed, default to current date
     public var selectedDate = Date() {
         didSet {
-            self.delegate?.didUpdateSeletedDate()
+            self.delegate?.dateTimePicker(self, didSelectDate: selectedDate)
             resetDateTitle()
         }
     }
@@ -85,7 +81,6 @@ extension DateTimePickerProtocol {
             let formatter = DateFormatter()
             formatter.dateFormat = self.dateFormat
             return formatter.string(from: self.selectedDate)
-            
         }
     }
     
@@ -167,7 +162,7 @@ extension DateTimePickerProtocol {
     public var timeZone = TimeZone.current
     public var completionHandler: ((Date)->Void)?
     public var dismissHandler: (() -> Void)?
-    public var delegate: DateTimePickerProtocol?
+    public var delegate: DateTimePickerDelegate?
 
     // private vars
     internal var hourTableView: UITableView!
@@ -492,10 +487,8 @@ extension DateTimePickerProtocol {
         guard dateTitleLabel != nil else {
             return
         }
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = dateFormat
-        dateTitleLabel.text = formatter.string(from: selectedDate)
+    
+        dateTitleLabel.text = selectedDateString
         dateTitleLabel.sizeToFit()
         dateTitleLabel.center = CGPoint(x: contentView.frame.width / 2, y: 22)
     }
