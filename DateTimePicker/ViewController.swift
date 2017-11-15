@@ -8,8 +8,9 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
+class ViewController: UIViewController, DateTimePickerProtocol {
+    var picker: DateTimePicker?
+    
     @IBAction func showDateTimePicker(sender: AnyObject) {
         let min = Date().addingTimeInterval(-60 * 60 * 24 * 4)
         let max = Date().addingTimeInterval(60 * 60 * 24 * 4)
@@ -21,15 +22,18 @@ class ViewController: UIViewController {
         picker.todayButtonTitle = "Today"
         picker.is12HourFormat = true
         picker.dateFormat = "hh:mm aa dd/MM/YYYY"
-//        picker.isTimePickerOnly = true
+        //        picker.isTimePickerOnly = true
         picker.includeMonth = false // if true the month shows at top
         picker.completionHandler = { date in
             let formatter = DateFormatter()
             formatter.dateFormat = "hh:mm aa dd/MM/YYYY"
             self.title = formatter.string(from: date)
         }
-        
+        picker.delegate = self
+        self.picker = picker
     }
-
+    
+    func didUpdateSeletedDate() {
+        self.title = picker?.selectedDateString
+    }
 }
-
