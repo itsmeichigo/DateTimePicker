@@ -75,6 +75,13 @@ public protocol DateTimePickerDelegate {
         }
     }
     
+    /// date locale (language displayed), default to American English
+    public var locale = Locale(identifier: "en_US") {
+        didSet {
+            configureView()
+        }
+    }
+    
     /// selected date when picker is displayed, default to current date
     public var selectedDate = Date() {
         didSet {
@@ -683,14 +690,14 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
         if includeMonth {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! FullDateCollectionViewCell
             let date = dates[indexPath.item]
-            cell.populateItem(date: date, highlightColor: highlightColor, darkColor: darkColor)
+            cell.populateItem(date: date, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
 
             return cell
         }
         else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
             let date = dates[indexPath.item]
-            cell.populateItem(date: date, highlightColor: highlightColor, darkColor: darkColor)
+            cell.populateItem(date: date, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
 
             return cell
         }

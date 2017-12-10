@@ -47,17 +47,19 @@ class DateCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func populateItem(date: Date, highlightColor: UIColor, darkColor: UIColor) {
+    func populateItem(date: Date, highlightColor: UIColor, darkColor: UIColor, locale: Locale) {
         self.highlightColor = highlightColor
         self.darkColor = darkColor
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE"
+        dateFormatter.locale = locale
         dayLabel.text = dateFormatter.string(from: date).uppercased()
         dayLabel.textColor = isSelected == true ? .white : darkColor.withAlphaComponent(0.5)
         
         let numberFormatter = DateFormatter()
         numberFormatter.dateFormat = "d"
+        numberFormatter.locale = locale
         numberLabel.text = numberFormatter.string(from: date)
         numberLabel.textColor = isSelected == true ? .white : darkColor
         

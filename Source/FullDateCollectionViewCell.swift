@@ -15,7 +15,6 @@ class FullDateCollectionViewCell: UICollectionViewCell {
     var darkColor = UIColor(red: 0, green: 22.0/255.0, blue: 39.0/255.0, alpha: 1)
     var highlightColor = UIColor(red: 0/255.0, green: 199.0/255.0, blue: 194.0/255.0, alpha: 1)
 
-
     override init(frame: CGRect) {
 
         dayLabel = UILabel(frame: CGRect(x: 5, y: 7, width: frame.width - 10, height: 20))
@@ -55,22 +54,25 @@ class FullDateCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    func populateItem(date: Date, highlightColor: UIColor, darkColor: UIColor) {
+    func populateItem(date: Date, highlightColor: UIColor, darkColor: UIColor, locale: Locale) {
         self.highlightColor = highlightColor
         self.darkColor = darkColor
 
         let mdateFormatter = DateFormatter()
         mdateFormatter.dateFormat = "MMMM"
+        mdateFormatter.locale = locale
         monthLabel.text = mdateFormatter.string(from: date)
         monthLabel.textColor = isSelected == true ? .white : darkColor.withAlphaComponent(0.5)
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE"
+        dateFormatter.locale = locale
         dayLabel.text = dateFormatter.string(from: date).uppercased()
         dayLabel.textColor = isSelected == true ? .white : darkColor.withAlphaComponent(0.5)
 
         let numberFormatter = DateFormatter()
         numberFormatter.dateFormat = "d"
+        numberFormatter.locale = locale
         numberLabel.text = numberFormatter.string(from: date)
         numberLabel.textColor = isSelected == true ? .white : darkColor
 
