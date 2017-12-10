@@ -53,6 +53,13 @@ public protocol DateTimePickerDelegate {
         }
     }
     
+    /// custom DONE button color, default to darkColor
+    public var doneBackgroundColor: UIColor? {
+        didSet {
+            doneButton.backgroundColor = doneBackgroundColor
+        }
+    }
+    
     /// custom background color for date cells
     public var daysBackgroundColor = UIColor(red: 239.0/255.0, green: 243.0/255.0, blue: 244.0/255.0, alpha: 1)
     
@@ -324,7 +331,7 @@ public protocol DateTimePickerDelegate {
         doneButton.frame = CGRect(x: 20, y: contentView.frame.height - 10 - 44 - 10, width: contentView.frame.width - 40, height: 44)
         doneButton.setTitle(doneButtonTitle, for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
-        doneButton.backgroundColor = darkColor.withAlphaComponent(0.5)
+        doneButton.backgroundColor = doneBackgroundColor ?? darkColor.withAlphaComponent(0.5)
         doneButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
         doneButton.layer.cornerRadius = 3
         doneButton.layer.masksToBounds = true
