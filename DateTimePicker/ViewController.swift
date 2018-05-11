@@ -21,6 +21,12 @@ class ViewController: UIViewController, DateTimePickerDelegate {
         picker.doneButtonTitle = "!! DONE DONE !!"
         picker.doneBackgroundColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
         picker.locale = Locale(identifier: "en_GB")
+		
+		picker.translatesAutoresizingMaskIntoConstraints = false
+		picker.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+		picker.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+		picker.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+		picker.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         
         picker.todayButtonTitle = "Today"
         picker.is12HourFormat = true
