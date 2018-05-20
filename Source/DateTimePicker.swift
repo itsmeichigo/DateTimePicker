@@ -170,6 +170,7 @@ public protocol DateTimePickerDelegate {
     
     private var shadowView: UIView!
     private var contentView: UIView!
+    private var contentViewBottomConstraint: NSLayoutConstraint!
     private var dateTitleLabel: UILabel!
     private var todayButton: UIButton!
     private var doneButton: UIButton!
@@ -218,8 +219,6 @@ public protocol DateTimePickerDelegate {
         
         return dateTimePicker
     }
-	
-	private var contentViewBottomConstraint: NSLayoutConstraint!
     
     private func configureView() {
 
@@ -234,13 +233,13 @@ public protocol DateTimePickerDelegate {
         let shadowViewTap = UITapGestureRecognizer(target: self, action: #selector(DateTimePicker.dismissView(sender:)))
         shadowView.addGestureRecognizer(shadowViewTap)
         addSubview(shadowView)
-
+        
         shadowView.translatesAutoresizingMaskIntoConstraints = false
         shadowView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         shadowView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         shadowView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         shadowView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-
+        
         // content view
         if (contentView != nil) {
             contentView.removeFromSuperview()
@@ -268,26 +267,26 @@ public protocol DateTimePickerDelegate {
         let titleView = UIView(frame: CGRect.zero)
         titleView.backgroundColor = .white
         contentView.addSubview(titleView)
-
+        
         titleView.translatesAutoresizingMaskIntoConstraints = false
         titleView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         titleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         titleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         titleView.heightAnchor.constraint(equalToConstant: 44).isActive = true
         titleView.layoutMargins = UIEdgeInsetsMake(0, 20, 0, 20)
-
+        
         dateTitleLabel = UILabel(frame: CGRect.zero)
         dateTitleLabel.font = UIFont.systemFont(ofSize: 15)
         dateTitleLabel.textColor = darkColor
         dateTitleLabel.textAlignment = .center
         resetDateTitle()
         titleView.addSubview(dateTitleLabel)
-
+        
         dateTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         dateTitleLabel.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
         dateTitleLabel.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
         dateTitleLabel.setContentHuggingPriority(.defaultLow - 1, for: .horizontal)
-
+        
         cancelButton = UIButton(type: .system)
         cancelButton.setTitle(cancelButtonTitle, for: .normal)
         cancelButton.setTitleColor(darkColor.withAlphaComponent(0.5), for: .normal)
@@ -295,7 +294,7 @@ public protocol DateTimePickerDelegate {
         cancelButton.addTarget(self, action: #selector(DateTimePicker.dismissView(sender:)), for: .touchUpInside)
         cancelButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         titleView.addSubview(cancelButton)
-
+        
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         cancelButton.topAnchor.constraint(equalTo: titleView.topAnchor).isActive = true
         cancelButton.leadingAnchor.constraint(equalTo: titleView.layoutMarginsGuide.leadingAnchor, constant: 0).isActive = true
@@ -310,7 +309,7 @@ public protocol DateTimePickerDelegate {
         todayButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         todayButton.isHidden = self.minimumDate.compare(Date()) == .orderedDescending || self.maximumDate.compare(Date()) == .orderedAscending
         titleView.addSubview(todayButton)
-
+        
         todayButton.translatesAutoresizingMaskIntoConstraints = false
         todayButton.trailingAnchor.constraint(equalTo: titleView.layoutMarginsGuide.trailingAnchor, constant: 0).isActive = true
         todayButton.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
@@ -338,23 +337,23 @@ public protocol DateTimePickerDelegate {
         dayCollectionView.delegate = self
         dayCollectionView.isHidden = isTimePickerOnly
         contentView.addSubview(dayCollectionView)
-
+        
         dayCollectionView.translatesAutoresizingMaskIntoConstraints = false
         dayCollectionView.topAnchor.constraint(equalTo: titleView.bottomAnchor).isActive = true
         dayCollectionView.leadingAnchor.constraint(equalTo: titleView.leadingAnchor).isActive = true
         dayCollectionView.trailingAnchor.constraint(equalTo: titleView.trailingAnchor).isActive = true
         dayCollectionView.heightAnchor.constraint(equalToConstant: 100).isActive = true
-
+        
         dayCollectionView.layoutIfNeeded()
         let inset = (dayCollectionView.frame.width - 75) / 2
         dayCollectionView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
-
+        
         // top & bottom borders on day collection view
         borderTopView = UIView(frame: CGRect.zero)
         borderTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
         borderTopView.isHidden = isTimePickerOnly
         contentView.addSubview(borderTopView)
-
+        
         borderTopView.translatesAutoresizingMaskIntoConstraints = false
         borderTopView.topAnchor.constraint(equalTo: titleView.bottomAnchor).isActive = true
         borderTopView.leadingAnchor.constraint(equalTo: titleView.leadingAnchor).isActive = true
@@ -478,7 +477,7 @@ public protocol DateTimePickerDelegate {
         colonLabel2.translatesAutoresizingMaskIntoConstraints = false
         colonLabel2.centerYAnchor.constraint(equalTo: colonLabel1.centerYAnchor).isActive = true
         colonLabel2.centerXAnchor.constraint(equalTo: colonLabel1.centerXAnchor, constant: 57).isActive = true
-
+        
         // time separators
         separatorTopView = UIView(frame: CGRect.zero)
         separatorTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
