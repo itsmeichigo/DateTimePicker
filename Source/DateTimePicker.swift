@@ -62,19 +62,7 @@ public protocol DateTimePickerDelegate {
     
     /// custom background color for date cells
     public var daysBackgroundColor = UIColor(red: 239.0/255.0, green: 243.0/255.0, blue: 244.0/255.0, alpha: 1)
-    
-    var didLayoutAtOnce = false
-    public override func layoutSubviews() {
-        super.layoutSubviews()
-        // For the first time view will be layouted manually before show
-        // For next times we need relayout it because of screen rotation etc.
-        if !didLayoutAtOnce {
-            didLayoutAtOnce = true
-        } else {
-            self.configureView()
-        }
-    }
-    
+	
     /// date locale (language displayed), default to American English
     public var locale = Locale(identifier: "en_US") {
         didSet {
@@ -215,33 +203,49 @@ public protocol DateTimePickerDelegate {
         assert(dateTimePicker.minimumDate.compare(dateTimePicker.maximumDate) == .orderedAscending, "Minimum date should be earlier than maximum date")
         assert(dateTimePicker.minimumDate.compare(dateTimePicker.selectedDate) != .orderedDescending, "Selected date should be later or equal to minimum date")
         assert(dateTimePicker.selectedDate.compare(dateTimePicker.maximumDate) != .orderedDescending, "Selected date should be earlier or equal to maximum date")
-        
-        dateTimePicker.configureView()
-        UIApplication.shared.keyWindow?.addSubview(dateTimePicker)
+		
+		if let window = UIApplication.shared.keyWindow {
+			window.addSubview(dateTimePicker)
+			
+			dateTimePicker.translatesAutoresizingMaskIntoConstraints = false
+			dateTimePicker.topAnchor.constraint(equalTo: window.topAnchor).isActive = true
+			dateTimePicker.bottomAnchor.constraint(equalTo: window.bottomAnchor).isActive = true
+			dateTimePicker.leadingAnchor.constraint(equalTo: window.leadingAnchor).isActive = true
+			dateTimePicker.trailingAnchor.constraint(equalTo: window.trailingAnchor).isActive = true
+			
+			dateTimePicker.configureView()
+		}
         
         return dateTimePicker
     }
+	
+	private var contentViewBottomConstraint: NSLayoutConstraint!
     
     private func configureView() {
-        if self.contentView != nil {
-            self.contentView.removeFromSuperview()
-        }
 
         // shadow view
-		shadowView = UIView(frame: CGRect.zero)
+        if (shadowView != nil) {
+            shadowView.removeFromSuperview()
+        }
+
+        shadowView = UIView(frame: CGRect.zero)
         shadowView.backgroundColor = backgroundViewColor ?? UIColor.black.withAlphaComponent(0.3)
         shadowView.alpha = 1
         let shadowViewTap = UITapGestureRecognizer(target: self, action: #selector(DateTimePicker.dismissView(sender:)))
         shadowView.addGestureRecognizer(shadowViewTap)
         addSubview(shadowView)
-		
-		shadowView.translatesAutoresizingMaskIntoConstraints = false
-		shadowView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-		shadowView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-		shadowView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-		shadowView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        
+
+        shadowView.translatesAutoresizingMaskIntoConstraints = false
+        shadowView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        shadowView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        shadowView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        shadowView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+
         // content view
+        if (contentView != nil) {
+            contentView.removeFromSuperview()
+        }
+        
         contentHeight = isDatePickerOnly ? 228 : isTimePickerOnly ? 230 : 330
         contentView = UIView(frame: CGRect.zero)
         contentView.layer.shadowColor = UIColor(white: 0, alpha: 0.3).cgColor
@@ -252,34 +256,38 @@ public protocol DateTimePickerDelegate {
         contentView.isHidden = true
         addSubview(contentView)
 		
-		contentView.translatesAutoresizingMaskIntoConstraints = false
-		contentView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-		contentView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-		contentView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-		contentView.heightAnchor.constraint(equalToConstant: contentHeight).isActive = true
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        contentViewBottomConstraint = contentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: contentHeight)
+        contentViewBottomConstraint.isActive = true
+        contentView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        contentView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        contentView.heightAnchor.constraint(equalToConstant: contentHeight).isActive = true
+        contentView.layoutMargins = UIEdgeInsetsMake(0, 20, 0, 20)
         
         // title view
         let titleView = UIView(frame: CGRect.zero)
         titleView.backgroundColor = .white
         contentView.addSubview(titleView)
-		
-		titleView.translatesAutoresizingMaskIntoConstraints = false
-		titleView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-		titleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
-		titleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
-		titleView.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        
+
+        titleView.translatesAutoresizingMaskIntoConstraints = false
+        titleView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        titleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        titleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        titleView.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        titleView.layoutMargins = UIEdgeInsetsMake(0, 20, 0, 20)
+
         dateTitleLabel = UILabel(frame: CGRect.zero)
         dateTitleLabel.font = UIFont.systemFont(ofSize: 15)
         dateTitleLabel.textColor = darkColor
         dateTitleLabel.textAlignment = .center
         resetDateTitle()
         titleView.addSubview(dateTitleLabel)
-		
-		dateTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-		dateTitleLabel.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true // ??? +++
-		dateTitleLabel.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true // ??? +++
-        
+
+        dateTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        dateTitleLabel.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
+        dateTitleLabel.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
+        dateTitleLabel.setContentHuggingPriority(.defaultLow - 1, for: .horizontal)
+
         cancelButton = UIButton(type: .system)
         cancelButton.setTitle(cancelButtonTitle, for: .normal)
         cancelButton.setTitleColor(darkColor.withAlphaComponent(0.5), for: .normal)
@@ -287,14 +295,14 @@ public protocol DateTimePickerDelegate {
         cancelButton.addTarget(self, action: #selector(DateTimePicker.dismissView(sender:)), for: .touchUpInside)
         cancelButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         titleView.addSubview(cancelButton)
-		
-		cancelButton.translatesAutoresizingMaskIntoConstraints = false
-		cancelButton.topAnchor.constraint(equalTo: titleView.topAnchor).isActive = true
-		cancelButton.leadingAnchor.constraint(equalTo: titleView.leadingAnchor, constant: 20).isActive = true
-		cancelButton.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
-		// ??? +++ pin Cancel button trailing to dateTitleLabel leading
-		
-		todayButton = UIButton(type: .system)
+
+        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+        cancelButton.topAnchor.constraint(equalTo: titleView.topAnchor).isActive = true
+        cancelButton.leadingAnchor.constraint(equalTo: titleView.layoutMarginsGuide.leadingAnchor, constant: 0).isActive = true
+        cancelButton.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
+        cancelButton.trailingAnchor.constraint(equalTo: dateTitleLabel.leadingAnchor).isActive = true
+        
+        todayButton = UIButton(type: .system)
         todayButton.setTitle(todayButtonTitle, for: .normal)
         todayButton.setTitleColor(highlightColor, for: .normal)
         todayButton.addTarget(self, action: #selector(DateTimePicker.setToday), for: .touchUpInside)
@@ -302,11 +310,11 @@ public protocol DateTimePickerDelegate {
         todayButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         todayButton.isHidden = self.minimumDate.compare(Date()) == .orderedDescending || self.maximumDate.compare(Date()) == .orderedAscending
         titleView.addSubview(todayButton)
-		
-		todayButton.translatesAutoresizingMaskIntoConstraints = false
-		todayButton.trailingAnchor.constraint(equalTo: titleView.trailingAnchor, constant: -20).isActive = true
-		todayButton.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
-		// ??? +++ pin leading todayButton to dateTitleLabel trailing
+
+        todayButton.translatesAutoresizingMaskIntoConstraints = false
+        todayButton.trailingAnchor.constraint(equalTo: titleView.layoutMarginsGuide.trailingAnchor, constant: 0).isActive = true
+        todayButton.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
+        todayButton.leadingAnchor.constraint(equalTo: dateTitleLabel.trailingAnchor).isActive = true
 		
         // day collection view
         let layout = StepCollectionViewFlowLayout()
@@ -329,43 +337,43 @@ public protocol DateTimePickerDelegate {
         dayCollectionView.dataSource = self
         dayCollectionView.delegate = self
         dayCollectionView.isHidden = isTimePickerOnly
-        
+        contentView.addSubview(dayCollectionView)
+
+        dayCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        dayCollectionView.topAnchor.constraint(equalTo: titleView.bottomAnchor).isActive = true
+        dayCollectionView.leadingAnchor.constraint(equalTo: titleView.leadingAnchor).isActive = true
+        dayCollectionView.trailingAnchor.constraint(equalTo: titleView.trailingAnchor).isActive = true
+        dayCollectionView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+
+        dayCollectionView.layoutIfNeeded()
         let inset = (dayCollectionView.frame.width - 75) / 2
         dayCollectionView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
-        contentView.addSubview(dayCollectionView)
-		
-		dayCollectionView.translatesAutoresizingMaskIntoConstraints = false
-		dayCollectionView.topAnchor.constraint(equalTo: titleView.bottomAnchor).isActive = true
-		dayCollectionView.leadingAnchor.constraint(equalTo: titleView.leadingAnchor).isActive = true
-		dayCollectionView.trailingAnchor.constraint(equalTo: titleView.trailingAnchor).isActive = true
-		dayCollectionView.heightAnchor.constraint(equalToConstant: 100).isActive = true // ??? +++ fixed height?
-        
+
         // top & bottom borders on day collection view
         borderTopView = UIView(frame: CGRect.zero)
         borderTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
         borderTopView.isHidden = isTimePickerOnly
         contentView.addSubview(borderTopView)
-		
-		borderTopView.translatesAutoresizingMaskIntoConstraints = false
-		borderTopView.topAnchor.constraint(equalTo: titleView.bottomAnchor).isActive = true
-		borderTopView.leadingAnchor.constraint(equalTo: titleView.leadingAnchor).isActive = true
-		borderTopView.trailingAnchor.constraint(equalTo: titleView.trailingAnchor).isActive = true
-		borderTopView.heightAnchor.constraint(equalToConstant: 1).isActive = true
-		// ??? +++ is there?
+
+        borderTopView.translatesAutoresizingMaskIntoConstraints = false
+        borderTopView.topAnchor.constraint(equalTo: titleView.bottomAnchor).isActive = true
+        borderTopView.leadingAnchor.constraint(equalTo: titleView.leadingAnchor).isActive = true
+        borderTopView.trailingAnchor.constraint(equalTo: titleView.trailingAnchor).isActive = true
+        borderTopView.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
         borderBottomView = UIView(frame: CGRect.zero)
         borderBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
-        if isTimePickerOnly {
-            borderBottomView.frame = CGRect(x: 0, y: dayCollectionView.frame.origin.y, width: titleView.frame.width, height: 1)
-			// +++ set constraint instead of frame
-        }
         contentView.addSubview(borderBottomView)
-		
-		borderBottomView.translatesAutoresizingMaskIntoConstraints = false
-		borderBottomView.topAnchor.constraint(equalTo: dayCollectionView.bottomAnchor).isActive = true
-		borderBottomView.leadingAnchor.constraint(equalTo: titleView.leadingAnchor).isActive = true
-		borderBottomView.trailingAnchor.constraint(equalTo: titleView.trailingAnchor).isActive = true
-		borderBottomView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        
+        borderBottomView.translatesAutoresizingMaskIntoConstraints = false
+        borderBottomView.leadingAnchor.constraint(equalTo: titleView.leadingAnchor).isActive = true
+        borderBottomView.trailingAnchor.constraint(equalTo: titleView.trailingAnchor).isActive = true
+        borderBottomView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        if isTimePickerOnly {
+            borderBottomView.topAnchor.constraint(equalTo: titleView.bottomAnchor).isActive = true
+        } else {
+            borderBottomView.topAnchor.constraint(equalTo: dayCollectionView.bottomAnchor).isActive = true
+        }
         
         // done button
         doneButton = UIButton(type: .system)
@@ -377,19 +385,17 @@ public protocol DateTimePickerDelegate {
         doneButton.layer.masksToBounds = true
         doneButton.addTarget(self, action: #selector(DateTimePicker.dismissView(sender:)), for: .touchUpInside)
         contentView.addSubview(doneButton)
-		
-		doneButton.translatesAutoresizingMaskIntoConstraints = false
-		doneButton.topAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10 - 44 - 10).isActive = true // ??? +++ WTF?
-		doneButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
-		doneButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20).isActive = true
-		doneButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20).isActive = true
-		// ??? +++ can we set this 20 somewhere so it's taken automatically? something like default margin
+        
+        doneButton.translatesAutoresizingMaskIntoConstraints = false
+        doneButton.topAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10 - 44 - 10).isActive = true
+        doneButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        doneButton.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor, constant: 0).isActive = true
+        doneButton.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor, constant: 0).isActive = true
         
         // if time picker format is 12 hour, we'll need an extra tableview for am/pm
         // the width for this tableview will be 60, so we need extra -30 for x position of hour & minute tableview
-        let extraSpace: CGFloat = is12HourFormat ? -30 : 0
         // hour table view
-		hourTableView = UITableView(frame: CGRect.zero, style: .plain)
+        hourTableView = UITableView(frame: CGRect.zero, style: .plain)
         hourTableView.rowHeight = 36
         hourTableView.showsVerticalScrollIndicator = false
         hourTableView.separatorStyle = .none
@@ -398,49 +404,55 @@ public protocol DateTimePickerDelegate {
         hourTableView.isHidden = isDatePickerOnly
         contentView.addSubview(hourTableView)
 		
-		hourTableView.translatesAutoresizingMaskIntoConstraints = false
-		hourTableView.topAnchor.constraint(equalTo: borderBottomView.bottomAnchor, constant: 1).isActive = true
-		hourTableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor, constant: -8).isActive = true
-		hourTableView.trailingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: extraSpace).isActive = true
-		hourTableView.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        hourTableView.translatesAutoresizingMaskIntoConstraints = false
+        hourTableView.topAnchor.constraint(equalTo: borderBottomView.bottomAnchor, constant: 1).isActive = true
+        hourTableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor, constant: -8).isActive = true
+        let extraSpace: CGFloat = is12HourFormat ? -30 : 0
+        hourTableView.trailingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: extraSpace).isActive = true
+        hourTableView.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        hourTableView.layoutIfNeeded()
         
         // minute table view
-		minuteTableView = UITableView(frame: CGRect.zero, style: .plain)
+        minuteTableView = UITableView(frame: CGRect.zero, style: .plain)
         minuteTableView.rowHeight = 36
         minuteTableView.showsVerticalScrollIndicator = false
         minuteTableView.separatorStyle = .none
         minuteTableView.delegate = self
         minuteTableView.dataSource = self
         minuteTableView.isHidden = isDatePickerOnly
+        contentView.addSubview(minuteTableView)
+        
+        minuteTableView.translatesAutoresizingMaskIntoConstraints = false
+        minuteTableView.topAnchor.constraint(equalTo: borderBottomView.bottomAnchor, constant: 1).isActive = true
+        minuteTableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor, constant: -8).isActive = true
+        minuteTableView.leadingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: extraSpace).isActive = true
+        minuteTableView.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        minuteTableView.layoutIfNeeded()
         if timeInterval != .default {
             minuteTableView.contentInset = UIEdgeInsetsMake(minuteTableView.frame.height / 2, 0, minuteTableView.frame.height / 2, 0)
         } else {
             minuteTableView.contentInset = UIEdgeInsets.zero
         }
-        contentView.addSubview(minuteTableView)
-		
-		minuteTableView.translatesAutoresizingMaskIntoConstraints = false
-		minuteTableView.topAnchor.constraint(equalTo: borderBottomView.bottomAnchor, constant: 1).isActive = true
-		minuteTableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor, constant: -8).isActive = true
-		minuteTableView.leadingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: extraSpace).isActive = true
-		minuteTableView.widthAnchor.constraint(equalToConstant: 60).isActive = true
         
         // am/pm table view
-		amPmTableView = UITableView(frame: CGRect.zero, style: .plain)
+        amPmTableView = UITableView(frame: CGRect.zero, style: .plain)
         amPmTableView.rowHeight = 36
-        amPmTableView.contentInset = UIEdgeInsetsMake(amPmTableView.frame.height / 2, 0, amPmTableView.frame.height / 2, 0)
         amPmTableView.showsVerticalScrollIndicator = false
         amPmTableView.separatorStyle = .none
         amPmTableView.delegate = self
         amPmTableView.dataSource = self
         amPmTableView.isHidden = !is12HourFormat || isDatePickerOnly
         contentView.addSubview(amPmTableView)
-		
-		amPmTableView.translatesAutoresizingMaskIntoConstraints = false
-		amPmTableView.topAnchor.constraint(equalTo: borderBottomView.bottomAnchor, constant: 1).isActive = true
-		amPmTableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor, constant: -8).isActive = true
-		amPmTableView.leadingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -extraSpace).isActive = true
-		amPmTableView.widthAnchor.constraint(equalToConstant: 64).isActive = true
+        
+        amPmTableView.translatesAutoresizingMaskIntoConstraints = false
+        amPmTableView.topAnchor.constraint(equalTo: borderBottomView.bottomAnchor, constant: 1).isActive = true
+        amPmTableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor, constant: -8).isActive = true
+        amPmTableView.leadingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -extraSpace).isActive = true
+        amPmTableView.widthAnchor.constraint(equalToConstant: 64).isActive = true
+        
+        amPmTableView.layoutIfNeeded()
+        amPmTableView.contentInset = UIEdgeInsetsMake(amPmTableView.frame.height / 2, 0, amPmTableView.frame.height / 2, 0)
         
         // colon
         colonLabel1 = UILabel(frame: CGRect.zero)
@@ -450,10 +462,10 @@ public protocol DateTimePickerDelegate {
         colonLabel1.textAlignment = .center
         colonLabel1.isHidden = isDatePickerOnly
         contentView.addSubview(colonLabel1)
-		
-		colonLabel1.translatesAutoresizingMaskIntoConstraints = false
-		colonLabel1.centerYAnchor.constraint(equalTo: minuteTableView.centerYAnchor, constant: 0).isActive = true // ??? +++
-		colonLabel1.centerXAnchor.constraint(equalTo: contentView.centerXAnchor, constant: extraSpace).isActive = true
+        
+        colonLabel1.translatesAutoresizingMaskIntoConstraints = false
+        colonLabel1.centerYAnchor.constraint(equalTo: minuteTableView.centerYAnchor, constant: 0).isActive = true
+        colonLabel1.centerXAnchor.constraint(equalTo: contentView.centerXAnchor, constant: extraSpace).isActive = true
         
         colonLabel2 = UILabel(frame: CGRect.zero)
         colonLabel2.text = ":"
@@ -463,32 +475,32 @@ public protocol DateTimePickerDelegate {
         colonLabel2.isHidden = !is12HourFormat || isDatePickerOnly
         contentView.addSubview(colonLabel2)
 		
-		colonLabel2.translatesAutoresizingMaskIntoConstraints = false
-		colonLabel2.centerYAnchor.constraint(equalTo: colonLabel1.centerYAnchor).isActive = true
-		colonLabel2.centerXAnchor.constraint(equalTo: colonLabel1.centerXAnchor, constant: 57).isActive = true
-		
+        colonLabel2.translatesAutoresizingMaskIntoConstraints = false
+        colonLabel2.centerYAnchor.constraint(equalTo: colonLabel1.centerYAnchor).isActive = true
+        colonLabel2.centerXAnchor.constraint(equalTo: colonLabel1.centerXAnchor, constant: 57).isActive = true
+
         // time separators
         separatorTopView = UIView(frame: CGRect.zero)
         separatorTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
         separatorTopView.isHidden = isDatePickerOnly
         contentView.addSubview(separatorTopView)
 		
-		separatorTopView.translatesAutoresizingMaskIntoConstraints = false
-		separatorTopView.centerYAnchor.constraint(equalTo: borderBottomView.topAnchor, constant: 36).isActive = true
-		separatorTopView.heightAnchor.constraint(equalToConstant: 1).isActive = true
-		separatorTopView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
-		separatorTopView.widthAnchor.constraint(equalToConstant: 90 - extraSpace * 2).isActive = true
+        separatorTopView.translatesAutoresizingMaskIntoConstraints = false
+        separatorTopView.centerYAnchor.constraint(equalTo: borderBottomView.topAnchor, constant: 36).isActive = true
+        separatorTopView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        separatorTopView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+        separatorTopView.widthAnchor.constraint(equalToConstant: 90 - extraSpace * 2).isActive = true
 		
         separatorBottomView = UIView(frame: CGRect.zero)
         separatorBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
         separatorBottomView.isHidden = isDatePickerOnly
         contentView.addSubview(separatorBottomView)
 		
-		separatorBottomView.translatesAutoresizingMaskIntoConstraints = false
-		separatorBottomView.centerYAnchor.constraint(equalTo: separatorTopView.topAnchor, constant: 36).isActive = true
-		separatorBottomView.heightAnchor.constraint(equalToConstant: 1).isActive = true
-		separatorBottomView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
-		separatorBottomView.widthAnchor.constraint(equalToConstant: 90 - extraSpace * 2).isActive = true
+        separatorBottomView.translatesAutoresizingMaskIntoConstraints = false
+        separatorBottomView.centerYAnchor.constraint(equalTo: separatorTopView.topAnchor, constant: 36).isActive = true
+        separatorBottomView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        separatorBottomView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
+        separatorBottomView.widthAnchor.constraint(equalToConstant: 90 - extraSpace * 2).isActive = true
 		
         // fill date
         fillDates(fromDate: minimumDate, toDate: maximumDate)
@@ -509,12 +521,10 @@ public protocol DateTimePickerDelegate {
         resetTime()
         
         // animate to show contentView
+		layoutIfNeeded()
+        contentViewBottomConstraint.constant = 0
         UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.4, options: .curveEaseIn, animations: {
-            self.contentView.frame = CGRect(x: 0,
-                                            y: self.frame.height - self.contentHeight,
-                                            width: self.frame.width,
-                                            height: self.contentHeight)
-			// ??? +++ animate constraint
+            self.layoutIfNeeded()
         }, completion: nil)
     }
     
@@ -565,8 +575,6 @@ public protocol DateTimePickerDelegate {
         }
     
         dateTitleLabel.text = selectedDateString
-        dateTitleLabel.sizeToFit()
-        dateTitleLabel.center = CGPoint(x: contentView.frame.width / 2, y: 22)
     }
     
     func fillDates(fromDate: Date, toDate: Date) {
@@ -614,12 +622,11 @@ public protocol DateTimePickerDelegate {
     
     @objc
     public func dismissView(sender: UIButton?=nil) {
+        layoutIfNeeded()
+		contentViewBottomConstraint.constant = contentHeight
         UIView.animate(withDuration: 0.3, animations: {
             // animate to show contentView
-            self.contentView.frame = CGRect(x: 0,
-                                            y: self.frame.height,
-                                            width: self.frame.width,
-                                            height: self.contentHeight)
+            self.layoutIfNeeded()
         }) {[weak self] (completed) in
             guard let `self` = self else {
                 return
