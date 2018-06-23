@@ -635,22 +635,21 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         tableView.selectRow(at: IndexPath(row: selectedRow, section: 0), animated: shouldAnimate, scrollPosition: .middle)
         if tableView == hourTableView {
             if is12HourFormat {
-                var hour = (indexPath.row - 12)%12 + 1
-                if let amPmIndexPath = amPmTableView.indexPathForSelectedRow,
-                    amPmIndexPath.row == 1 && hour < 12 {
-                    hour += 12
-                } else if let amPmIndexPath = amPmTableView.indexPathForSelectedRow,
-                    amPmIndexPath.row == 0 && hour == 12 {
-                    hour = 0
+                components.hour = indexPath.row < 12 ? indexPath.row + 1 : (indexPath.row - 12)%12 + 1
+                if let hour = components.hour,
+                    amPmTableView.indexPathForSelectedRow?.row == 0 && hour >= 12 {
+                    components.hour! -= 12
+                } else if let hour = components.hour,
+                    amPmTableView.indexPathForSelectedRow?.row == 1 && hour < 12 {
+                    components.hour! += 12
                 }
-                components.hour = hour
             } else {
-                components.hour = (indexPath.row - 24)%24
+                components.hour = indexPath.row < 24 ? indexPath.row : (indexPath.row - 24)%24
             }
             
         } else if tableView == minuteTableView {
             if timeInterval == .default {
-                components.minute = (indexPath.row - 60)%60
+                components.minute = indexPath.row < 60 ? indexPath.row : (indexPath.row - 60)%60
             } else {
                 components.minute = indexPath.row * timeInterval.rawValue
             }
@@ -792,24 +791,23 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
             }
             
             tableView.selectRow(at: IndexPath(row: selectedRow, section: 0), animated: false, scrollPosition: .middle)
-            // add 24 to hour and 60 to minute, because datasource now has buffer at top and bottom.
             if tableView == hourTableView {
                 if is12HourFormat {
-                    var hour = (selectedRow - 12)%12 + 1
-                    if let amPmIndexPath = amPmTableView.indexPathForSelectedRow,
-                        amPmIndexPath.row == 1 && hour < 12 {
-                        hour += 12
-                    } else if let amPmIndexPath = amPmTableView.indexPathForSelectedRow,
-                        amPmIndexPath.row == 0 && hour == 12 {
-                        hour = 0
+                    components.hour = selectedRow < 12 ? selectedRow + 1 : (selectedRow - 12)%12 + 1
+                    if let hour = components.hour,
+                        amPmTableView.indexPathForSelectedRow?.row == 0 && hour >= 12 {
+                        components.hour! -= 12
+                    } else if let hour = components.hour,
+                        amPmTableView.indexPathForSelectedRow?.row == 1 && hour < 12 {
+                        components.hour! += 12
                     }
-                    components.hour = hour
                 } else {
-                    components.hour = (selectedRow - 24)%24
+                    components.hour = selectedRow < 24 ? selectedRow : (selectedRow - 24)%24
                 }
+                
             } else if tableView == minuteTableView {
                 if timeInterval == .default {
-                    components.minute = (selectedRow - 60)%60
+                    components.minute = selectedRow < 60 ? selectedRow : (selectedRow - 60)%60
                 } else {
                     components.minute = selectedRow * timeInterval.rawValue
                 }
