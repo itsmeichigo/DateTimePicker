@@ -285,7 +285,6 @@ public protocol DateTimePickerDelegate {
         dateTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         dateTitleLabel.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
         dateTitleLabel.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
-        dateTitleLabel.setContentHuggingPriority(UILayoutPriority(rawValue: 250), for: UILayoutConstraintAxis(rawValue: 0)!)
         
         cancelButton = UIButton(type: .system)
         cancelButton.setTitle(cancelButtonTitle, for: .normal)
