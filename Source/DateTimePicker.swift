@@ -524,7 +524,9 @@ public protocol DateTimePickerDelegate {
         contentViewBottomConstraint.constant = 0
         UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.4, options: .curveEaseIn, animations: {
             self.layoutIfNeeded()
-        }, completion: nil)
+        }, completion: { completed in
+            self.resetTime()
+        })
     }
     
     @objc
