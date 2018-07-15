@@ -82,6 +82,9 @@ There are many options to customize picker for your own desire:
 - `isTimePickerOnly`: whether to show only time in picker view, default to false.
 - `includeMonth`: whether to include month in date cells, default to false.
 - `timeInterval`: time interval, in minutes, default to 1. If not default, infinite scrolling is off.
+- `timeZone`: timezone used in picker, default is device timezone.
+- `dismissHandler`: callback block when cancel button of picker view is tapped.
+- `delegate`: object to be notified when a new date or time is selected.
 - `highlightColor`: custom highlight color, default to cyan.
 - `darkColor`: custom dark color, default to grey.
 - `doneBackgroundColor`: custom DONE button color, default to darkColor.
