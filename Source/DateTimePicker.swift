@@ -400,7 +400,7 @@ public protocol DateTimePickerDelegate {
         doneButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
         doneButton.layer.cornerRadius = 3
         doneButton.layer.masksToBounds = true
-        doneButton.addTarget(self, action: #selector(DateTimePicker.dismissView(sender:)), for: .touchUpInside)
+        doneButton.addTarget(self, action: #selector(DateTimePicker.donePicking(sender:)), for: .touchUpInside)
         contentView.addSubview(doneButton)
         
         doneButton.translatesAutoresizingMaskIntoConstraints = false
@@ -634,6 +634,12 @@ public protocol DateTimePickerDelegate {
     
     @objc
     public func dismissView(sender: UIButton?=nil) {
+        self.dismissHandler?()
+    }
+    
+    @objc
+    public func donePicking(sender: UIButton?=nil) {
+        self.completionHandler?(selectedDate)
         self.dismissHandler?()
     }
 }
