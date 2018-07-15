@@ -9,31 +9,44 @@
 import UIKit
 
 class ViewController: UIViewController, DateTimePickerDelegate {
-    var picker: DateTimePicker?
     
     @IBAction func showDateTimePicker(sender: AnyObject) {
         let min = Date().addingTimeInterval(-60 * 60 * 24 * 4)
         let max = Date().addingTimeInterval(60 * 60 * 24 * 4)
-        let picker = DateTimePicker.show(selected: Date(), minimumDate: min, maximumDate: max)
-        picker.timeInterval = DateTimePicker.MinuteInterval.thirty
-        picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
-        picker.darkColor = UIColor.darkGray
-        picker.doneButtonTitle = "!! DONE DONE !!"
-        picker.doneBackgroundColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
-        picker.locale = Locale(identifier: "en_GB")
+        let picker = DateTimePicker.create(minimumDate: min, maximumDate: max)
         
-        picker.todayButtonTitle = "Today"
+        // customize your picker
+//        picker.timeInterval = DateTimePicker.MinuteInterval.thirty
+//        picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
+//        picker.darkColor = UIColor.darkGray
+//        picker.doneButtonTitle = "!! DONE DONE !!"
+//        picker.doneBackgroundColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
+//        picker.locale = Locale(identifier: "en_GB")
+//
+//        picker.todayButtonTitle = "Today"
         picker.is12HourFormat = true
-        picker.dateFormat = "hh:mm aa dd/MM/YYYY"
-        //        picker.isTimePickerOnly = true
-        picker.includeMonth = false // if true the month shows at top
+//        picker.dateFormat = "hh:mm aa dd/MM/YYYY"
+//        picker.isTimePickerOnly = true
+        picker.includeMonth = true // if true the month shows at bottom of date cell
         picker.completionHandler = { date in
             let formatter = DateFormatter()
             formatter.dateFormat = "hh:mm aa dd/MM/YYYY"
             self.title = formatter.string(from: date)
         }
         picker.delegate = self
-        self.picker = picker
+        
+        // add picker to your view
+        // don't try to make customize width and height of the picker,
+        // you'll end up with corrupted looking UI
+//        picker.frame = CGRect(x: 0, y: 100, width: picker.frame.size.width, height: picker.frame.size.height)
+        // set a dismissHandler if necessary
+//        picker.dismissHandler = {
+//            picker.removeFromSuperview()
+//        }
+//        self.view.addSubview(picker)
+        
+        // or show it like a modal
+        picker.show()
     }
     
     func dateTimePicker(_ picker: DateTimePicker, didSelectDate: Date) {

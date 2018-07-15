@@ -14,7 +14,7 @@ public protocol DateTimePickerDelegate {
 
 @objc public class DateTimePicker: UIView {
     
-    var contentHeight: CGFloat = 310
+    var contentHeight: CGFloat = 330
     @objc public enum MinuteInterval: Int {
         case `default` = 1
         case five = 5
@@ -22,13 +22,6 @@ public protocol DateTimePickerDelegate {
         case fifteen = 15
         case twenty = 20
         case thirty = 30
-    }
-    
-    /// custom background color, default to clear color
-    public var backgroundViewColor: UIColor? = .clear {
-        didSet {
-            shadowView.backgroundColor = backgroundViewColor
-        }
     }
     
     /// custom highlight color, default to cyan
@@ -73,6 +66,8 @@ public protocol DateTimePickerDelegate {
     /// selected date when picker is displayed, default to current date
     public var selectedDate = Date() {
         didSet {
+            assert(minimumDate.compare(selectedDate) != .orderedDescending, "Selected date should be later or equal to minimum date")
+            assert(selectedDate.compare(maximumDate) != .orderedDescending, "Selected date should be earlier or equal to maximum date")
             self.delegate?.dateTimePicker(self, didSelectDate: selectedDate)
             resetDateTitle()
         }
@@ -170,7 +165,6 @@ public protocol DateTimePickerDelegate {
     
     private var shadowView: UIView!
     private var contentView: UIView!
-    private var contentViewBottomConstraint: NSLayoutConstraint!
     private var dateTitleLabel: UILabel!
     private var todayButton: UIButton!
     private var doneButton: UIButton!
@@ -194,51 +188,72 @@ public protocol DateTimePickerDelegate {
         }
     }
     
-    
-    @objc open class func show(selected: Date? = nil, minimumDate: Date? = nil, maximumDate: Date? = nil, timeInterval: MinuteInterval = .default) -> DateTimePicker {
+    @objc open class func create(minimumDate: Date? = nil, maximumDate: Date? = nil) -> DateTimePicker {
+        
         let dateTimePicker = DateTimePicker()
         dateTimePicker.minimumDate = minimumDate ?? Date(timeIntervalSinceNow: -3600 * 24 * 10)
         dateTimePicker.maximumDate = maximumDate ?? Date(timeIntervalSinceNow: 3600 * 24 * 10)
-        dateTimePicker.selectedDate = selected ?? dateTimePicker.minimumDate
-        dateTimePicker.timeInterval = timeInterval
         assert(dateTimePicker.minimumDate.compare(dateTimePicker.maximumDate) == .orderedAscending, "Minimum date should be earlier than maximum date")
-        assert(dateTimePicker.minimumDate.compare(dateTimePicker.selectedDate) != .orderedDescending, "Selected date should be later or equal to minimum date")
-        assert(dateTimePicker.selectedDate.compare(dateTimePicker.maximumDate) != .orderedDescending, "Selected date should be earlier or equal to maximum date")
-		
-		if let window = UIApplication.shared.keyWindow {
-			window.addSubview(dateTimePicker)
-			
-			dateTimePicker.translatesAutoresizingMaskIntoConstraints = false
-			dateTimePicker.topAnchor.constraint(equalTo: window.topAnchor).isActive = true
-			dateTimePicker.bottomAnchor.constraint(equalTo: window.bottomAnchor).isActive = true
-			dateTimePicker.leadingAnchor.constraint(equalTo: window.leadingAnchor).isActive = true
-			dateTimePicker.trailingAnchor.constraint(equalTo: window.trailingAnchor).isActive = true
-			
-			dateTimePicker.configureView()
-		}
-        
+        dateTimePicker.configureView()
         return dateTimePicker
     }
     
-    private func configureView() {
-
-        // shadow view
-        if (shadowView != nil) {
-            shadowView.removeFromSuperview()
-        }
-
-        shadowView = UIView(frame: CGRect.zero)
-        shadowView.backgroundColor = backgroundViewColor ?? UIColor.black.withAlphaComponent(0.3)
-        shadowView.alpha = 1
-        let shadowViewTap = UITapGestureRecognizer(target: self, action: #selector(DateTimePicker.dismissView(sender:)))
-        shadowView.addGestureRecognizer(shadowViewTap)
-        addSubview(shadowView)
+    
+    @objc open func show() {
         
-        shadowView.translatesAutoresizingMaskIntoConstraints = false
-        shadowView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        shadowView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        shadowView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        shadowView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+		if let window = UIApplication.shared.keyWindow {
+            let shadowView = UIView()
+            shadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+            shadowView.alpha = 1
+            let shadowViewTap = UITapGestureRecognizer(target: self, action: #selector(DateTimePicker.dismissView(sender:)))
+            shadowView.addGestureRecognizer(shadowViewTap)
+            window.addSubview(shadowView)
+            
+            shadowView.translatesAutoresizingMaskIntoConstraints = false
+            shadowView.topAnchor.constraint(equalTo: window.topAnchor).isActive = true
+            shadowView.bottomAnchor.constraint(equalTo: window.bottomAnchor).isActive = true
+            shadowView.leadingAnchor.constraint(equalTo: window.leadingAnchor).isActive = true
+            shadowView.trailingAnchor.constraint(equalTo: window.trailingAnchor).isActive = true
+			
+            window.addSubview(self)
+			translatesAutoresizingMaskIntoConstraints = false
+			topAnchor.constraint(equalTo: window.topAnchor).isActive = true
+            let contentViewBottomConstraint = bottomAnchor.constraint(equalTo: window.bottomAnchor, constant: contentHeight)
+            contentViewBottomConstraint.isActive = true
+			leadingAnchor.constraint(equalTo: window.leadingAnchor).isActive = true
+			trailingAnchor.constraint(equalTo: window.trailingAnchor).isActive = true
+            layoutIfNeeded()
+            
+            // animate to show contentView
+            contentViewBottomConstraint.constant = 0
+            UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.4, options: .curveEaseIn, animations: {
+                self.layoutIfNeeded()
+            }, completion: { completed in
+                self.resetTime()
+            })
+            
+            dismissHandler = {
+                contentViewBottomConstraint.constant = self.contentHeight
+                UIView.animate(withDuration: 0.3, delay: 0.1, options: UIViewAnimationOptions.curveEaseOut, animations: {
+                    // animate to hide pickerView
+                    self.layoutIfNeeded()
+                }, completion: { (completed) in
+                    self.removeFromSuperview()
+                    shadowView.removeFromSuperview()
+                })
+            };
+		}
+    }
+    
+    public override func didMoveToSuperview() {
+        if (superview == nil) {
+            return
+        }
+        
+        self.resetTime()
+    }
+    
+    private func configureView() {
         
         // content view
         if (contentView != nil) {
@@ -246,6 +261,11 @@ public protocol DateTimePickerDelegate {
         }
         
         contentHeight = isDatePickerOnly ? 228 : isTimePickerOnly ? 230 : 330
+        if let window = UIApplication.shared.keyWindow {
+            self.frame.size.width = window.bounds.size.width
+        }
+        self.frame.size.height = contentHeight
+        
         contentView = UIView(frame: CGRect.zero)
         contentView.layer.shadowColor = UIColor(white: 0, alpha: 0.3).cgColor
         contentView.layer.shadowOffset = CGSize(width: 0, height: -2.0)
@@ -256,8 +276,7 @@ public protocol DateTimePickerDelegate {
         addSubview(contentView)
 		
         contentView.translatesAutoresizingMaskIntoConstraints = false
-        contentViewBottomConstraint = contentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: contentHeight)
-        contentViewBottomConstraint.isActive = true
+        contentView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         contentView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         contentView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         contentView.heightAnchor.constraint(equalToConstant: contentHeight).isActive = true
@@ -516,17 +535,10 @@ public protocol DateTimePickerDelegate {
         components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: selectedDate)
         contentView.isHidden = false
         
-        resetTime()
-        
-        // animate to show contentView
 		layoutIfNeeded()
-        contentViewBottomConstraint.constant = 0
-        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.4, options: .curveEaseIn, animations: {
-            self.layoutIfNeeded()
-        }, completion: { completed in
-            self.resetTime()
-        })
+        resetTime()
     }
+    
     
     @objc
     func setToday() {
@@ -622,22 +634,7 @@ public protocol DateTimePickerDelegate {
     
     @objc
     public func dismissView(sender: UIButton?=nil) {
-        layoutIfNeeded()
-		contentViewBottomConstraint.constant = contentHeight
-        UIView.animate(withDuration: 0.3, animations: {
-            // animate to show contentView
-            self.layoutIfNeeded()
-        }) {[weak self] (completed) in
-            guard let `self` = self else {
-                return
-            }
-            if sender == self.doneButton {
-                self.completionHandler?(self.selectedDate)
-            } else {
-                self.dismissHandler?()
-            }
-            self.removeFromSuperview()
-        }
+        self.dismissHandler?()
     }
 }
 
