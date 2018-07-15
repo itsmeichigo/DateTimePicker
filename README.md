@@ -11,11 +11,11 @@ A nicer iOS UI component for picking date and time.
 - Show or hide month on date cell
 - Inifnite scrolling for time
 - Customize colors and date format
+- (v1.3) Constraint-based UI
+- (v2.0) Now you can create picker view as a separate view!
 
 ## To-dos (HELP NEEDED! 🎯)
 
-- Picker view as a separate view, to be added in `viewDidLoad`
-- Constraint-based UI
 - Option to select month / year (UI idea needed)
 
 ## Requirements
@@ -38,16 +38,55 @@ Drag and drop folder `Source` to your project.
 
 ## Usage
 
-You can easily show and customize the component's colors
+### v2.0
+
+Since v2.0 onward, picker view can be created separately and used to add to any view you want.
+Note: the picker view is built with fixed width and height, so you're not encouraged to manually update it or you will get corrupted UI for the view. If necessary, please only change the y position of the view.
+
+```Swift
+let min = Date().addingTimeInterval(-60 * 60 * 24 * 4)
+let max = Date().addingTimeInterval(60 * 60 * 24 * 4)
+let picker = DateTimePicker.create(minimumDate: min, maximumDate: max)
+picker.frame = CGRect(x: 0, y: 100, width: picker.frame.size.width, height: picker.frame.size.height)
+self.view.addSubview(picker)
+```
+
+If you still want the old behavior (show the picker like a modal), you can call `show` method:
+
+```Swift
+let picker = DateTimePicker()
+picker.show()
+```
+
+### v1.3 and below
+
+For older versions, the only option is to use the built in `show` method, which returns an instance of `DateTimePicker` and also show the picker like a modal on top window. The picker can be dismissed when Cancel button is tapped.
 
 ```Swift
 let picker = DateTimePicker.show()
-picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
-picker.isDatePickerOnly = true // to hide time and show only date picker
-picker.completionHandler = { date in
-    // do something after tapping done
-}
 ```
+
+
+### Customization
+
+There are many options to customize picker for your own desire:
+- `minimumDate` and `maximumDate`: date and time limit for the picker. You can only set these when creating the picker, default value is last 10 days for minimum date and next 10 days for maximum date. If you set these dates yourself, make sure that minimum date is an earlier time than maximum date.
+- `selectedDate`: date to be selected when picker is first created, default is current date. Selected date has to be later than `minimumDate` and earlier than `maximumDate`.
+- `locale`: locale for the language displayed. default is American English.
+- `dateFormat`: format for the date shown in picker view. default is HH:mm dd/MM/YYYY.
+- `cancelButtonTitle`: title for dismiss button, default is Cancel.
+- `todayButtonTitle`: title for reset time button, default to Today.
+- `doneButtonTitle`: title for done button, default to DONE.
+- `is12HourFormat`: whether to display time in 12 hour format, default to false.
+- `isDatePickerOnly`: whether to only show date in picker view, default to false.
+- `isTimePickerOnly`: whether to show only time in picker view, default to false.
+- `includeMonth`: whether to include month in date cells, default to false.
+- `timeInterval`: time interval, in minutes, default to 1. If not default, infinite scrolling is off.
+- `highlightColor`: custom highlight color, default to cyan.
+- `darkColor`: custom dark color, default to grey.
+- `doneBackgroundColor`: custom DONE button color, default to darkColor.
+- `daysBackgroundColor`: custom background color for date cells.
+
 
 ## Contributing
 
