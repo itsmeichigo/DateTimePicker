@@ -56,8 +56,8 @@ public protocol DateTimePickerDelegate {
     /// custom background color for date cells
     public var daysBackgroundColor = UIColor(red: 239.0/255.0, green: 243.0/255.0, blue: 244.0/255.0, alpha: 1)
 	
-    /// date locale (language displayed), default to American English
-    public var locale = Locale(identifier: "en_US") {
+    /// date locale (language displayed), default to device's locale
+    public var locale = Locale.current {
         didSet {
             configureView()
         }
