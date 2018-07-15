@@ -72,7 +72,7 @@ let picker = DateTimePicker.show()
 There are many options to customize picker for your own desire:
 - `minimumDate` and `maximumDate`: date and time limit for the picker. You can only set these when creating the picker, default value is last 10 days for minimum date and next 10 days for maximum date. If you set these dates yourself, make sure that minimum date is an earlier time than maximum date.
 - `selectedDate`: date to be selected when picker is first created, default is current date. Selected date has to be later than `minimumDate` and earlier than `maximumDate`.
-- `locale`: locale for the language displayed. default is American English.
+- `locale`: locale for the language displayed. default is device's locale.
 - `dateFormat`: format for the date shown in picker view. default is HH:mm dd/MM/YYYY.
 - `cancelButtonTitle`: title for dismiss button, default is Cancel.
 - `todayButtonTitle`: title for reset time button, default to Today.
