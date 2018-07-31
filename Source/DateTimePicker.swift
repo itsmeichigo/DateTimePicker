@@ -177,6 +177,8 @@ public protocol DateTimePickerDelegate {
     private var separatorTopView: UIView!
     private var separatorBottomView: UIView!
     
+    private var modalCloseHandler: (() -> Void)?
+    
     internal var minimumDate: Date!
     internal var maximumDate: Date!
     
@@ -232,14 +234,15 @@ public protocol DateTimePickerDelegate {
                 self.resetTime()
             })
             
-            dismissHandler = {
+            modalCloseHandler = {
                 contentViewBottomConstraint.constant = self.contentHeight
-                UIView.animate(withDuration: 0.3, delay: 0.1, options: UIViewAnimationOptions.curveEaseOut, animations: {
+                UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.8, options: .curveLinear, animations: {
                     // animate to hide pickerView
                     self.layoutIfNeeded()
                 }, completion: { (completed) in
                     self.removeFromSuperview()
                     shadowView.removeFromSuperview()
+                    
                 })
             };
 		}
@@ -634,13 +637,15 @@ public protocol DateTimePickerDelegate {
     
     @objc
     public func dismissView(sender: UIButton?=nil) {
-        self.dismissHandler?()
+        modalCloseHandler?()
+        dismissHandler?()
     }
     
     @objc
     public func donePicking(sender: UIButton?=nil) {
-        self.completionHandler?(selectedDate)
-        self.dismissHandler?()
+        completionHandler?(selectedDate)
+        modalCloseHandler?()
+        dismissHandler?()
     }
 }
 
