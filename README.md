@@ -13,6 +13,7 @@ A nicer iOS UI component for picking date and time.
 - Customize colors and date format
 - (v1.3) Constraint-based UI
 - (v2.0) Now you can create picker view as a separate view!
+- (v2.1.0) Carthage is now supported (a bit late - sorry)
 
 ## To-dos (HELP NEEDED! 🎯)
 
@@ -30,6 +31,16 @@ A nicer iOS UI component for picking date and time.
 
 Just add the following to your `podfile`
 > pod 'DateTimePicker'
+
+#### Using Carthage
+
+From 2.1.0 onward, you can integrate DateTimePicker into your Xcode project using Carthage by specifying it in your `Cartfile`:
+
+```ogdl
+github "itsmeichigo/DateTimePicker" ~> 2.1.0
+```
+
+Run `carthage update` to build the framework and drag the built `DateTimePicker.framework` into your Xcode project.
 
 #### Manual install
 
