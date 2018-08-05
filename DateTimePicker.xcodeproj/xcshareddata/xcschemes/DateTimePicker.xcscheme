@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0800"
+   LastUpgradeVersion = "0940"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DEF7C35F1D8B9EBC0043D9C4"
-               BuildableName = "DateTimePicker.app"
+               BlueprintIdentifier = "2C7889C22116AC4900B26F02"
+               BuildableName = "DateTimePicker.framework"
                BlueprintName = "DateTimePicker"
                ReferencedContainer = "container:DateTimePicker.xcodeproj">
             </BuildableReference>
@@ -29,15 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DEF7C35F1D8B9EBC0043D9C4"
-            BuildableName = "DateTimePicker.app"
-            BlueprintName = "DateTimePicker"
-            ReferencedContainer = "container:DateTimePicker.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -51,16 +42,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DEF7C35F1D8B9EBC0043D9C4"
-            BuildableName = "DateTimePicker.app"
+            BlueprintIdentifier = "2C7889C22116AC4900B26F02"
+            BuildableName = "DateTimePicker.framework"
             BlueprintName = "DateTimePicker"
             ReferencedContainer = "container:DateTimePicker.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -70,16 +60,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DEF7C35F1D8B9EBC0043D9C4"
-            BuildableName = "DateTimePicker.app"
+            BlueprintIdentifier = "2C7889C22116AC4900B26F02"
+            BuildableName = "DateTimePicker.framework"
             BlueprintName = "DateTimePicker"
             ReferencedContainer = "container:DateTimePicker.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
