@@ -75,7 +75,10 @@ public protocol DateTimePickerDelegate {
             }
             self.delegate?.dateTimePicker(self, didSelectDate: selectedDate)
             resetDateTitle()
-            resetTime()
+            
+            if selectedDate == minimumDate || selectedDate == maximumDate {
+                resetTime()
+            }
         }
     }
     
