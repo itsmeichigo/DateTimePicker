@@ -66,10 +66,16 @@ public protocol DateTimePickerDelegate {
     /// selected date when picker is displayed, default to current date
     public var selectedDate = Date() {
         didSet {
-            assert(minimumDate.compare(selectedDate) != .orderedDescending, "Selected date should be later or equal to minimum date")
-            assert(selectedDate.compare(maximumDate) != .orderedDescending, "Selected date should be earlier or equal to maximum date")
+            if minimumDate.compare(selectedDate) == .orderedDescending {
+                selectedDate = minimumDate;
+            }
+            
+            if selectedDate.compare(maximumDate) == .orderedDescending {
+                selectedDate = maximumDate
+            }
             self.delegate?.dateTimePicker(self, didSelectDate: selectedDate)
             resetDateTitle()
+            resetTime()
         }
     }
     
