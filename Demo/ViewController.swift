@@ -17,17 +17,17 @@ class ViewController: UIViewController, DateTimePickerDelegate {
         
         // customize your picker
 //        picker.timeInterval = DateTimePicker.MinuteInterval.thirty
-//        picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
-//        picker.darkColor = UIColor.darkGray
-//        picker.doneButtonTitle = "!! DONE DONE !!"
-//        picker.doneBackgroundColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
 //        picker.locale = Locale(identifier: "en_GB")
 //
 //        picker.todayButtonTitle = "Today"
-        picker.is12HourFormat = true
+//        picker.is12HourFormat = true
 //        picker.dateFormat = "hh:mm aa dd/MM/YYYY"
 //        picker.isTimePickerOnly = true
         picker.includeMonth = true // if true the month shows at bottom of date cell
+        picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
+        picker.darkColor = UIColor.darkGray
+        picker.doneButtonTitle = "!! DONE DONE !!"
+        picker.doneBackgroundColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
         picker.completionHandler = { date in
             let formatter = DateFormatter()
             formatter.dateFormat = "hh:mm aa dd/MM/YYYY"

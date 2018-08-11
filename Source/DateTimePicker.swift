@@ -30,6 +30,10 @@ public protocol DateTimePickerDelegate {
             todayButton.setTitleColor(highlightColor, for: .normal)
             colonLabel1.textColor = highlightColor
             colonLabel2.textColor = highlightColor
+            dayCollectionView.reloadData()
+            hourTableView.reloadData()
+            minuteTableView.reloadData()
+            amPmTableView.reloadData()
         }
     }
     
@@ -43,6 +47,10 @@ public protocol DateTimePickerDelegate {
             borderBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
             separatorTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
             separatorBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
+            dayCollectionView.reloadData()
+            hourTableView.reloadData()
+            minuteTableView.reloadData()
+            amPmTableView.reloadData()
         }
     }
     
