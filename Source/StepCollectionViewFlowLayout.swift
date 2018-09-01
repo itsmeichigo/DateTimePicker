@@ -8,6 +8,12 @@
 
 import UIKit
 
+#if swift(>=4.2)
+fileprivate let collectionElementCategory = UICollectionView.ElementCategory.self
+#else
+fileprivate let collectionElementCategory = UICollectionElementCategory.self
+#endif
+
 class StepCollectionViewFlowLayout: UICollectionViewFlowLayout {
     
     override func targetContentOffset(
@@ -33,7 +39,7 @@ class StepCollectionViewFlowLayout: UICollectionViewFlowLayout {
             self.layoutAttributesForElements(in: targetRect)!
                 as [UICollectionViewLayoutAttributes]
         for layoutAttributes: UICollectionViewLayoutAttributes in array {
-            if layoutAttributes.representedElementCategory == UICollectionElementCategory.cell {
+            if layoutAttributes.representedElementCategory == collectionElementCategory.cell {
                 let itemHorizontalCenter: CGFloat = layoutAttributes.center.x
                 if abs(itemHorizontalCenter - horizontalCenter) < abs(offSetAdjustment) {
                     offSetAdjustment = itemHorizontalCenter - horizontalCenter

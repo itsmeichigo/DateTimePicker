@@ -300,7 +300,7 @@ public protocol DateTimePickerDelegate {
         contentView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         contentView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         contentView.heightAnchor.constraint(equalToConstant: contentHeight).isActive = true
-        contentView.layoutMargins = UIEdgeInsetsMake(0, 20, 0, 20)
+        contentView.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         
         // title view
         let titleView = UIView(frame: CGRect.zero)
@@ -312,7 +312,7 @@ public protocol DateTimePickerDelegate {
         titleView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         titleView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         titleView.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        titleView.layoutMargins = UIEdgeInsetsMake(0, 20, 0, 20)
+        titleView.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         
         dateTitleLabel = UILabel(frame: CGRect.zero)
         dateTitleLabel.font = UIFont.systemFont(ofSize: 15)
@@ -467,7 +467,7 @@ public protocol DateTimePickerDelegate {
         
         minuteTableView.layoutIfNeeded()
         if timeInterval != .default {
-            minuteTableView.contentInset = UIEdgeInsetsMake(minuteTableView.frame.height / 2, 0, minuteTableView.frame.height / 2, 0)
+            minuteTableView.contentInset = UIEdgeInsets(top: minuteTableView.frame.height / 2, left: 0, bottom: minuteTableView.frame.height / 2, right: 0)
         } else {
             minuteTableView.contentInset = UIEdgeInsets.zero
         }
@@ -489,7 +489,7 @@ public protocol DateTimePickerDelegate {
         amPmTableView.widthAnchor.constraint(equalToConstant: 64).isActive = true
         
         amPmTableView.layoutIfNeeded()
-        amPmTableView.contentInset = UIEdgeInsetsMake(amPmTableView.frame.height / 2, 0, amPmTableView.frame.height / 2, 0)
+        amPmTableView.contentInset = UIEdgeInsets(top: amPmTableView.frame.height / 2, left: 0, bottom: amPmTableView.frame.height / 2, right: 0)
         
         // colon
         colonLabel1 = UILabel(frame: CGRect.zero)
