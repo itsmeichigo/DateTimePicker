@@ -33,7 +33,7 @@ class StepCollectionViewFlowLayout: UICollectionViewFlowLayout {
             self.layoutAttributesForElements(in: targetRect)!
                 as [UICollectionViewLayoutAttributes]
         for layoutAttributes: UICollectionViewLayoutAttributes in array {
-            if layoutAttributes.representedElementCategory == UICollectionElementCategory.cell {
+            if layoutAttributes.representedElementCategory == UICollectionView.ElementCategory.cell {
                 let itemHorizontalCenter: CGFloat = layoutAttributes.center.x
                 if abs(itemHorizontalCenter - horizontalCenter) < abs(offSetAdjustment) {
                     offSetAdjustment = itemHorizontalCenter - horizontalCenter
