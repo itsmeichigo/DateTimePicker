@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol DateTimePickerDelegate {
+public protocol DateTimePickerDelegate: class {
     func dateTimePicker(_ picker: DateTimePicker, didSelectDate: Date)
 }
 
@@ -172,7 +172,7 @@ public protocol DateTimePickerDelegate {
     public var timeZone = TimeZone.current
     public var completionHandler: ((Date)->Void)?
     public var dismissHandler: (() -> Void)?
-    public var delegate: DateTimePickerDelegate?
+    public weak var delegate: DateTimePickerDelegate?
 
     // private vars
     internal var hourTableView: UITableView!
