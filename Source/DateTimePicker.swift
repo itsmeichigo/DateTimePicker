@@ -255,7 +255,7 @@ public protocol DateTimePickerDelegate: class {
                 contentViewBottomConstraint.constant = self.contentHeight
                 UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.8, options: .curveLinear, animations: {
                     // animate to hide pickerView
-		    shadowView. alpha = 0
+		    shadowView.alpha = 0
                     self.layoutIfNeeded()
                 }, completion: { (completed) in
                     self.removeFromSuperview()
