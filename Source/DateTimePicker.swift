@@ -224,8 +224,6 @@ public protocol DateTimePickerDelegate: class {
             let shadowView = UIView()
             shadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
             shadowView.alpha = 1
-            let shadowViewTap = UITapGestureRecognizer(target: self, action: #selector(DateTimePicker.dismissView(sender:)))
-            shadowView.addGestureRecognizer(shadowViewTap)
             window.addSubview(shadowView)
             
             shadowView.translatesAutoresizingMaskIntoConstraints = false
@@ -272,6 +270,14 @@ public protocol DateTimePickerDelegate: class {
         }
         
         self.resetTime()
+    }
+	
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let touch = touches.first
+        guard let location = touch?.location(in: self) else { return }
+        if !contentView.frame.contains(location) {
+            dismissView(sender: nil)
+        }
     }
     
     private func configureView() {
