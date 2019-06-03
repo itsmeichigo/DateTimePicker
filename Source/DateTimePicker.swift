@@ -332,10 +332,12 @@ public protocol DateTimePickerDelegate: class {
         dateTitleLabel.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
         dateTitleLabel.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
         
+	let isRTL = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
+
         cancelButton = UIButton(type: .system)
         cancelButton.setTitle(cancelButtonTitle, for: .normal)
         cancelButton.setTitleColor(darkColor.withAlphaComponent(0.5), for: .normal)
-        cancelButton.contentHorizontalAlignment = .left
+        cancelButton.contentHorizontalAlignment = isRTL ? .right : .left
         cancelButton.addTarget(self, action: #selector(DateTimePicker.dismissView(sender:)), for: .touchUpInside)
         cancelButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         titleView.addSubview(cancelButton)
@@ -350,7 +352,7 @@ public protocol DateTimePickerDelegate: class {
         todayButton.setTitle(todayButtonTitle, for: .normal)
         todayButton.setTitleColor(highlightColor, for: .normal)
         todayButton.addTarget(self, action: #selector(DateTimePicker.setToday), for: .touchUpInside)
-        todayButton.contentHorizontalAlignment = .right
+        todayButton.contentHorizontalAlignment = isRTL ? .left : .right
         todayButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         todayButton.isHidden = self.minimumDate.compare(Date()) == .orderedDescending || self.maximumDate.compare(Date()) == .orderedAscending
         titleView.addSubview(todayButton)
