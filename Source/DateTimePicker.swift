@@ -639,7 +639,7 @@ public protocol DateTimePickerDelegate: class {
         self.dates = dates
         dayCollectionView.reloadData()
         
-        if let index = self.dates.index(of: selectedDate) {
+        if let index = self.dates.firstIndex(of: selectedDate) {
             dayCollectionView.selectItem(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .centeredHorizontally)
         }
     }
