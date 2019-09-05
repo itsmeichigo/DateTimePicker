@@ -14,7 +14,7 @@ public protocol DateTimePickerDelegate: class {
 
 @objc public class DateTimePicker: UIView {
     
-    var contentHeight: CGFloat = 330
+    var contentHeight: CGFloat = 660
     @objc public enum MinuteInterval: Int {
         case `default` = 1
         case five = 5
@@ -25,45 +25,51 @@ public protocol DateTimePickerDelegate: class {
     }
     
     /// custom highlight color, default to cyan
-    public var highlightColor = UIColor(red: 0/255.0, green: 199.0/255.0, blue: 194.0/255.0, alpha: 1) {
+    fileprivate func reloadAllCollectionViews() {
+        self.dayCollectionView?.reloadData()
+        self.monthCollectionView?.reloadData()
+        self.yearCollectionView?.reloadData()
+    }
+    
+    var highlightColor = UIColor(red: 0/255.0, green: 199.0/255.0, blue: 194.0/255.0, alpha: 1) {
         didSet {
-            todayButton.setTitleColor(highlightColor, for: .normal)
-            colonLabel1.textColor = highlightColor
-            colonLabel2.textColor = highlightColor
-            dayCollectionView.reloadData()
-            hourTableView.reloadData()
-            minuteTableView.reloadData()
-            amPmTableView.reloadData()
+            todayButton?.setTitleColor(highlightColor, for: .normal)
+            colonLabel1?.textColor = highlightColor
+            colonLabel2?.textColor = highlightColor
+            reloadAllCollectionViews()
+            hourTableView?.reloadData()
+            minuteTableView?.reloadData()
+            amPmTableView?.reloadData()
         }
     }
     
     /// custom dark color, default to grey
     public var darkColor = UIColor(red: 0, green: 22.0/255.0, blue: 39.0/255.0, alpha: 1) {
         didSet {
-            dateTitleLabel.textColor = darkColor
-            cancelButton.setTitleColor(darkColor.withAlphaComponent(0.5), for: .normal)
-            doneButton.backgroundColor = darkColor.withAlphaComponent(0.5)
-            borderTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
-            borderBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
-            separatorTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
-            separatorBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
-            dayCollectionView.reloadData()
-            hourTableView.reloadData()
-            minuteTableView.reloadData()
-            amPmTableView.reloadData()
+            dateTitleLabel?.textColor = darkColor
+            cancelButton?.setTitleColor(darkColor.withAlphaComponent(0.5), for: .normal)
+            doneButton?.backgroundColor = darkColor.withAlphaComponent(0.5)
+            borderTopView?.backgroundColor = darkColor.withAlphaComponent(0.2)
+            borderBottomView?.backgroundColor = darkColor.withAlphaComponent(0.2)
+            separatorTopView?.backgroundColor = darkColor.withAlphaComponent(0.2)
+            separatorBottomView?.backgroundColor = darkColor.withAlphaComponent(0.2)
+            reloadAllCollectionViews()
+            hourTableView?.reloadData()
+            minuteTableView?.reloadData()
+            amPmTableView?.reloadData()
         }
     }
     
     /// custom DONE button color, default to darkColor
     public var doneBackgroundColor: UIColor? {
         didSet {
-            doneButton.backgroundColor = doneBackgroundColor
+            doneButton?.backgroundColor = doneBackgroundColor
         }
     }
     
     /// custom background color for date cells
     public var daysBackgroundColor = UIColor(red: 239.0/255.0, green: 243.0/255.0, blue: 244.0/255.0, alpha: 1)
-	
+    
     /// date locale (language displayed), default to device's locale
     public var locale = Locale.current {
         didSet {
@@ -72,12 +78,13 @@ public protocol DateTimePickerDelegate: class {
     }
     
     /// selected date when picker is displayed, default to current date
-    public var selectedDate = Date() {
+    public var selectedDate: Date = Date() {
         didSet {
+
             if minimumDate.compare(selectedDate) == .orderedDescending {
                 selectedDate = minimumDate;
             }
-            
+
             if selectedDate.compare(maximumDate) == .orderedDescending {
                 selectedDate = maximumDate
             }
@@ -85,11 +92,14 @@ public protocol DateTimePickerDelegate: class {
             resetDateTitle()
             
             if selectedDate == minimumDate || selectedDate == maximumDate {
+                reloadAllCollectionViews()
                 resetTime()
             }
+
+            updateCollectionView(to: self.selectedDate)
         }
     }
-    
+
     public var selectedDateString: String {
         get {
             let formatter = DateFormatter()
@@ -108,21 +118,21 @@ public protocol DateTimePickerDelegate: class {
     /// custom title for dismiss button, default to Cancel
     public var cancelButtonTitle = "Cancel" {
         didSet {
-            cancelButton.setTitle(cancelButtonTitle, for: .normal)
+            cancelButton?.setTitle(cancelButtonTitle, for: .normal)
         }
     }
     
     /// custom title for reset time button, default to Today
     public var todayButtonTitle = "Today" {
         didSet {
-            todayButton.setTitle(todayButtonTitle, for: .normal)
+            todayButton?.setTitle(todayButtonTitle, for: .normal)
         }
     }
     
     /// custom title for done button, default to DONE
     public var doneButtonTitle = "DONE" {
         didSet {
-            doneButton.setTitle(doneButtonTitle, for: .normal)
+            doneButton?.setTitle(doneButtonTitle, for: .normal)
         }
     }
     
@@ -153,13 +163,6 @@ public protocol DateTimePickerDelegate: class {
             configureView()
         }
     }
-
-    /// whether to include month in date cells, default to false
-    public var includeMonth = false {
-        didSet {
-            configureView()
-        }
-    }
     
     /// Time interval, in minutes, default to 1.
     /// If not default, infinite scrolling is off.
@@ -173,11 +176,13 @@ public protocol DateTimePickerDelegate: class {
     public var completionHandler: ((Date)->Void)?
     public var dismissHandler: (() -> Void)?
     public weak var delegate: DateTimePickerDelegate?
-
+    
     // private vars
     internal var hourTableView: UITableView!
     internal var minuteTableView: UITableView!
     internal var amPmTableView: UITableView!
+    internal var yearCollectionView: UICollectionView!
+    internal var monthCollectionView: UICollectionView!
     internal var dayCollectionView: UICollectionView!
     
     private var shadowView: UIView!
@@ -204,14 +209,24 @@ public protocol DateTimePickerDelegate: class {
     internal var components: DateComponents! {
         didSet {
             components.timeZone = timeZone
+            if let newSelectedDate = calendar.date(from: components) {
+                if components.month != newSelectedDate.month() {
+                    self.components.day = newSelectedDate.getPreviousMonth()?.endOfMonth().day()
+                    if let newSelectedDate = calendar.date(from: components) {
+                        self.selectedDate = newSelectedDate
+                        return
+                    }
+                }
+                self.selectedDate = newSelectedDate
+            }
         }
     }
     
     @objc open class func create(minimumDate: Date? = nil, maximumDate: Date? = nil) -> DateTimePicker {
         
         let dateTimePicker = DateTimePicker()
-        dateTimePicker.minimumDate = minimumDate ?? Date(timeIntervalSinceNow: -3600 * 24 * 10)
-        dateTimePicker.maximumDate = maximumDate ?? Date(timeIntervalSinceNow: 3600 * 24 * 10)
+        dateTimePicker.minimumDate = minimumDate ?? Date(timeIntervalSinceNow: -3600 * 24 * 1000)
+        dateTimePicker.maximumDate = maximumDate ?? Date(timeIntervalSinceNow: 3600 * 24 * 1000)
         assert(dateTimePicker.minimumDate.compare(dateTimePicker.maximumDate) == .orderedAscending, "Minimum date should be earlier than maximum date")
         dateTimePicker.configureView()
         return dateTimePicker
@@ -220,7 +235,7 @@ public protocol DateTimePickerDelegate: class {
     
     @objc open func show() {
         
-		if let window = UIApplication.shared.keyWindow {
+        if let window = UIApplication.shared.keyWindow {
             let shadowView = UIView()
             shadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
             shadowView.alpha = 1
@@ -231,14 +246,14 @@ public protocol DateTimePickerDelegate: class {
             shadowView.bottomAnchor.constraint(equalTo: window.bottomAnchor).isActive = true
             shadowView.leadingAnchor.constraint(equalTo: window.leadingAnchor).isActive = true
             shadowView.trailingAnchor.constraint(equalTo: window.trailingAnchor).isActive = true
-			
+            
             window.addSubview(self)
-			translatesAutoresizingMaskIntoConstraints = false
-			topAnchor.constraint(equalTo: window.topAnchor).isActive = true
+            translatesAutoresizingMaskIntoConstraints = false
+            topAnchor.constraint(equalTo: window.topAnchor).isActive = true
             let contentViewBottomConstraint = bottomAnchor.constraint(equalTo: window.bottomAnchor, constant: contentHeight)
             contentViewBottomConstraint.isActive = true
-			leadingAnchor.constraint(equalTo: window.leadingAnchor).isActive = true
-			trailingAnchor.constraint(equalTo: window.trailingAnchor).isActive = true
+            leadingAnchor.constraint(equalTo: window.leadingAnchor).isActive = true
+            trailingAnchor.constraint(equalTo: window.trailingAnchor).isActive = true
             layoutIfNeeded()
             
             // animate to show contentView
@@ -253,7 +268,7 @@ public protocol DateTimePickerDelegate: class {
                 contentViewBottomConstraint.constant = self.contentHeight
                 UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.8, options: .curveLinear, animations: {
                     // animate to hide pickerView
-		    shadowView.alpha = 0
+                    shadowView.alpha = 0
                     self.layoutIfNeeded()
                 }, completion: { (completed) in
                     self.removeFromSuperview()
@@ -261,7 +276,7 @@ public protocol DateTimePickerDelegate: class {
                     
                 })
             };
-		}
+        }
     }
     
     public override func didMoveToSuperview() {
@@ -271,13 +286,103 @@ public protocol DateTimePickerDelegate: class {
         
         self.resetTime()
     }
-	
+    
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first
         guard let location = touch?.location(in: self) else { return }
         if !contentView.frame.contains(location) {
             dismissView(sender: nil)
         }
+    }
+    
+    fileprivate func configureDayCollectionView() {
+        let layout = StepCollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
+        layout.itemSize = CGSize(width: 75, height: 80)
+        
+        dayCollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        dayCollectionView.backgroundColor = daysBackgroundColor
+        dayCollectionView.showsHorizontalScrollIndicator = false
+        dayCollectionView.accessibilityIdentifier = "dayCollectionView"
+        
+        dayCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
+        
+        dayCollectionView.dataSource = self
+        dayCollectionView.delegate = self
+        dayCollectionView.isHidden = isTimePickerOnly
+        contentView.addSubview(dayCollectionView)
+        
+        dayCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        dayCollectionView.topAnchor.constraint(equalTo: monthCollectionView.bottomAnchor).isActive = true
+        dayCollectionView.leadingAnchor.constraint(equalTo: monthCollectionView.leadingAnchor).isActive = true
+        dayCollectionView.trailingAnchor.constraint(equalTo: monthCollectionView.trailingAnchor).isActive = true
+        dayCollectionView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        
+        dayCollectionView.layoutIfNeeded()
+        let inset = (dayCollectionView.frame.width - 75) / 2
+        dayCollectionView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
+    }
+    
+    fileprivate func configureMonthCollectionView() {
+        let layout = StepCollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
+        layout.itemSize = CGSize(width: 75, height: 80)
+        
+        monthCollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        monthCollectionView.backgroundColor = daysBackgroundColor
+        monthCollectionView.showsHorizontalScrollIndicator = false
+        monthCollectionView.accessibilityIdentifier = "monthCollectionView"
+        
+        monthCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
+        
+        monthCollectionView.dataSource = self
+        monthCollectionView.delegate = self
+        monthCollectionView.isHidden = isTimePickerOnly
+        contentView.addSubview(monthCollectionView)
+        
+        monthCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        monthCollectionView.topAnchor.constraint(equalTo: yearCollectionView.bottomAnchor).isActive = true
+        monthCollectionView.leadingAnchor.constraint(equalTo: yearCollectionView.leadingAnchor).isActive = true
+        monthCollectionView.trailingAnchor.constraint(equalTo: yearCollectionView.trailingAnchor).isActive = true
+        monthCollectionView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        
+        monthCollectionView.layoutIfNeeded()
+        let inset = (monthCollectionView.frame.width - 75) / 2
+        monthCollectionView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
+    }
+    
+    fileprivate func configureYearCollectionView(titleView: UIView) {
+        let layout = StepCollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
+        layout.itemSize = CGSize(width: 75, height: 80)
+        
+        yearCollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+        yearCollectionView.backgroundColor = daysBackgroundColor
+        yearCollectionView.showsHorizontalScrollIndicator = false
+        yearCollectionView.accessibilityIdentifier = "yearCollectionView"
+        
+        yearCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
+        
+        yearCollectionView.dataSource = self
+        yearCollectionView.delegate = self
+        yearCollectionView.isHidden = isTimePickerOnly
+        contentView.addSubview(yearCollectionView)
+        
+        yearCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        yearCollectionView.topAnchor.constraint(equalTo: titleView.bottomAnchor).isActive = true
+        yearCollectionView.leadingAnchor.constraint(equalTo: titleView.leadingAnchor).isActive = true
+        yearCollectionView.trailingAnchor.constraint(equalTo: titleView.trailingAnchor).isActive = true
+        yearCollectionView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        
+        yearCollectionView.layoutIfNeeded()
+        let inset = (yearCollectionView.frame.width - 75) / 2
+        yearCollectionView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
     }
     
     private func configureView() {
@@ -287,7 +392,7 @@ public protocol DateTimePickerDelegate: class {
             contentView.removeFromSuperview()
         }
         
-        contentHeight = isDatePickerOnly ? 228 : isTimePickerOnly ? 230 : 330
+        contentHeight = isDatePickerOnly ? 418 : isTimePickerOnly ? 230 : 518
         if let window = UIApplication.shared.keyWindow {
             self.frame.size.width = window.bounds.size.width
         }
@@ -301,7 +406,7 @@ public protocol DateTimePickerDelegate: class {
         contentView.backgroundColor = .white
         contentView.isHidden = true
         addSubview(contentView)
-		
+        
         contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         contentView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
@@ -332,8 +437,8 @@ public protocol DateTimePickerDelegate: class {
         dateTitleLabel.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
         dateTitleLabel.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
         
-	let isRTL = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
-
+        let isRTL = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
+        
         cancelButton = UIButton(type: .system)
         cancelButton.setTitle(cancelButtonTitle, for: .normal)
         cancelButton.setTitleColor(darkColor.withAlphaComponent(0.5), for: .normal)
@@ -361,39 +466,11 @@ public protocol DateTimePickerDelegate: class {
         todayButton.trailingAnchor.constraint(equalTo: titleView.layoutMarginsGuide.trailingAnchor, constant: 0).isActive = true
         todayButton.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
         todayButton.leadingAnchor.constraint(equalTo: dateTitleLabel.trailingAnchor).isActive = true
-		
+        
         // day collection view
-        let layout = StepCollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 10
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
-        layout.itemSize = CGSize(width: 75, height: 80)
-        
-        dayCollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
-        dayCollectionView.backgroundColor = daysBackgroundColor
-        dayCollectionView.showsHorizontalScrollIndicator = false
-        
-        if includeMonth {
-            dayCollectionView.register(FullDateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
-        } else if includeMonth == false {
-            dayCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
-            
-        }
-        
-        dayCollectionView.dataSource = self
-        dayCollectionView.delegate = self
-        dayCollectionView.isHidden = isTimePickerOnly
-        contentView.addSubview(dayCollectionView)
-        
-        dayCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        dayCollectionView.topAnchor.constraint(equalTo: titleView.bottomAnchor).isActive = true
-        dayCollectionView.leadingAnchor.constraint(equalTo: titleView.leadingAnchor).isActive = true
-        dayCollectionView.trailingAnchor.constraint(equalTo: titleView.trailingAnchor).isActive = true
-        dayCollectionView.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        
-        dayCollectionView.layoutIfNeeded()
-        let inset = (dayCollectionView.frame.width - 75) / 2
-        dayCollectionView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
+        configureYearCollectionView(titleView: titleView)
+        configureMonthCollectionView()
+        configureDayCollectionView()
         
         // top & bottom borders on day collection view
         borderTopView = UIView(frame: CGRect.zero)
@@ -449,7 +526,7 @@ public protocol DateTimePickerDelegate: class {
         hourTableView.dataSource = self
         hourTableView.isHidden = isDatePickerOnly
         contentView.addSubview(hourTableView)
-		
+        
         hourTableView.translatesAutoresizingMaskIntoConstraints = false
         hourTableView.topAnchor.constraint(equalTo: borderBottomView.bottomAnchor, constant: 1).isActive = true
         hourTableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor, constant: -8).isActive = true
@@ -520,7 +597,7 @@ public protocol DateTimePickerDelegate: class {
         colonLabel2.textAlignment = .center
         colonLabel2.isHidden = !is12HourFormat || isDatePickerOnly
         contentView.addSubview(colonLabel2)
-		
+        
         colonLabel2.translatesAutoresizingMaskIntoConstraints = false
         colonLabel2.centerYAnchor.constraint(equalTo: colonLabel1.centerYAnchor).isActive = true
         colonLabel2.centerXAnchor.constraint(equalTo: colonLabel1.centerXAnchor, constant: 57).isActive = true
@@ -530,41 +607,45 @@ public protocol DateTimePickerDelegate: class {
         separatorTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
         separatorTopView.isHidden = isDatePickerOnly
         contentView.addSubview(separatorTopView)
-		
+        
         separatorTopView.translatesAutoresizingMaskIntoConstraints = false
         separatorTopView.centerYAnchor.constraint(equalTo: borderBottomView.topAnchor, constant: 36).isActive = true
         separatorTopView.heightAnchor.constraint(equalToConstant: 1).isActive = true
         separatorTopView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
         separatorTopView.widthAnchor.constraint(equalToConstant: 90 - extraSpace * 2).isActive = true
-		
+        
         separatorBottomView = UIView(frame: CGRect.zero)
         separatorBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
         separatorBottomView.isHidden = isDatePickerOnly
         contentView.addSubview(separatorBottomView)
-		
+        
         separatorBottomView.translatesAutoresizingMaskIntoConstraints = false
         separatorBottomView.centerYAnchor.constraint(equalTo: separatorTopView.topAnchor, constant: 36).isActive = true
         separatorBottomView.heightAnchor.constraint(equalToConstant: 1).isActive = true
         separatorBottomView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
         separatorBottomView.widthAnchor.constraint(equalToConstant: 90 - extraSpace * 2).isActive = true
-		
+        
         // fill date
         fillDates(fromDate: minimumDate, toDate: maximumDate)
-        updateCollectionView(to: selectedDate)
-        
+
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/YYYY"
         for i in 0..<dates.count {
             let date = dates[i]
             if formatter.string(from: date) == formatter.string(from: selectedDate) {
-                dayCollectionView.selectItem(at: IndexPath(row: i, section: 0), animated: true, scrollPosition: .centeredHorizontally)
+                let indexPath: IndexPath = IndexPath(row: i, section: 0)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                    if self.dayCollectionView.numberOfItems(inSection: 0) >= indexPath.row {
+                        self.dayCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+                    }
+                })
                 break
             }
         }
         components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: selectedDate)
         contentView.isHidden = false
         
-		layoutIfNeeded()
+        layoutIfNeeded()
         resetTime()
     }
     
@@ -576,7 +657,7 @@ public protocol DateTimePickerDelegate: class {
     }
     
     func resetTime() {
-        components = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: selectedDate)
+        let components = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: selectedDate)
         updateCollectionView(to: selectedDate)
         if let hour = components.hour {
             var expectedRow = hour + 24
@@ -614,7 +695,7 @@ public protocol DateTimePickerDelegate: class {
         guard dateTitleLabel != nil else {
             return
         }
-    
+        
         dateTitleLabel.text = selectedDateString
     }
     
@@ -637,7 +718,7 @@ public protocol DateTimePickerDelegate: class {
         } while (true)
         
         self.dates = dates
-        dayCollectionView.reloadData()
+        reloadAllCollectionViews()
         
         if let index = self.dates.firstIndex(of: selectedDate) {
             dayCollectionView.selectItem(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .centeredHorizontally)
@@ -646,16 +727,30 @@ public protocol DateTimePickerDelegate: class {
     
     func updateCollectionView(to currentDate: Date) {
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/YYYY"
-        for i in 0..<dates.count {
-            let date = dates[i]
-            if formatter.string(from: date) == formatter.string(from: currentDate) {
+        formatter.dateFormat = "yyyy"
+        for i in 0..<dates.years().count {
+            let date = dates.years()[i]
+            if date == Int(formatter.string(from: currentDate)) {
                 let indexPath = IndexPath(row: i, section: 0)
-                dayCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: { 
-                    self.dayCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
-                })
-                
+                self.yearCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+                break
+            }
+        }
+        formatter.dateFormat = "MM"
+        for i in 0..<dates.months(forYear: components.year).count {
+            let date = dates.months(forYear: components.year)[i]
+            if date == Int(formatter.string(from: currentDate)) {
+                let indexPath = IndexPath(row: i, section: 0)
+                self.monthCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+                break
+            }
+        }
+        formatter.dateFormat = "dd"
+        for i in 0..<dates.days(forYear: components.year, andForMont: components.month).count {
+            let date = dates.days(forYear: components.year, andForMont: components.month)[i]
+            if date == Int(formatter.string(from: currentDate)) {
+                let indexPath = IndexPath(row: i, section: 0)
+                self.dayCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
                 break
             }
         }
@@ -766,15 +861,6 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
                 components.hour = hour + 12
             }
         }
-        
-        if let selected = calendar.date(from: components) {
-            if selected.compare(minimumDate) == .orderedAscending {
-                selectedDate = minimumDate
-                resetTime()
-            } else {
-                selectedDate = selected
-            }
-        }
     }
     
 }
@@ -785,26 +871,57 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dates.count
+        if dates.count > 0, collectionView.accessibilityIdentifier == "dayCollectionView" {
+            print("days:  " + String(self.dates.days(forYear: components.year, andForMont: components.month).count))
+            return self.dates.days(forYear: components.year, andForMont: components.month).count
+        } else if dates.count > 0, collectionView.accessibilityIdentifier == "yearCollectionView" {
+            print("years: " + String(self.dates.years().count))
+            return self.dates.years().count
+        } else if dates.count > 0, collectionView.accessibilityIdentifier == "monthCollectionView" {
+            print("month: " + String(self.dates.months(forYear: components.year).count))
+            return self.dates.months(forYear: components.year).count
+        }
+        return 0
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if includeMonth {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! FullDateCollectionViewCell
-            let date = dates[indexPath.item]
-            cell.populateItem(date: date, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
-
-            return cell
-        }
-        else {
+        
+        if collectionView.accessibilityIdentifier == "dayCollectionView" {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
-            let date = dates[indexPath.item]
-            cell.populateItem(date: date, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
-
+            let date = dates.days(forYear: components.year, andForMont: components.month)[indexPath.item]
+            cell.populateItem(collectionView: collectionView, year: date, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
+            return cell
+            
+        } else if collectionView.accessibilityIdentifier == "yearCollectionView" {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
+            let date = dates.years()[indexPath.item]
+            cell.populateItem(collectionView: collectionView, year: date, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
+            return cell
+        } else if collectionView.accessibilityIdentifier == "monthCollectionView" {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
+            let date = dates.months(forYear: components.year)[indexPath.item]
+            cell.populateItem(collectionView: collectionView, year: date, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
             return cell
         }
+        
+        
+        
+        return UICollectionViewCell()
     }
     
+    fileprivate func setSelectedComponent(_ collectionView: UICollectionView, _ indexPath: IndexPath) {
+        if collectionView.accessibilityIdentifier == "dayCollectionView" {
+            components.day = self.dates.days(forYear: components.year, andForMont: components.month)[indexPath.item]
+        } else if collectionView.accessibilityIdentifier == "yearCollectionView" {
+            components.year = self.dates.years()[indexPath.item]
+            self.monthCollectionView.reloadData()
+        } else if collectionView.accessibilityIdentifier == "monthCollectionView" {
+            components.month = self.dates.months(forYear: components.year)[indexPath.item]
+            self.dayCollectionView.reloadData()
+        }
+        updateCollectionView(to: self.selectedDate)
+    }
+
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         //workaround to center to every cell including ones near margins
         if let cell = collectionView.cellForItem(at: indexPath) {
@@ -812,20 +929,22 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
             collectionView.setContentOffset(offset, animated: true)
         }
         
+        setSelectedComponent(collectionView, indexPath)
+
         // update selected dates
-        let date = dates[indexPath.item]
-        let dayComponent = calendar.dateComponents([.day, .month, .year], from: date)
-        components.day = dayComponent.day
-        components.month = dayComponent.month
-        components.year = dayComponent.year
-        if let selected = calendar.date(from: components) {
-            if selected.compare(minimumDate) == .orderedAscending {
-                selectedDate = minimumDate
-                resetTime()
-            } else {
-                selectedDate = selected
-            }
-        }
+//        let date = dates[indexPath.item]
+//        let dayComponent = calendar.dateComponents([.day, .month, .year], from: date)
+//        components.day = daypo Component.day
+//        components.month = dayComponent.month
+//        components.year = dayComponent.year
+//        if let selected = calendar.date(from: components) {
+//            if selected.compare(minimumDate) == .orderedAscending {
+//                selectedDate = minimumDate
+//                resetTime()
+//            } else {
+//                selectedDate = selected
+//            }
+//        }
     }
     
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -851,19 +970,7 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
                 }
                 
                 // update selected date
-                let date = dates[indexPath.item]
-                let dayComponent = calendar.dateComponents([.day, .month, .year], from: date)
-                components.day = dayComponent.day
-                components.month = dayComponent.month
-                components.year = dayComponent.year
-                if let selected = calendar.date(from: components) {
-                    if selected.compare(minimumDate) == .orderedAscending {
-                        selectedDate = minimumDate
-                        resetTime()
-                    } else {
-                        selectedDate = selected
-                    }
-                }
+                setSelectedComponent(collectionView, indexPath)
             }
         } else if let tableView = scrollView as? UITableView {
             
