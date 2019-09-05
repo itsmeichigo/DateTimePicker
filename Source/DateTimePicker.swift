@@ -78,7 +78,38 @@ public protocol DateTimePickerDelegate: class {
     }
     
     /// selected date when picker is displayed, default to current date
-    public var selectedDate: Date = Date() {
+    fileprivate func dateShouldExluded() {
+        for exludeDate in self.exludeDates {
+            let ifItIsADateWhichIsExluded: Bool = exludeDate.day() == selectedDate.day() && exludeDate.year() == selectedDate.year() && exludeDate.month() == selectedDate.month()
+
+            if ifItIsADateWhichIsExluded {
+                guard let distanceToMaximum = selectedDate.totalDistance(from: maximumDate, resultIn: .second) else {
+                    selectedDate = minimumDate
+                    return
+                }
+                guard let distanceToMinimum = minimumDate.totalDistance(from: selectedDate, resultIn: .second) else {
+                    selectedDate = maximumDate
+                    return
+                }
+                if max(distanceToMaximum, distanceToMinimum) == distanceToMaximum {
+                    if let nextDay = selectedDate.getNexDay(), nextDay.compare(self.maximumDate) == .orderedAscending {
+                        selectedDate = nextDay
+                    } else {
+                        selectedDate = minimumDate
+                    }
+                } else {
+                    if let previousDay = selectedDate.getPreviousDay(), previousDay.compare(self.minimumDate) == .orderedDescending {
+                        selectedDate = previousDay
+                    } else {
+                        selectedDate = maximumDate
+                    }
+                }
+                components = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: selectedDate)
+            }
+        }
+    }
+
+    var selectedDate: Date = Date() {
         didSet {
 
             if minimumDate.compare(selectedDate) == .orderedDescending {
@@ -88,15 +119,18 @@ public protocol DateTimePickerDelegate: class {
             if selectedDate.compare(maximumDate) == .orderedDescending {
                 selectedDate = maximumDate
             }
+
+            dateShouldExluded()
+
             self.delegate?.dateTimePicker(self, didSelectDate: selectedDate)
             resetDateTitle()
             
             if selectedDate == minimumDate || selectedDate == maximumDate {
                 reloadAllCollectionViews()
+                updateCollectionView(to: self.selectedDate)
                 resetTime()
             }
 
-            updateCollectionView(to: self.selectedDate)
         }
     }
 
@@ -109,7 +143,7 @@ public protocol DateTimePickerDelegate: class {
     }
     
     /// custom date format to be displayed, default to HH:mm dd/MM/YYYY
-    public var dateFormat = "HH:mm dd/MM/YYYY" {
+    public var dateFormat = "dd.MM.YYYY HH:mm" {
         didSet {
             resetDateTitle()
         }
@@ -205,7 +239,7 @@ public protocol DateTimePickerDelegate: class {
     internal var maximumDate: Date!
     
     internal var calendar: Calendar = .current
-    internal var dates: [Date]! = []
+    internal var exludeDates: [Date]! = []
     internal var components: DateComponents! {
         didSet {
             components.timeZone = timeZone
@@ -222,12 +256,26 @@ public protocol DateTimePickerDelegate: class {
         }
     }
     
-    @objc open class func create(minimumDate: Date? = nil, maximumDate: Date? = nil) -> DateTimePicker {
+    @objc open class func create(minimumDate: Date? = nil,
+                                 maximumDate: Date? = nil,
+                                 exludeDates: [Date]? = nil,
+                                 dateFormat: String = "dd.MM.YYYY HH:mm",
+                                 doneButtonTitle: String = "Done",
+                                 highlightColor: UIColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1),
+                                 doneBackgroundColor: UIColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1),
+                                 darkColor: UIColor = UIColor.darkGray) -> DateTimePicker {
         
         let dateTimePicker = DateTimePicker()
         dateTimePicker.minimumDate = minimumDate ?? Date(timeIntervalSinceNow: -3600 * 24 * 1000)
         dateTimePicker.maximumDate = maximumDate ?? Date(timeIntervalSinceNow: 3600 * 24 * 1000)
         assert(dateTimePicker.minimumDate.compare(dateTimePicker.maximumDate) == .orderedAscending, "Minimum date should be earlier than maximum date")
+        dateTimePicker.exludeDates = exludeDates
+        dateTimePicker.dateFormat = dateFormat
+        dateTimePicker.doneButtonTitle = doneButtonTitle
+        dateTimePicker.highlightColor = highlightColor
+        dateTimePicker.doneBackgroundColor = doneBackgroundColor
+        dateTimePicker.darkColor = darkColor
+        dateTimePicker.components = dateTimePicker.calendar.dateComponents([.year, .month, .day, .hour, .minute], from: dateTimePicker.selectedDate)
         dateTimePicker.configureView()
         return dateTimePicker
     }
@@ -626,22 +674,8 @@ public protocol DateTimePickerDelegate: class {
         separatorBottomView.widthAnchor.constraint(equalToConstant: 90 - extraSpace * 2).isActive = true
         
         // fill date
-        fillDates(fromDate: minimumDate, toDate: maximumDate)
+        //fillDates(fromDate: minimumDate, toDate: maximumDate)
 
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/YYYY"
-        for i in 0..<dates.count {
-            let date = dates[i]
-            if formatter.string(from: date) == formatter.string(from: selectedDate) {
-                let indexPath: IndexPath = IndexPath(row: i, section: 0)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
-                    if self.dayCollectionView.numberOfItems(inSection: 0) >= indexPath.row {
-                        self.dayCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
-                    }
-                })
-                break
-            }
-        }
         components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: selectedDate)
         contentView.isHidden = false
         
@@ -653,6 +687,8 @@ public protocol DateTimePickerDelegate: class {
     @objc
     func setToday() {
         selectedDate = Date()
+        components = calendar.dateComponents([.day, .month, .year, .hour, .minute], from: selectedDate)
+        reloadAllCollectionViews()
         resetTime()
     }
     
@@ -673,11 +709,11 @@ public protocol DateTimePickerDelegate: class {
                     expectedRow = 23
                 }
             }
-            hourTableView.selectRow(at: IndexPath(row: expectedRow, section: 0), animated: true, scrollPosition: .middle)
+            hourTableView?.selectRow(at: IndexPath(row: expectedRow, section: 0), animated: true, scrollPosition: .middle)
             if hour >= 12 {
-                amPmTableView.selectRow(at: IndexPath(row: 1, section: 0), animated: true, scrollPosition: .middle)
+                amPmTableView?.selectRow(at: IndexPath(row: 1, section: 0), animated: true, scrollPosition: .middle)
             } else {
-                amPmTableView.selectRow(at: IndexPath(row: 0, section: 0), animated: true, scrollPosition: .middle)
+                amPmTableView?.selectRow(at: IndexPath(row: 0, section: 0), animated: true, scrollPosition: .middle)
             }
         }
         
@@ -687,7 +723,7 @@ public protocol DateTimePickerDelegate: class {
                 expectedRow = expectedRow == 0 ? 120 : expectedRow + 60 // workaround for issue when minute = 0
             }
             
-            minuteTableView.selectRow(at: IndexPath(row: expectedRow, section: 0), animated: true, scrollPosition: .middle)
+            minuteTableView?.selectRow(at: IndexPath(row: expectedRow, section: 0), animated: true, scrollPosition: .middle)
         }
     }
     
@@ -698,59 +734,45 @@ public protocol DateTimePickerDelegate: class {
         
         dateTitleLabel.text = selectedDateString
     }
-    
-    func fillDates(fromDate: Date, toDate: Date) {
-        
-        var dates: [Date] = []
-        var days = DateComponents()
-        
-        var dayCount = 0
-        repeat {
-            days.day = dayCount
-            dayCount += 1
-            guard let date = calendar.date(byAdding: days, to: fromDate) else {
-                break;
-            }
-            if date.compare(toDate) == .orderedDescending {
-                break
-            }
-            dates.append(date)
-        } while (true)
-        
-        self.dates = dates
-        reloadAllCollectionViews()
-        
-        if let index = self.dates.firstIndex(of: selectedDate) {
-            dayCollectionView.selectItem(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .centeredHorizontally)
-        }
-    }
-    
+
     func updateCollectionView(to currentDate: Date) {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy"
-        for i in 0..<dates.years().count {
-            let date = dates.years()[i]
+        for i in 0..<yearsSource().count {
+            let date = yearsSource()[i]
             if date == Int(formatter.string(from: currentDate)) {
                 let indexPath = IndexPath(row: i, section: 0)
-                self.yearCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+                if let numberOfAvailableRows = yearCollectionView?.numberOfItems(inSection: 0), numberOfAvailableRows > indexPath.row {
+                    self.yearCollectionView?.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+                } else {
+                    print("error somewhere ? tried to select row" + String(indexPath.row) + " for yearCollectionView")
+                }
                 break
             }
         }
         formatter.dateFormat = "MM"
-        for i in 0..<dates.months(forYear: components.year).count {
-            let date = dates.months(forYear: components.year)[i]
+        for i in 0..<monthSource().count {
+            let date = monthSource()[i]
             if date == Int(formatter.string(from: currentDate)) {
                 let indexPath = IndexPath(row: i, section: 0)
-                self.monthCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+                if let numberOfAvailableRows = monthCollectionView?.numberOfItems(inSection: 0), numberOfAvailableRows > indexPath.row {
+                    self.monthCollectionView?.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+                } else {
+                    print("error somewhere ? tried to select row" + String(indexPath.row) + " for monthCollectionView")
+                }
                 break
             }
         }
         formatter.dateFormat = "dd"
-        for i in 0..<dates.days(forYear: components.year, andForMont: components.month).count {
-            let date = dates.days(forYear: components.year, andForMont: components.month)[i]
+        for i in 0..<daysSource(forMonth: components?.month, andYear: components?.year).count {
+            let date = daysSource(forMonth: components?.month, andYear: components?.year)[i]
             if date == Int(formatter.string(from: currentDate)) {
                 let indexPath = IndexPath(row: i, section: 0)
-                self.dayCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+                if let numberOfAvailableRows = dayCollectionView?.numberOfItems(inSection: 0), numberOfAvailableRows > indexPath.row {
+                    self.dayCollectionView?.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
+                } else {
+                    print("error somewhere ? tried to select row" + String(indexPath.row) + " for dayCollectionView")
+                }
                 break
             }
         }
@@ -767,6 +789,57 @@ public protocol DateTimePickerDelegate: class {
         completionHandler?(selectedDate)
         modalCloseHandler?()
         dismissHandler?()
+    }
+
+
+    fileprivate func daysSource(forMonth month: Int?, andYear year: Int?) -> [Int] {
+        let exludeDays = self.exludeDates.days(forYear: year, andForMont: month)
+        var allDaysInMonthInYear = Array(1...Date.countOfDaysInMonth(year: year, month: month))
+        allDaysInMonthInYear.removeAll { (day) -> Bool in
+            return exludeDays.contains(day)
+        }
+        allDaysInMonthInYear.removeAll { (day) -> Bool in
+            guard let date = Date.date(year: year, month: month, day: day, hour: components?.hour, minute: components?.minute, second: components?.second) else {
+                return false
+            }
+            if self.maximumDate.year() == date.year() && self.maximumDate.month() == date.month() && self.maximumDate.day() < date.day() {
+                return true
+            }
+            if self.minimumDate.year() == date.year() && self.minimumDate.month() == date.month() && self.minimumDate.day() > date.day() {
+                return true
+            }
+            return false
+        }
+        return allDaysInMonthInYear
+    }
+
+    fileprivate func monthSource() -> [Int] {
+        var months: [Int] = [1,2,3,4,5,6,7,8,9,10,11,12]
+        let excludedMonths = self.exludeDates.months(forYear: components?.year)
+        for exludedMonth in excludedMonths {
+            if self.daysSource(forMonth: exludedMonth, andYear: components?.year).count == 0 {
+                months.removeAll { (month) -> Bool in
+                    return month == exludedMonth
+                }
+            }
+        }
+        months.removeAll { (month) -> Bool in
+            guard let date = Date.date(year: components?.year, month: month, day: 15, hour: components?.hour, minute: components?.minute, second: components?.second) else {
+                return false
+            }
+            if self.maximumDate.year() == date.year() && self.maximumDate.month() < date.month() {
+                return true
+            }
+            if self.minimumDate.year() == date.year() && self.minimumDate.month() > date.month() {
+                return true
+            }
+            return false
+        }
+        return months
+    }
+
+    fileprivate func yearsSource() -> [Int] {
+        return Date.years(fromDate: self.minimumDate, toDate: self.maximumDate)
     }
 }
 
@@ -861,46 +934,51 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
                 components.hour = hour + 12
             }
         }
+        reloadAllCollectionViews()
     }
     
 }
 
 extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
+
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
-    
+
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if dates.count > 0, collectionView.accessibilityIdentifier == "dayCollectionView" {
-            print("days:  " + String(self.dates.days(forYear: components.year, andForMont: components.month).count))
-            return self.dates.days(forYear: components.year, andForMont: components.month).count
-        } else if dates.count > 0, collectionView.accessibilityIdentifier == "yearCollectionView" {
-            print("years: " + String(self.dates.years().count))
-            return self.dates.years().count
-        } else if dates.count > 0, collectionView.accessibilityIdentifier == "monthCollectionView" {
-            print("month: " + String(self.dates.months(forYear: components.year).count))
-            return self.dates.months(forYear: components.year).count
+        if collectionView.accessibilityIdentifier == "yearCollectionView" {
+            print("years: " + String(yearsSource().count))
+            return yearsSource().count
+        } else if collectionView.accessibilityIdentifier == "monthCollectionView" {
+            print("month: " + String(self.monthSource().count))
+            return self.monthSource().count
+        } else if collectionView.accessibilityIdentifier == "dayCollectionView" {
+            print("days:  " + String(daysSource(forMonth: components?.month, andYear: components?.year).count))
+            return daysSource(forMonth: components?.month, andYear: components?.year).count
         }
         return 0
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        if collectionView.accessibilityIdentifier == "dayCollectionView" {
+
+        if collectionView.accessibilityIdentifier == "yearCollectionView" {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
-            let date = dates.days(forYear: components.year, andForMont: components.month)[indexPath.item]
-            cell.populateItem(collectionView: collectionView, year: date, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
-            return cell
-            
-        } else if collectionView.accessibilityIdentifier == "yearCollectionView" {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
-            let date = dates.years()[indexPath.item]
-            cell.populateItem(collectionView: collectionView, year: date, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
+            let date = Date.years(fromDate: self.minimumDate, toDate: self.maximumDate)[indexPath.item]
+            cell.populateItem(title: nil, collectionView: collectionView, number: date, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
             return cell
         } else if collectionView.accessibilityIdentifier == "monthCollectionView" {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
-            let date = dates.months(forYear: components.year)[indexPath.item]
-            cell.populateItem(collectionView: collectionView, year: date, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
+            let number = self.monthSource()[indexPath.item]
+            let date = Date.date(year: components?.year, month: number, day: 15, hour: components?.hour, minute: components?.minute, second: components?.second)
+            let title = date?.monthName()
+            cell.populateItem(title: title, collectionView: collectionView, number: number, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
+            return cell
+        } else if collectionView.accessibilityIdentifier == "dayCollectionView" {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
+            let number = daysSource(forMonth: components?.month, andYear: components?.year)[indexPath.item]
+            let date = Date.date(year: components?.year, month: components?.month, day: number, hour: components?.hour, minute: components?.minute, second: components?.second)
+            let title = date?.weekDay()
+            cell.populateItem(title: title, collectionView: collectionView, number: number, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
             return cell
         }
         
@@ -911,14 +989,13 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
     
     fileprivate func setSelectedComponent(_ collectionView: UICollectionView, _ indexPath: IndexPath) {
         if collectionView.accessibilityIdentifier == "dayCollectionView" {
-            components.day = self.dates.days(forYear: components.year, andForMont: components.month)[indexPath.item]
+            components.day = daysSource(forMonth: components?.month, andYear: components?.year)[indexPath.item]
         } else if collectionView.accessibilityIdentifier == "yearCollectionView" {
-            components.year = self.dates.years()[indexPath.item]
-            self.monthCollectionView.reloadData()
+            components.year = self.yearsSource()[indexPath.item]
         } else if collectionView.accessibilityIdentifier == "monthCollectionView" {
-            components.month = self.dates.months(forYear: components.year)[indexPath.item]
-            self.dayCollectionView.reloadData()
+            components.month = self.monthSource()[indexPath.item]
         }
+        reloadAllCollectionViews()
         updateCollectionView(to: self.selectedDate)
     }
 

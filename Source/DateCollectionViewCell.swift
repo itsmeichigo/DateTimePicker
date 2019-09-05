@@ -47,41 +47,12 @@ class DateCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    func populateItem(collectionView: UICollectionView, date: Date, highlightColor: UIColor, darkColor: UIColor, locale: Locale) {
+    func populateItem(title: String?, collectionView: UICollectionView, number: Int, highlightColor: UIColor, darkColor: UIColor, locale: Locale) {
         self.highlightColor = highlightColor
         self.darkColor = darkColor
 
-        if collectionView.accessibilityIdentifier == "dayCollectionView" {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "EEEE"
-            dateFormatter.locale = locale
-            dayLabel.text = dateFormatter.string(from: date).uppercased()
-            dayLabel.textColor = isSelected == true ? .white : darkColor.withAlphaComponent(0.5)
-
-            let numberFormatter = DateFormatter()
-            numberFormatter.dateFormat = "d"
-            numberFormatter.locale = locale
-            numberLabel.text = numberFormatter.string(from: date)
-            numberLabel.textColor = isSelected == true ? .white : darkColor
-        } else if collectionView.accessibilityIdentifier == "yearCollectionView" {
-            let numberFormatter = DateFormatter()
-            numberFormatter.dateFormat = "YYYY"
-            numberFormatter.locale = locale
-            numberLabel.text = numberFormatter.string(from: date)
-            numberLabel.textColor = isSelected == true ? .white : darkColor
-        }
-
-
-        contentView.layer.borderColor = darkColor.withAlphaComponent(0.2).cgColor
-        contentView.backgroundColor = isSelected == true ? highlightColor : .white
-    }
-
-
-    func populateItem(collectionView: UICollectionView, year: Int, highlightColor: UIColor, darkColor: UIColor, locale: Locale) {
-        self.highlightColor = highlightColor
-        self.darkColor = darkColor
-
-        numberLabel.text = String(year)
+        dayLabel.text = title
+        numberLabel.text = String(number)
         numberLabel.textColor = isSelected == true ? .white : darkColor
 
         contentView.layer.borderColor = darkColor.withAlphaComponent(0.2).cgColor
