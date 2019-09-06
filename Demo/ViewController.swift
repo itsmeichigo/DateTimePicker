@@ -19,7 +19,7 @@ class ViewController: UIViewController, DateTimePickerDelegate {
             exludes.append(exlude)
         }
 
-        let picker = DateTimePicker.create(minimumDate: min, maximumDate: max, exludeDates: exludes)
+        let picker = DateTimePicker.create(minimumDate: min, maximumDate: max, exludeDates: [])
         
         // customize your picker
 //        picker.timeInterval = DateTimePicker.MinuteInterval.thirty

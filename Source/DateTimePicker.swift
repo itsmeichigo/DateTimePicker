@@ -79,7 +79,10 @@ public protocol DateTimePickerDelegate: class {
     
     /// selected date when picker is displayed, default to current date
     fileprivate func dateShouldExluded() {
-        for exludeDate in self.exludeDates {
+        guard let exludeDates = exludeDates else {
+            return
+        }
+        for exludeDate in exludeDates {
             let ifItIsADateWhichIsExluded: Bool = exludeDate.day() == selectedDate.day() && exludeDate.year() == selectedDate.year() && exludeDate.month() == selectedDate.month()
 
             if ifItIsADateWhichIsExluded {
@@ -239,7 +242,7 @@ public protocol DateTimePickerDelegate: class {
     internal var maximumDate: Date!
     
     internal var calendar: Calendar = .current
-    internal var exludeDates: [Date]! = []
+    internal var exludeDates: [Date]? = []
     internal var components: DateComponents! {
         didSet {
             components.timeZone = timeZone
@@ -258,6 +261,7 @@ public protocol DateTimePickerDelegate: class {
     
     @objc open class func create(minimumDate: Date? = nil,
                                  maximumDate: Date? = nil,
+                                 selectedDate: Date? = nil,
                                  exludeDates: [Date]? = nil,
                                  dateFormat: String = "dd.MM.YYYY HH:mm",
                                  doneButtonTitle: String = "Done",
@@ -269,6 +273,7 @@ public protocol DateTimePickerDelegate: class {
         dateTimePicker.minimumDate = minimumDate ?? Date(timeIntervalSinceNow: -3600 * 24 * 1000)
         dateTimePicker.maximumDate = maximumDate ?? Date(timeIntervalSinceNow: 3600 * 24 * 1000)
         assert(dateTimePicker.minimumDate.compare(dateTimePicker.maximumDate) == .orderedAscending, "Minimum date should be earlier than maximum date")
+        dateTimePicker.selectedDate = selectedDate ?? Date()
         dateTimePicker.exludeDates = exludeDates
         dateTimePicker.dateFormat = dateFormat
         dateTimePicker.doneButtonTitle = doneButtonTitle
@@ -793,10 +798,11 @@ public protocol DateTimePickerDelegate: class {
 
 
     fileprivate func daysSource(forMonth month: Int?, andYear year: Int?) -> [Int] {
-        let exludeDays = self.exludeDates.days(forYear: year, andForMont: month)
         var allDaysInMonthInYear = Array(1...Date.countOfDaysInMonth(year: year, month: month))
-        allDaysInMonthInYear.removeAll { (day) -> Bool in
-            return exludeDays.contains(day)
+        if let exludeDays = self.exludeDates?.days(forYear: year, andForMont: month) {
+            allDaysInMonthInYear.removeAll { (day) -> Bool in
+                return exludeDays.contains(day)
+            }
         }
         allDaysInMonthInYear.removeAll { (day) -> Bool in
             guard let date = Date.date(year: year, month: month, day: day, hour: components?.hour, minute: components?.minute, second: components?.second) else {
@@ -815,14 +821,17 @@ public protocol DateTimePickerDelegate: class {
 
     fileprivate func monthSource() -> [Int] {
         var months: [Int] = [1,2,3,4,5,6,7,8,9,10,11,12]
-        let excludedMonths = self.exludeDates.months(forYear: components?.year)
-        for exludedMonth in excludedMonths {
-            if self.daysSource(forMonth: exludedMonth, andYear: components?.year).count == 0 {
-                months.removeAll { (month) -> Bool in
-                    return month == exludedMonth
+
+        if let excludedMonths = self.exludeDates?.months(forYear: components?.year) {
+            for exludedMonth in excludedMonths {
+                if self.daysSource(forMonth: exludedMonth, andYear: components?.year).count == 0 {
+                    months.removeAll { (month) -> Bool in
+                        return month == exludedMonth
+                    }
                 }
             }
         }
+
         months.removeAll { (month) -> Bool in
             guard let date = Date.date(year: components?.year, month: month, day: 15, hour: components?.hour, minute: components?.minute, second: components?.second) else {
                 return false
