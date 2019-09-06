@@ -956,13 +956,10 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
 
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView.accessibilityIdentifier == "yearCollectionView" {
-            print("years: " + String(yearsSource().count))
             return yearsSource().count
         } else if collectionView.accessibilityIdentifier == "monthCollectionView" {
-            print("month: " + String(self.monthSource().count))
             return self.monthSource().count
         } else if collectionView.accessibilityIdentifier == "dayCollectionView" {
-            print("days:  " + String(daysSource(forMonth: components?.month, andYear: components?.year).count))
             return daysSource(forMonth: components?.month, andYear: components?.year).count
         }
         return 0
