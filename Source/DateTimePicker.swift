@@ -60,6 +60,12 @@ public protocol DateTimePickerDelegate: class {
             doneButton.backgroundColor = doneBackgroundColor
         }
     }
+    /// custom DONE button color, default to darkColor
+    public var contentViewBackgroundColor: UIColor? {
+        didSet {
+            contentView.backgroundColor = contentViewBackgroundColor
+        }
+    }
     
     /// custom background color for date cells
     public var daysBackgroundColor = UIColor(red: 239.0/255.0, green: 243.0/255.0, blue: 244.0/255.0, alpha: 1)
@@ -298,7 +304,7 @@ public protocol DateTimePickerDelegate: class {
         contentView.layer.shadowOffset = CGSize(width: 0, height: -2.0)
         contentView.layer.shadowRadius = 1.5
         contentView.layer.shadowOpacity = 0.5
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = contentViewBackgroundColor ?? .white
         contentView.isHidden = true
         addSubview(contentView)
 		
