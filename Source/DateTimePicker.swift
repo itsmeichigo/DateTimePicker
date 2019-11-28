@@ -317,7 +317,7 @@ public protocol DateTimePickerDelegate: class {
         
         // title view
         let titleView = UIView(frame: CGRect.zero)
-        titleView.backgroundColor = .white
+        titleView.backgroundColor = contentViewBackgroundColor ?? .white
         contentView.addSubview(titleView)
         
         titleView.translatesAutoresizingMaskIntoConstraints = false
