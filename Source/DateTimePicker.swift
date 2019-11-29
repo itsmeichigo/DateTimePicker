@@ -23,6 +23,8 @@ public protocol DateTimePickerDelegate: class {
         case twenty = 20
         case thirty = 30
     }
+    /// custom normal color, default to white
+    public var normalColor = UIColor.white
     
     /// custom highlight color, default to cyan
     public var highlightColor = UIColor(red: 0/255.0, green: 199.0/255.0, blue: 194.0/255.0, alpha: 1) {
@@ -808,14 +810,14 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
         if includeMonth {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! FullDateCollectionViewCell
             let date = dates[indexPath.item]
-            cell.populateItem(date: date, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
+            cell.populateItem(date: date, highlightColor: highlightColor, normalColor: normalColor, darkColor: darkColor, locale: locale)
 
             return cell
         }
         else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
             let date = dates[indexPath.item]
-            cell.populateItem(date: date, highlightColor: highlightColor, darkColor: darkColor, locale: locale)
+            cell.populateItem(date: date, highlightColor: highlightColor, normalColor: normalColor, darkColor: darkColor, locale: locale)
 
             return cell
         }

@@ -13,6 +13,7 @@ class DateCollectionViewCell: UICollectionViewCell {
     var numberLabel: UILabel!
     var darkColor = UIColor(red: 0, green: 22.0/255.0, blue: 39.0/255.0, alpha: 1)
     var highlightColor = UIColor(red: 0/255.0, green: 199.0/255.0, blue: 194.0/255.0, alpha: 1)
+    var normalColor = UIColor.white
     
     override init(frame: CGRect) {
         
@@ -28,7 +29,7 @@ class DateCollectionViewCell: UICollectionViewCell {
         
         contentView.addSubview(dayLabel)
         contentView.addSubview(numberLabel)
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = normalColor
         contentView.layer.cornerRadius = 3
         contentView.layer.masksToBounds = true
         contentView.layer.borderWidth = 1
@@ -42,13 +43,14 @@ class DateCollectionViewCell: UICollectionViewCell {
         didSet {
             dayLabel.textColor = isSelected == true ? .white : darkColor.withAlphaComponent(0.5)
             numberLabel.textColor = isSelected == true ? .white : darkColor
-            contentView.backgroundColor = isSelected == true ? highlightColor : .white
+            contentView.backgroundColor = isSelected == true ? highlightColor : normalColor
             contentView.layer.borderWidth = isSelected == true ? 0 : 1
         }
     }
     
-    func populateItem(date: Date, highlightColor: UIColor, darkColor: UIColor, locale: Locale) {
+    func populateItem(date: Date, highlightColor: UIColor, normalColor: UIColor, darkColor: UIColor, locale: Locale) {
         self.highlightColor = highlightColor
+        self.normalColor = normalColor
         self.darkColor = darkColor
         
         let dateFormatter = DateFormatter()
@@ -64,7 +66,7 @@ class DateCollectionViewCell: UICollectionViewCell {
         numberLabel.textColor = isSelected == true ? .white : darkColor
         
         contentView.layer.borderColor = darkColor.withAlphaComponent(0.2).cgColor
-        contentView.backgroundColor = isSelected == true ? highlightColor : .white
+        contentView.backgroundColor = isSelected == true ? highlightColor : normalColor
     }
     
 }
