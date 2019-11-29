@@ -60,15 +60,25 @@ public protocol DateTimePickerDelegate: class {
             doneButton.backgroundColor = doneBackgroundColor
         }
     }
-    /// custom DONE button color, default to darkColor
+    /// custom Background Color Content Viewr, default to white
     public var contentViewBackgroundColor: UIColor? {
         didSet {
             contentView.backgroundColor = contentViewBackgroundColor
         }
     }
+    /// custom background color for title
+    public var titleBackgroundColor = UIColor.white {
+        didSet {
+            configureView()
+        }
+    }
     
     /// custom background color for date cells
-    public var daysBackgroundColor = UIColor(red: 239.0/255.0, green: 243.0/255.0, blue: 244.0/255.0, alpha: 1)
+    public var daysBackgroundColor = UIColor(red: 239.0/255.0, green: 243.0/255.0, blue: 244.0/255.0, alpha: 1) {
+        didSet {
+            configureView()
+        }
+    }
 	
     /// date locale (language displayed), default to device's locale
     public var locale = Locale.current {
@@ -317,7 +327,7 @@ public protocol DateTimePickerDelegate: class {
         
         // title view
         let titleView = UIView(frame: CGRect.zero)
-        titleView.backgroundColor = contentViewBackgroundColor ?? .white
+        titleView.backgroundColor = titleBackgroundColor
         contentView.addSubview(titleView)
         
         titleView.translatesAutoresizingMaskIntoConstraints = false
