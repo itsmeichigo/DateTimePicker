@@ -63,7 +63,7 @@ public protocol DateTimePickerDelegate: class {
         }
     }
     /// custom Background Color Content Viewr, default to white
-    public var contentViewBackgroundColor: UIColor? {
+    public var contentViewBackgroundColor: UIColor = .white {
         didSet {
             contentView.backgroundColor = contentViewBackgroundColor
         }
@@ -316,7 +316,7 @@ public protocol DateTimePickerDelegate: class {
         contentView.layer.shadowOffset = CGSize(width: 0, height: -2.0)
         contentView.layer.shadowRadius = 1.5
         contentView.layer.shadowOpacity = 0.5
-        contentView.backgroundColor = contentViewBackgroundColor ?? .white
+        contentView.backgroundColor = contentViewBackgroundColor
         contentView.isHidden = true
         addSubview(contentView)
 		
@@ -466,6 +466,7 @@ public protocol DateTimePickerDelegate: class {
         hourTableView.delegate = self
         hourTableView.dataSource = self
         hourTableView.isHidden = isDatePickerOnly
+        hourTableView.backgroundColor = .clear
         contentView.addSubview(hourTableView)
 		
         hourTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -484,6 +485,7 @@ public protocol DateTimePickerDelegate: class {
         minuteTableView.delegate = self
         minuteTableView.dataSource = self
         minuteTableView.isHidden = isDatePickerOnly
+        minuteTableView.backgroundColor = .clear
         contentView.addSubview(minuteTableView)
         
         minuteTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -507,6 +509,7 @@ public protocol DateTimePickerDelegate: class {
         amPmTableView.delegate = self
         amPmTableView.dataSource = self
         amPmTableView.isHidden = !is12HourFormat || isDatePickerOnly
+        amPmTableView.backgroundColor = .clear
         contentView.addSubview(amPmTableView)
         
         amPmTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -523,6 +526,7 @@ public protocol DateTimePickerDelegate: class {
         colonLabel1.text = ":"
         colonLabel1.font = UIFont.boldSystemFont(ofSize: 18)
         colonLabel1.textColor = highlightColor
+        colonLabel1.backgroundColor = .clear
         colonLabel1.textAlignment = .center
         colonLabel1.isHidden = isDatePickerOnly
         contentView.addSubview(colonLabel1)
@@ -535,6 +539,7 @@ public protocol DateTimePickerDelegate: class {
         colonLabel2.text = ":"
         colonLabel2.font = UIFont.boldSystemFont(ofSize: 18)
         colonLabel2.textColor = highlightColor
+        colonLabel2.backgroundColor = .clear
         colonLabel2.textAlignment = .center
         colonLabel2.isHidden = !is12HourFormat || isDatePickerOnly
         contentView.addSubview(colonLabel2)
@@ -717,6 +722,7 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "timeCell") ?? UITableViewCell(style: .default, reuseIdentifier: "timeCell")
         
         cell.selectedBackgroundView = UIView()
+        cell.backgroundColor = .clear
         cell.textLabel?.textAlignment = tableView == hourTableView ? .right : .left
         cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         cell.textLabel?.textColor = darkColor.withAlphaComponent(0.4)

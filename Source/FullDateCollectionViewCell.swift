@@ -17,10 +17,6 @@ class FullDateCollectionViewCell: UICollectionViewCell {
     var normalColor = UIColor.white
 
     override init(frame: CGRect) {
-        if #available(iOS 13.0, *) {
-            normalColor = UIColor.secondarySystemGroupedBackground
-        }
-
         dayLabel = UILabel(frame: CGRect(x: 5, y: 7, width: frame.width - 10, height: 20))
         dayLabel.font = UIFont.systemFont(ofSize: 10)
         dayLabel.textAlignment = .center
