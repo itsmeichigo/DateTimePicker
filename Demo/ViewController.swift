@@ -25,9 +25,19 @@ class ViewController: UIViewController, DateTimePickerDelegate {
 //        picker.isTimePickerOnly = true
         picker.includeMonth = true // if true the month shows at bottom of date cell
         picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
-        picker.darkColor = UIColor.darkGray
         picker.doneButtonTitle = "!! DONE DONE !!"
         picker.doneBackgroundColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
+        if #available(iOS 13.0, *) {
+            picker.normalColor = UIColor.secondarySystemGroupedBackground
+            picker.darkColor = UIColor.label
+            picker.contentViewBackgroundColor = UIColor.systemBackground
+            picker.daysBackgroundColor = UIColor.groupTableViewBackground
+            picker.titleBackgroundColor = UIColor.secondarySystemGroupedBackground
+        } else {
+            picker.normalColor = UIColor.white
+            picker.darkColor = UIColor.black
+            picker.contentViewBackgroundColor = UIColor.white
+        }
         picker.completionHandler = { date in
             let formatter = DateFormatter()
             formatter.dateFormat = "hh:mm aa dd/MM/YYYY"
