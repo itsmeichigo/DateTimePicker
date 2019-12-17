@@ -102,6 +102,7 @@ There are many options to customize picker for your own desire:
 - `darkColor`: custom dark color, default to grey.
 - `doneBackgroundColor`: custom DONE button color, default to darkColor.
 - `daysBackgroundColor`: custom background color for date cells.
+- `customFontSetting`: custom font settings for all labels in the component.
 
 
 ## Contributing
