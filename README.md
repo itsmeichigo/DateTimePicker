@@ -14,6 +14,7 @@ A nicer iOS UI component for picking date and time.
 - (v1.3) Constraint-based UI
 - (v2.0) Now you can create picker view as a separate view!
 - (v2.1.0) Carthage is now supported (a bit late - sorry)
+- (v2.3.0) Options to select custom font and colors
 
 ## To-dos (HELP NEEDED! 🎯)
 
