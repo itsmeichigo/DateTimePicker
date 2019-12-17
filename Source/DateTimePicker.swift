@@ -15,6 +15,46 @@ public protocol DateTimePickerDelegate: class {
 @objc public class DateTimePicker: UIView {
     
     var contentHeight: CGFloat = 330
+    
+    public struct CustomFontSetting {
+        let cancelButtonFont: UIFont
+        let todayButtonFont: UIFont
+        let doneButtonFont: UIFont
+        let selectedDateLabelFont: UIFont
+        let timeLabelFont: UIFont
+        let colonLabelFont: UIFont
+        let dateCellNumberLabelFont: UIFont
+        let dateCellDayMonthLabelFont: UIFont
+        
+        static let `default` = CustomFontSetting(
+            cancelButtonFont: .boldSystemFont(ofSize: 15),
+            todayButtonFont: .boldSystemFont(ofSize: 15),
+            doneButtonFont: .boldSystemFont(ofSize: 13),
+            selectedDateLabelFont: .systemFont(ofSize: 15),
+            timeLabelFont: .boldSystemFont(ofSize: 18),
+            colonLabelFont: .boldSystemFont(ofSize: 18),
+            dateCellNumberLabelFont: .systemFont(ofSize: 25),
+            dateCellDayMonthLabelFont: .systemFont(ofSize: 10))
+        
+        public init(cancelButtonFont: UIFont = .boldSystemFont(ofSize: 15),
+            todayButtonFont: UIFont = .boldSystemFont(ofSize: 15),
+            doneButtonFont: UIFont = .boldSystemFont(ofSize: 13),
+            selectedDateLabelFont: UIFont = .systemFont(ofSize: 15),
+            timeLabelFont: UIFont = .boldSystemFont(ofSize: 18),
+            colonLabelFont: UIFont = .boldSystemFont(ofSize: 18),
+            dateCellNumberLabelFont: UIFont = .systemFont(ofSize: 25),
+            dateCellDayMonthLabelFont: UIFont = .systemFont(ofSize: 10)) {
+            self.cancelButtonFont = cancelButtonFont
+            self.todayButtonFont = todayButtonFont
+            self.doneButtonFont = doneButtonFont
+            self.selectedDateLabelFont = selectedDateLabelFont
+            self.timeLabelFont = timeLabelFont
+            self.colonLabelFont = colonLabelFont
+            self.dateCellNumberLabelFont = dateCellNumberLabelFont
+            self.dateCellDayMonthLabelFont = dateCellDayMonthLabelFont
+        }
+    }
+    
     @objc public enum MinuteInterval: Int {
         case `default` = 1
         case five = 5
@@ -23,6 +63,14 @@ public protocol DateTimePickerDelegate: class {
         case twenty = 20
         case thirty = 30
     }
+    
+    /// custom font settings
+    public var customFontSetting: CustomFontSetting = .default {
+        didSet {
+            configureView()
+        }
+    }
+
     /// custom normal color, default to white
     public var normalColor = UIColor.white
     
@@ -340,9 +388,9 @@ public protocol DateTimePickerDelegate: class {
         titleView.layoutMargins = UIEdgeInsets.init(top: 0, left: 20, bottom: 0, right: 20)
         
         dateTitleLabel = UILabel(frame: CGRect.zero)
-        dateTitleLabel.font = UIFont.systemFont(ofSize: 15)
         dateTitleLabel.textColor = darkColor
         dateTitleLabel.textAlignment = .center
+        dateTitleLabel.font = customFontSetting.selectedDateLabelFont
         resetDateTitle()
         titleView.addSubview(dateTitleLabel)
         
@@ -350,14 +398,14 @@ public protocol DateTimePickerDelegate: class {
         dateTitleLabel.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
         dateTitleLabel.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
         
-	let isRTL = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
+        let isRTL = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
 
         cancelButton = UIButton(type: .system)
         cancelButton.setTitle(cancelButtonTitle, for: .normal)
         cancelButton.setTitleColor(darkColor.withAlphaComponent(0.5), for: .normal)
         cancelButton.contentHorizontalAlignment = isRTL ? .right : .left
         cancelButton.addTarget(self, action: #selector(DateTimePicker.dismissView(sender:)), for: .touchUpInside)
-        cancelButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
+        cancelButton.titleLabel?.font = customFontSetting.cancelButtonFont
         titleView.addSubview(cancelButton)
         
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
@@ -371,7 +419,7 @@ public protocol DateTimePickerDelegate: class {
         todayButton.setTitleColor(highlightColor, for: .normal)
         todayButton.addTarget(self, action: #selector(DateTimePicker.setToday), for: .touchUpInside)
         todayButton.contentHorizontalAlignment = isRTL ? .left : .right
-        todayButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
+        todayButton.titleLabel?.font = customFontSetting.todayButtonFont
         todayButton.isHidden = self.minimumDate.compare(Date()) == .orderedDescending || self.maximumDate.compare(Date()) == .orderedAscending
         titleView.addSubview(todayButton)
         
@@ -444,7 +492,7 @@ public protocol DateTimePickerDelegate: class {
         doneButton.setTitle(doneButtonTitle, for: .normal)
         doneButton.setTitleColor(.white, for: .normal)
         doneButton.backgroundColor = doneBackgroundColor ?? darkColor.withAlphaComponent(0.5)
-        doneButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
+        doneButton.titleLabel?.font = customFontSetting.doneButtonFont
         doneButton.layer.cornerRadius = 3
         doneButton.layer.masksToBounds = true
         doneButton.addTarget(self, action: #selector(DateTimePicker.donePicking(sender:)), for: .touchUpInside)
@@ -475,7 +523,6 @@ public protocol DateTimePickerDelegate: class {
         let extraSpace: CGFloat = is12HourFormat ? -30 : 0
         hourTableView.trailingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: extraSpace).isActive = true
         hourTableView.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        hourTableView.layoutIfNeeded()
         
         // minute table view
         minuteTableView = UITableView(frame: CGRect.zero, style: .plain)
@@ -494,7 +541,6 @@ public protocol DateTimePickerDelegate: class {
         minuteTableView.leadingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: extraSpace).isActive = true
         minuteTableView.widthAnchor.constraint(equalToConstant: 60).isActive = true
         
-        minuteTableView.layoutIfNeeded()
         if timeInterval != .default {
             minuteTableView.contentInset = UIEdgeInsets.init(top: minuteTableView.frame.height / 2, left: 0, bottom: minuteTableView.frame.height / 2, right: 0)
         } else {
@@ -517,14 +563,12 @@ public protocol DateTimePickerDelegate: class {
         amPmTableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor, constant: -8).isActive = true
         amPmTableView.leadingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -extraSpace).isActive = true
         amPmTableView.widthAnchor.constraint(equalToConstant: 64).isActive = true
-        
-        amPmTableView.layoutIfNeeded()
         amPmTableView.contentInset = UIEdgeInsets.init(top: amPmTableView.frame.height / 2, left: 0, bottom: amPmTableView.frame.height / 2, right: 0)
         
         // colon
         colonLabel1 = UILabel(frame: CGRect.zero)
         colonLabel1.text = ":"
-        colonLabel1.font = UIFont.boldSystemFont(ofSize: 18)
+        colonLabel1.font = customFontSetting.colonLabelFont
         colonLabel1.textColor = highlightColor
         colonLabel1.backgroundColor = .clear
         colonLabel1.textAlignment = .center
@@ -537,7 +581,7 @@ public protocol DateTimePickerDelegate: class {
         
         colonLabel2 = UILabel(frame: CGRect.zero)
         colonLabel2.text = ":"
-        colonLabel2.font = UIFont.boldSystemFont(ofSize: 18)
+        colonLabel1.font = customFontSetting.colonLabelFont
         colonLabel2.textColor = highlightColor
         colonLabel2.backgroundColor = .clear
         colonLabel2.textAlignment = .center
@@ -587,7 +631,6 @@ public protocol DateTimePickerDelegate: class {
         components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: selectedDate)
         contentView.isHidden = false
         
-		layoutIfNeeded()
         resetTime()
     }
     
@@ -724,7 +767,7 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         cell.selectedBackgroundView = UIView()
         cell.backgroundColor = .clear
         cell.textLabel?.textAlignment = tableView == hourTableView ? .right : .left
-        cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        cell.textLabel?.font = customFontSetting.timeLabelFont
         cell.textLabel?.textColor = darkColor.withAlphaComponent(0.4)
         cell.textLabel?.highlightedTextColor = highlightColor
         // add module operation to set value same
@@ -816,14 +859,24 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
         if includeMonth {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! FullDateCollectionViewCell
             let date = dates[indexPath.item]
-            cell.populateItem(date: date, highlightColor: highlightColor, normalColor: normalColor, darkColor: darkColor, locale: locale)
+            let style = FullDateCollectionViewCell.Style(highlightColor: highlightColor,
+                                                         normalColor: normalColor,
+                                                         darkColor: darkColor,
+                                                         dayLabelFont: customFontSetting.dateCellDayMonthLabelFont,
+                                                         numberLabelFont: customFontSetting.dateCellNumberLabelFont,
+                                                         monthLabelFont: customFontSetting.dateCellDayMonthLabelFont)
+            cell.populateItem(date: date, style: style, locale: locale)
 
             return cell
-        }
-        else {
+        } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
             let date = dates[indexPath.item]
-            cell.populateItem(date: date, highlightColor: highlightColor, normalColor: normalColor, darkColor: darkColor, locale: locale)
+            let style = DateCollectionViewCell.Style(highlightColor: highlightColor,
+                                                     normalColor: normalColor,
+                                                     darkColor: darkColor,
+                                                     dayLabelFont: customFontSetting.dateCellDayMonthLabelFont,
+                                                     numberLabelFont: customFontSetting.dateCellNumberLabelFont)
+            cell.populateItem(date: date, style: style, locale: locale)
 
             return cell
         }
@@ -889,6 +942,7 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
                     }
                 }
             }
+            
         } else if let tableView = scrollView as? UITableView {
             
             var selectedRow = 0

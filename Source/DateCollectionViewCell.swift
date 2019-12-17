@@ -9,6 +9,14 @@
 import UIKit
 
 class DateCollectionViewCell: UICollectionViewCell {
+    struct Style {
+        let highlightColor: UIColor
+        let normalColor: UIColor
+        let darkColor: UIColor
+        let dayLabelFont: UIFont
+        let numberLabelFont: UIFont
+    }
+    
     var dayLabel: UILabel! // rgb(128,138,147)
     var numberLabel: UILabel!
     var darkColor = UIColor(red: 0, green: 22.0/255.0, blue: 39.0/255.0, alpha: 1)
@@ -16,13 +24,10 @@ class DateCollectionViewCell: UICollectionViewCell {
     var normalColor = UIColor.white
     
     override init(frame: CGRect) {
-        
         dayLabel = UILabel(frame: CGRect(x: 5, y: 15, width: frame.width - 10, height: 20))
-        dayLabel.font = UIFont.systemFont(ofSize: 10)
         dayLabel.textAlignment = .center
     
         numberLabel = UILabel(frame: CGRect(x: 5, y: 30, width: frame.width - 10, height: 40))
-        numberLabel.font = UIFont.systemFont(ofSize: 25)
         numberLabel.textAlignment = .center
         
         super.init(frame: frame)
@@ -48,22 +53,24 @@ class DateCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func populateItem(date: Date, highlightColor: UIColor, normalColor: UIColor, darkColor: UIColor, locale: Locale) {
-        self.highlightColor = highlightColor
-        self.normalColor = normalColor
-        self.darkColor = darkColor
+    func populateItem(date: Date, style: Style, locale: Locale) {
+        self.highlightColor = style.highlightColor
+        self.normalColor = style.normalColor
+        self.darkColor = style.darkColor
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE"
         dateFormatter.locale = locale
         dayLabel.text = dateFormatter.string(from: date).uppercased()
         dayLabel.textColor = isSelected == true ? .white : darkColor.withAlphaComponent(0.5)
+        dayLabel.font = style.dayLabelFont
         
         let numberFormatter = DateFormatter()
         numberFormatter.dateFormat = "d"
         numberFormatter.locale = locale
         numberLabel.text = numberFormatter.string(from: date)
         numberLabel.textColor = isSelected == true ? .white : darkColor
+        numberLabel.font = style.numberLabelFont
         
         contentView.layer.borderColor = darkColor.withAlphaComponent(0.2).cgColor
         contentView.backgroundColor = isSelected == true ? highlightColor : normalColor

@@ -9,6 +9,16 @@
 import UIKit
 
 class FullDateCollectionViewCell: UICollectionViewCell {
+    
+    struct Style {
+        let highlightColor: UIColor
+        let normalColor: UIColor
+        let darkColor: UIColor
+        let dayLabelFont: UIFont
+        let numberLabelFont: UIFont
+        let monthLabelFont: UIFont
+    }
+    
     var monthLabel: UILabel!
     var dayLabel: UILabel! // rgb(128,138,147)
     var numberLabel: UILabel!
@@ -18,15 +28,12 @@ class FullDateCollectionViewCell: UICollectionViewCell {
 
     override init(frame: CGRect) {
         dayLabel = UILabel(frame: CGRect(x: 5, y: 7, width: frame.width - 10, height: 20))
-        dayLabel.font = UIFont.systemFont(ofSize: 10)
         dayLabel.textAlignment = .center
 
         numberLabel = UILabel(frame: CGRect(x: 5, y: 20, width: frame.width - 10, height: 40))
-        numberLabel.font = UIFont.systemFont(ofSize: 25)
         numberLabel.textAlignment = .center
 
         monthLabel = UILabel(frame: CGRect(x: 5, y: 53, width: frame.width - 10, height: 20))
-        monthLabel.font = UIFont.boldSystemFont(ofSize: 10)
         monthLabel.textAlignment = .center
         
         super.init(frame: frame)
@@ -54,28 +61,31 @@ class FullDateCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    func populateItem(date: Date, highlightColor: UIColor, normalColor: UIColor, darkColor: UIColor, locale: Locale) {
-        self.highlightColor = highlightColor
-        self.normalColor = normalColor
-        self.darkColor = darkColor
+    func populateItem(date: Date, style: Style, locale: Locale) {
+        self.highlightColor = style.highlightColor
+        self.normalColor = style.normalColor
+        self.darkColor = style.darkColor
 
         let mdateFormatter = DateFormatter()
         mdateFormatter.dateFormat = "MMMM"
         mdateFormatter.locale = locale
         monthLabel.text = mdateFormatter.string(from: date)
         monthLabel.textColor = isSelected == true ? .white : darkColor.withAlphaComponent(0.5)
+        monthLabel.font = style.monthLabelFont
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE"
         dateFormatter.locale = locale
         dayLabel.text = dateFormatter.string(from: date).uppercased()
         dayLabel.textColor = isSelected == true ? .white : darkColor.withAlphaComponent(0.5)
+        dayLabel.font = style.dayLabelFont
 
         let numberFormatter = DateFormatter()
         numberFormatter.dateFormat = "d"
         numberFormatter.locale = locale
         numberLabel.text = numberFormatter.string(from: date)
         numberLabel.textColor = isSelected == true ? .white : darkColor
+        numberLabel.font = style.numberLabelFont
 
         contentView.layer.borderColor = darkColor.withAlphaComponent(0.2).cgColor
         contentView.backgroundColor = isSelected == true ? highlightColor : normalColor
