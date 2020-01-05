@@ -563,7 +563,7 @@ public protocol DateTimePickerDelegate: class {
         amPmTableView.bottomAnchor.constraint(equalTo: doneButton.topAnchor, constant: -8).isActive = true
         amPmTableView.leadingAnchor.constraint(equalTo: contentView.centerXAnchor, constant: -extraSpace).isActive = true
         amPmTableView.widthAnchor.constraint(equalToConstant: 64).isActive = true
-        amPmTableView.contentInset = UIEdgeInsets.init(top: amPmTableView.frame.height / 2, left: 0, bottom: amPmTableView.frame.height / 2, right: 0)
+        amPmTableView.contentInset = UIEdgeInsets(top: 36, left: 0, bottom: 36, right: 0)
         
         // colon
         colonLabel1 = UILabel(frame: CGRect.zero)
@@ -634,11 +634,17 @@ public protocol DateTimePickerDelegate: class {
         resetTime()
     }
     
+    @objc
+    public func dismissView(sender: UIButton?=nil) {
+        modalCloseHandler?()
+        dismissHandler?()
+    }
     
     @objc
-    func setToday() {
-        selectedDate = Date()
-        resetTime()
+    public func donePicking(sender: UIButton?=nil) {
+        completionHandler?(selectedDate)
+        modalCloseHandler?()
+        dismissHandler?()
     }
     
     func resetTime() {
@@ -675,15 +681,9 @@ public protocol DateTimePickerDelegate: class {
             minuteTableView.selectRow(at: IndexPath(row: expectedRow, section: 0), animated: true, scrollPosition: .middle)
         }
     }
-    
-    private func resetDateTitle() {
-        guard dateTitleLabel != nil else {
-            return
-        }
-    
-        dateTitleLabel.text = selectedDateString
-    }
-    
+}
+
+private extension DateTimePicker {
     func fillDates(fromDate: Date, toDate: Date) {
         
         var dates: [Date] = []
@@ -718,7 +718,7 @@ public protocol DateTimePickerDelegate: class {
             if formatter.string(from: date) == formatter.string(from: currentDate) {
                 let indexPath = IndexPath(row: i, section: 0)
                 dayCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: { 
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
                     self.dayCollectionView.selectItem(at: indexPath, animated: true, scrollPosition: .centeredHorizontally)
                 })
                 
@@ -727,305 +727,17 @@ public protocol DateTimePickerDelegate: class {
         }
     }
     
-    @objc
-    public func dismissView(sender: UIButton?=nil) {
-        modalCloseHandler?()
-        dismissHandler?()
+    func resetDateTitle() {
+        guard dateTitleLabel != nil else {
+            return
+        }
+    
+        dateTitleLabel.text = selectedDateString
     }
     
     @objc
-    public func donePicking(sender: UIButton?=nil) {
-        completionHandler?(selectedDate)
-        modalCloseHandler?()
-        dismissHandler?()
-    }
-}
-
-extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
-    public func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if tableView == hourTableView {
-            // need triple of origin storage to scroll infinitely
-            return (is12HourFormat ? 12 : 24) * 3
-        } else if tableView == amPmTableView {
-            return 2
-        }
-        
-        if timeInterval != .default {
-            return 60 / timeInterval.rawValue
-        }
-        // need triple of origin storage to scroll infinitely
-        return 60 * 3
-    }
-    
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "timeCell") ?? UITableViewCell(style: .default, reuseIdentifier: "timeCell")
-        
-        cell.selectedBackgroundView = UIView()
-        cell.backgroundColor = .clear
-        cell.textLabel?.textAlignment = tableView == hourTableView ? .right : .left
-        cell.textLabel?.font = customFontSetting.timeLabelFont
-        cell.textLabel?.textColor = darkColor.withAlphaComponent(0.4)
-        cell.textLabel?.highlightedTextColor = highlightColor
-        // add module operation to set value same
-        if tableView == amPmTableView {
-            cell.textLabel?.text = (indexPath.row == 0) ? "AM" : "PM"
-        } else if tableView == minuteTableView{
-            if timeInterval == .default {
-                cell.textLabel?.text = String(format: "%02i", indexPath.row % 60)
-            } else {
-                cell.textLabel?.text = String(format: "%02i", indexPath.row * timeInterval.rawValue)
-            }
-            
-        } else {
-            if is12HourFormat {
-                cell.textLabel?.text = String(format: "%02i", (indexPath.row % 12) + 1)
-            } else {
-                cell.textLabel?.text = String(format: "%02i", indexPath.row % 24)
-            }
-        }
-        
-        
-        return cell
-    }
-    
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var selectedRow = indexPath.row
-        var shouldAnimate = true
-        
-        // adjust selected row number for inifinite scrolling
-        if selectedRow != adjustedRowForInfiniteScrolling(tableView: tableView, selectedRow: selectedRow) {
-            selectedRow = adjustedRowForInfiniteScrolling(tableView: tableView, selectedRow: selectedRow)
-            shouldAnimate = false
-        }
-        
-        tableView.selectRow(at: IndexPath(row: selectedRow, section: 0), animated: shouldAnimate, scrollPosition: .middle)
-        if tableView == hourTableView {
-            if is12HourFormat {
-                components.hour = indexPath.row < 12 ? indexPath.row + 1 : (indexPath.row - 12)%12 + 1
-                if let hour = components.hour,
-                    amPmTableView.indexPathForSelectedRow?.row == 0 && hour >= 12 {
-                    components.hour! -= 12
-                } else if let hour = components.hour,
-                    amPmTableView.indexPathForSelectedRow?.row == 1 && hour < 12 {
-                    components.hour! += 12
-                }
-            } else {
-                components.hour = indexPath.row < 24 ? indexPath.row : (indexPath.row - 24)%24
-            }
-            
-        } else if tableView == minuteTableView {
-            if timeInterval == .default {
-                components.minute = indexPath.row < 60 ? indexPath.row : (indexPath.row - 60)%60
-            } else {
-                components.minute = indexPath.row * timeInterval.rawValue
-            }
-            
-        } else if tableView == amPmTableView {
-            if let hour = components.hour,
-                indexPath.row == 0 && hour >= 12 {
-                components.hour = hour - 12
-            } else if let hour = components.hour,
-                indexPath.row == 1 && hour < 12 {
-                components.hour = hour + 12
-            }
-        }
-        
-        if let selected = calendar.date(from: components) {
-            if selected.compare(minimumDate) == .orderedAscending {
-                selectedDate = minimumDate
-                resetTime()
-            } else {
-                selectedDate = selected
-            }
-        }
-    }
-    
-}
-
-extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dates.count
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if includeMonth {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! FullDateCollectionViewCell
-            let date = dates[indexPath.item]
-            let style = FullDateCollectionViewCell.Style(highlightColor: highlightColor,
-                                                         normalColor: normalColor,
-                                                         darkColor: darkColor,
-                                                         dayLabelFont: customFontSetting.dateCellDayMonthLabelFont,
-                                                         numberLabelFont: customFontSetting.dateCellNumberLabelFont,
-                                                         monthLabelFont: customFontSetting.dateCellDayMonthLabelFont)
-            cell.populateItem(date: date, style: style, locale: locale)
-
-            return cell
-        } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
-            let date = dates[indexPath.item]
-            let style = DateCollectionViewCell.Style(highlightColor: highlightColor,
-                                                     normalColor: normalColor,
-                                                     darkColor: darkColor,
-                                                     dayLabelFont: customFontSetting.dateCellDayMonthLabelFont,
-                                                     numberLabelFont: customFontSetting.dateCellNumberLabelFont)
-            cell.populateItem(date: date, style: style, locale: locale)
-
-            return cell
-        }
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //workaround to center to every cell including ones near margins
-        if let cell = collectionView.cellForItem(at: indexPath) {
-            let offset = CGPoint(x: cell.center.x - collectionView.frame.width / 2, y: 0)
-            collectionView.setContentOffset(offset, animated: true)
-        }
-        
-        // update selected dates
-        let date = dates[indexPath.item]
-        let dayComponent = calendar.dateComponents([.day, .month, .year], from: date)
-        components.day = dayComponent.day
-        components.month = dayComponent.month
-        components.year = dayComponent.year
-        if let selected = calendar.date(from: components) {
-            if selected.compare(minimumDate) == .orderedAscending {
-                selectedDate = minimumDate
-                resetTime()
-            } else {
-                selectedDate = selected
-            }
-        }
-    }
-    
-    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        alignScrollView(scrollView)
-    }
-    
-    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            alignScrollView(scrollView)
-        }
-    }
-    
-    func alignScrollView(_ scrollView: UIScrollView) {
-        if let collectionView = scrollView as? UICollectionView {
-            let centerPoint = CGPoint(x: collectionView.center.x + collectionView.contentOffset.x, y: 50);
-            if let indexPath = collectionView.indexPathForItem(at: centerPoint) {
-                // automatically select this item and center it to the screen
-                // set animated = false to avoid unwanted effects
-                collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .top)
-                if let cell = collectionView.cellForItem(at: indexPath) {
-                    let offset = CGPoint(x: cell.center.x - collectionView.frame.width / 2, y: 0)
-                    collectionView.setContentOffset(offset, animated: false)
-                }
-                
-                // update selected date
-                let date = dates[indexPath.item]
-                let dayComponent = calendar.dateComponents([.day, .month, .year], from: date)
-                components.day = dayComponent.day
-                components.month = dayComponent.month
-                components.year = dayComponent.year
-                if let selected = calendar.date(from: components) {
-                    if selected.compare(minimumDate) == .orderedAscending {
-                        selectedDate = minimumDate
-                        resetTime()
-                    } else {
-                        selectedDate = selected
-                    }
-                }
-            }
-            
-        } else if let tableView = scrollView as? UITableView {
-            
-            var selectedRow = 0
-            if let firstVisibleCell = tableView.visibleCells.first,
-                tableView != amPmTableView {
-                var firstVisibleRow = 0
-                if tableView.contentOffset.y >= firstVisibleCell.frame.origin.y + tableView.rowHeight/2 - tableView.contentInset.top {
-                    firstVisibleRow = (tableView.indexPath(for: firstVisibleCell)?.row ?? 0) + 1
-                } else {
-                    firstVisibleRow = (tableView.indexPath(for: firstVisibleCell)?.row ?? 0)
-                }
-                if tableView == minuteTableView && timeInterval != .default {
-                    selectedRow = min(max(firstVisibleRow, 0), self.tableView(tableView, numberOfRowsInSection: 0)-1)
-                } else {
-                    selectedRow = firstVisibleRow + 1
-                }
-                
-                // adjust selected row number for inifinite scrolling
-                selectedRow = adjustedRowForInfiniteScrolling(tableView: tableView, selectedRow: selectedRow)
-                
-            } else if tableView == amPmTableView {
-                if -tableView.contentOffset.y > tableView.rowHeight/2 {
-                    selectedRow = 0
-                } else {
-                    selectedRow = 1
-                }
-            }
-            
-            tableView.selectRow(at: IndexPath(row: selectedRow, section: 0), animated: false, scrollPosition: .middle)
-            if tableView == hourTableView {
-                if is12HourFormat {
-                    components.hour = selectedRow < 12 ? selectedRow + 1 : (selectedRow - 12)%12 + 1
-                    if let hour = components.hour,
-                        amPmTableView.indexPathForSelectedRow?.row == 0 && hour >= 12 {
-                        components.hour! -= 12
-                    } else if let hour = components.hour,
-                        amPmTableView.indexPathForSelectedRow?.row == 1 && hour < 12 {
-                        components.hour! += 12
-                    }
-                } else {
-                    components.hour = selectedRow < 24 ? selectedRow : (selectedRow - 24)%24
-                }
-                
-            } else if tableView == minuteTableView {
-                if timeInterval == .default {
-                    components.minute = selectedRow < 60 ? selectedRow : (selectedRow - 60)%60
-                } else {
-                    components.minute = selectedRow * timeInterval.rawValue
-                }
-            } else if tableView == amPmTableView {
-                if let hour = components.hour,
-                    selectedRow == 0 && hour >= 12 {
-                    components.hour = hour - 12
-                } else if let hour = components.hour,
-                    selectedRow == 1 && hour < 12 {
-                    components.hour = hour + 12
-                }
-            }
-            
-            if let selected = calendar.date(from: components) {
-                if selected.compare(minimumDate) == .orderedAscending {
-                    selectedDate = minimumDate
-                    resetTime()
-                } else {
-                    selectedDate = selected
-                }
-                
-            }
-        }
-    }
-    
-    func adjustedRowForInfiniteScrolling(tableView: UITableView, selectedRow: Int) -> Int {
-        if tableView == minuteTableView &&
-            timeInterval != .default {
-            return selectedRow
-        }
-        
-        let numberOfRow = self.tableView(tableView, numberOfRowsInSection: 0)
-        if selectedRow == 1 {
-            return selectedRow + numberOfRow / 3
-        } else if selectedRow == numberOfRow - 2 {
-            return selectedRow - numberOfRow / 3
-        }
-        return selectedRow
+    func setToday() {
+        selectedDate = Date()
+        resetTime()
     }
 }
