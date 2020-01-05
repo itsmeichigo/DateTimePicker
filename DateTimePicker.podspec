@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "DateTimePicker"
-  s.version      = "2.3.0"
+  s.version      = "2.3.1"
   s.summary      = "A nicer iOS UI component for picking date and time."
 
   s.description  = "DateTimePicker makes it easy to select date and time with an attractive looking component."
