@@ -71,6 +71,10 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
         alignScrollView(scrollView)
     }
     
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        alignScrollView(scrollView)
+    }
+    
     func alignScrollView(_ scrollView: UIScrollView) {
         if let collectionView = scrollView as? UICollectionView {
             alignCollectionView(collectionView)

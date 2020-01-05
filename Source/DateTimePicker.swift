@@ -335,7 +335,9 @@ public protocol DateTimePickerDelegate: class {
             return
         }
         
-        self.resetTime()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            self?.resetTime()
+        }
     }
 	
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

@@ -40,7 +40,7 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         // add module operation to set value same
         if tableView == amPmTableView {
             cell.textLabel?.text = (indexPath.row == 0) ? "AM" : "PM"
-        } else if tableView == minuteTableView{
+        } else if tableView == minuteTableView {
             if timeInterval == .default {
                 cell.textLabel?.text = String(format: "%02i", indexPath.row % 60)
             } else {
@@ -123,6 +123,20 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         } else if selectedRow == numberOfRow - 2 {
             return selectedRow - numberOfRow / 3
         }
+        
+        if tableView == hourTableView,
+            is12HourFormat,
+            selectedRow > 12 * 3 - 1 {
+            return selectedRow - 12
+        } else if tableView == hourTableView,
+            !is12HourFormat,
+            selectedRow > 24 * 3 - 1 {
+            return selectedRow - 24
+        } else if tableView == minuteTableView,
+            selectedRow > 60 * 3 - 1 {
+            return selectedRow - 60
+        }
+        
         return selectedRow
     }
 }
