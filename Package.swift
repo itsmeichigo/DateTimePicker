@@ -4,6 +4,9 @@ import PackageDescription
 
 let package = Package(
     name: "DateTimePicker",
+    platforms: [
+        .iOS(.v9),
+    ],
     products: [
         .library(name: "DateTimePicker",  targets: ["DateTimePicker"])
     ],
