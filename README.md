@@ -2,7 +2,7 @@
 
 A nicer iOS UI component for picking date and time.
 
-<img src="https://raw.githubusercontent.com/itsmeichigo/DateTimePicker/master/screenshot.png" width="280">
+<img src="https://raw.githubusercontent.com/itsmeichigo/DateTimePicker/master/screenshot.jpg" width="280">
 
 ## Features
 
@@ -15,6 +15,7 @@ A nicer iOS UI component for picking date and time.
 - (v2.0) Now you can create picker view as a separate view!
 - (v2.1.0) Carthage is now supported (a bit late - sorry)
 - (v2.3.0) Options to select custom font and colors
+- (v2.4.0) Option to show seconds column
 
 ## To-dos (HELP NEEDED! 🎯)
 
@@ -26,7 +27,7 @@ A nicer iOS UI component for picking date and time.
 - For Swift 4.2 please use branch `swift4.2`
 - For Swift 4.1 please use branch `swift4.1`
 - For Swift 3.0 please use version 1.1.4
-- iOS 9 and later
+- iOS 10 and later
 
 ## Installation
 
@@ -49,6 +50,8 @@ Run `carthage update` to build the framework and drag the built `DateTimePicker.
 
 Drag and drop folder `Source` to your project.
 
+## Demo
+Navigation to folder named `DateTimePickerDemo`, run `pod install` and open the workspace file to play around with `DateTimePicker`.
 
 ## Usage
 
@@ -94,7 +97,8 @@ There are many options to customize picker for your own desire:
 - `is12HourFormat`: whether to display time in 12 hour format, default to false.
 - `isDatePickerOnly`: whether to only show date in picker view, default to false.
 - `isTimePickerOnly`: whether to show only time in picker view, default to false.
-- `includeMonth`: whether to include month in date cells, default to false.
+- `includesMonth`: whether to include month in date cells, default to false.
+- `includesSecond`: whether to show second in time selection, default to false.
 - `timeInterval`: time interval, in minutes, default to 1. If not default, infinite scrolling is off.
 - `timeZone`: timezone used in picker, default is device timezone.
 - `dismissHandler`: callback block when cancel button of picker view is tapped.
