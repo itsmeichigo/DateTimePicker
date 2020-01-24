@@ -247,12 +247,12 @@ public protocol DateTimePickerDelegate: class {
     public var dismissHandler: (() -> Void)?
     public weak var delegate: DateTimePickerDelegate?
 
-    // private vars
-    @IBOutlet internal var hourTableView: UITableView!
-    @IBOutlet internal var minuteTableView: UITableView!
-    @IBOutlet internal var secondTableView: UITableView!
-    @IBOutlet internal var amPmTableView: UITableView!
-    @IBOutlet internal var dayCollectionView: UICollectionView!
+    // internal & private vars
+    @IBOutlet var hourTableView: UITableView!
+    @IBOutlet var minuteTableView: UITableView!
+    @IBOutlet var secondTableView: UITableView!
+    @IBOutlet var amPmTableView: UITableView!
+    @IBOutlet var dayCollectionView: UICollectionView!
     
     @IBOutlet private var contentView: UIView!
     @IBOutlet private var titleView: UIView!
@@ -271,6 +271,8 @@ public protocol DateTimePickerDelegate: class {
     
     // constraints
     @IBOutlet private var contentViewHeight: NSLayoutConstraint!
+    @IBOutlet private var separatorBottomViewWidth: NSLayoutConstraint!
+    @IBOutlet private var separatorTopViewWidth: NSLayoutConstraint!
     
     private var modalCloseHandler: (() -> Void)?
     
@@ -494,10 +496,24 @@ public protocol DateTimePickerDelegate: class {
         colonLabel2.isHidden = isDatePickerOnly || !includesSecond
         
         // time separators
+        var separatorWidth: CGFloat = 0
+        switch (is12HourFormat, includesSecond) {
+        case (true, true):
+            separatorWidth = 260
+        case (true, false),
+             (false, true):
+            separatorWidth = 200
+        case (false, false):
+            separatorWidth = 130
+        }
+        
         separatorTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
         separatorTopView.isHidden = isDatePickerOnly || isTimePickerOnly
         separatorBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
         separatorBottomView.isHidden = isDatePickerOnly || isTimePickerOnly
+        
+        separatorBottomViewWidth.constant = separatorWidth
+        separatorTopViewWidth.constant = separatorWidth
 		
         // fill date
         fillDates(fromDate: minimumDate, toDate: maximumDate)

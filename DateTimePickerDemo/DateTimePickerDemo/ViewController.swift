@@ -21,7 +21,7 @@ class ViewController: UIViewController, DateTimePickerDelegate {
 //        picker.locale = Locale(identifier: "en_GB")
 
 //        picker.todayButtonTitle = "Today"
-        picker.is12HourFormat = true
+//        picker.is12HourFormat = true
         picker.dateFormat = "hh:mm:ss aa dd/MM/YYYY"
 //        picker.isDatePickerOnly = true
         picker.includesMonth = true

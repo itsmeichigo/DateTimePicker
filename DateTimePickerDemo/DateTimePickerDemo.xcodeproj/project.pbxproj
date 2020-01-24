@@ -7,19 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		28810CF32FFB35B04257DD5C /* Pods_DateTimePickerDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22735A5EEBCD495816B41D15 /* Pods_DateTimePickerDemo.framework */; };
 		DE20B6B923DAED4E009532AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE20B6B823DAED4E009532AE /* AppDelegate.swift */; };
 		DE20B6BB23DAED4E009532AE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE20B6BA23DAED4E009532AE /* SceneDelegate.swift */; };
 		DE20B6BD23DAED4E009532AE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE20B6BC23DAED4E009532AE /* ViewController.swift */; };
 		DE20B6C023DAED4E009532AE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE20B6BE23DAED4E009532AE /* Main.storyboard */; };
 		DE20B6C223DAED4F009532AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE20B6C123DAED4F009532AE /* Assets.xcassets */; };
 		DE20B6C523DAED4F009532AE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE20B6C323DAED4F009532AE /* LaunchScreen.storyboard */; };
+		E22D50EB60BA8AA204F28779 /* Pods_DateTimePickerDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6CB8EC9F5C5DC115652BF44 /* Pods_DateTimePickerDemo.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		22735A5EEBCD495816B41D15 /* Pods_DateTimePickerDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DateTimePickerDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9CE7C0402219BE5F4A7522C1 /* Pods-DateTimePickerDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DateTimePickerDemo.release.xcconfig"; path = "Target Support Files/Pods-DateTimePickerDemo/Pods-DateTimePickerDemo.release.xcconfig"; sourceTree = "<group>"; };
-		CF53683EB5604F4E092A6073 /* Pods-DateTimePickerDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DateTimePickerDemo.debug.xcconfig"; path = "Target Support Files/Pods-DateTimePickerDemo/Pods-DateTimePickerDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		1725C1971D6909D3FE075760 /* Pods-DateTimePickerDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DateTimePickerDemo.debug.xcconfig"; path = "Target Support Files/Pods-DateTimePickerDemo/Pods-DateTimePickerDemo.debug.xcconfig"; sourceTree = "<group>"; };
+		707DCD8D47ED73F2D0899720 /* Pods-DateTimePickerDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DateTimePickerDemo.release.xcconfig"; path = "Target Support Files/Pods-DateTimePickerDemo/Pods-DateTimePickerDemo.release.xcconfig"; sourceTree = "<group>"; };
+		D6CB8EC9F5C5DC115652BF44 /* Pods_DateTimePickerDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DateTimePickerDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE20B6B523DAED4E009532AE /* DateTimePickerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DateTimePickerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE20B6B823DAED4E009532AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DE20B6BA23DAED4E009532AE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -35,26 +35,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28810CF32FFB35B04257DD5C /* Pods_DateTimePickerDemo.framework in Frameworks */,
+				E22D50EB60BA8AA204F28779 /* Pods_DateTimePickerDemo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		88BABDDADCB446825A8CDF5B /* Frameworks */ = {
+		4FCA1C1BC396D57C4F555B65 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				22735A5EEBCD495816B41D15 /* Pods_DateTimePickerDemo.framework */,
+				D6CB8EC9F5C5DC115652BF44 /* Pods_DateTimePickerDemo.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		BAA7413F745FA139959D14A7 /* Pods */ = {
+		93C08B458CB71FBA9081A319 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				CF53683EB5604F4E092A6073 /* Pods-DateTimePickerDemo.debug.xcconfig */,
-				9CE7C0402219BE5F4A7522C1 /* Pods-DateTimePickerDemo.release.xcconfig */,
+				1725C1971D6909D3FE075760 /* Pods-DateTimePickerDemo.debug.xcconfig */,
+				707DCD8D47ED73F2D0899720 /* Pods-DateTimePickerDemo.release.xcconfig */,
 			);
 			name = Pods;
 			path = Pods;
@@ -65,8 +65,8 @@
 			children = (
 				DE20B6B723DAED4E009532AE /* DateTimePickerDemo */,
 				DE20B6B623DAED4E009532AE /* Products */,
-				BAA7413F745FA139959D14A7 /* Pods */,
-				88BABDDADCB446825A8CDF5B /* Frameworks */,
+				93C08B458CB71FBA9081A319 /* Pods */,
+				4FCA1C1BC396D57C4F555B65 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,11 +99,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DE20B6C923DAED4F009532AE /* Build configuration list for PBXNativeTarget "DateTimePickerDemo" */;
 			buildPhases = (
-				03FDB370535041C941C0CE02 /* [CP] Check Pods Manifest.lock */,
+				CA7FC7799E905A6613F9C5EF /* [CP] Check Pods Manifest.lock */,
 				DE20B6B123DAED4E009532AE /* Sources */,
 				DE20B6B223DAED4E009532AE /* Frameworks */,
 				DE20B6B323DAED4E009532AE /* Resources */,
-				A48045A47FB60D4CE1950943 /* [CP] Embed Pods Frameworks */,
+				0603E85816F39F7CC9A49065 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -161,7 +161,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		03FDB370535041C941C0CE02 /* [CP] Check Pods Manifest.lock */ = {
+		0603E85816F39F7CC9A49065 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DateTimePickerDemo/Pods-DateTimePickerDemo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-DateTimePickerDemo/Pods-DateTimePickerDemo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DateTimePickerDemo/Pods-DateTimePickerDemo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CA7FC7799E905A6613F9C5EF /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -181,23 +198,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A48045A47FB60D4CE1950943 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-DateTimePickerDemo/Pods-DateTimePickerDemo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-DateTimePickerDemo/Pods-DateTimePickerDemo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-DateTimePickerDemo/Pods-DateTimePickerDemo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -351,7 +351,7 @@
 		};
 		DE20B6CA23DAED4F009532AE /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CF53683EB5604F4E092A6073 /* Pods-DateTimePickerDemo.debug.xcconfig */;
+			baseConfigurationReference = 1725C1971D6909D3FE075760 /* Pods-DateTimePickerDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -369,7 +369,7 @@
 		};
 		DE20B6CB23DAED4F009532AE /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9CE7C0402219BE5F4A7522C1 /* Pods-DateTimePickerDemo.release.xcconfig */;
+			baseConfigurationReference = 707DCD8D47ED73F2D0899720 /* Pods-DateTimePickerDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;

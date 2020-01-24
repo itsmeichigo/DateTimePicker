@@ -206,7 +206,9 @@
                 <outlet property="minuteTableView" destination="Y8i-6h-Vwq" id="nyo-PG-1nl"/>
                 <outlet property="secondTableView" destination="TPi-88-rp3" id="dTJ-S4-NR3"/>
                 <outlet property="separatorBottomView" destination="K7h-lq-Fpy" id="Cmh-Br-rhd"/>
+                <outlet property="separatorBottomViewWidth" destination="c56-bS-553" id="WiZ-OB-bxM"/>
                 <outlet property="separatorTopView" destination="lVg-4m-JC2" id="qMO-pT-vYZ"/>
+                <outlet property="separatorTopViewWidth" destination="gxn-Gg-aN5" id="MSO-EP-WRc"/>
                 <outlet property="timeView" destination="XZO-Sz-2xy" id="7Zi-lE-bch"/>
                 <outlet property="titleView" destination="gWq-wF-qaT" id="aD5-80-bRL"/>
                 <outlet property="todayButton" destination="aFz-1K-pXz" id="h9R-Tv-MFY"/>
