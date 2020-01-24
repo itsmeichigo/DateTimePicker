@@ -1,0 +1,16 @@
+PODS:
+  - DateTimePicker (2.4.0)
+
+DEPENDENCIES:
+  - DateTimePicker (from `../`)
+
+EXTERNAL SOURCES:
+  DateTimePicker:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  DateTimePicker: 778c3d3d1e3b1d4172c46feb0a319e2b31a94879
+
+PODFILE CHECKSUM: a26e66cb94802972f6430185232278dc132b5b0e
+
+COCOAPODS: 1.8.4

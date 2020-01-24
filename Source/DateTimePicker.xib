@@ -9,7 +9,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="DateTimePicker" customModule="DateTimePicker" customModuleProvider="target">
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="DateTimePicker" customModule="DateTimePicker">
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -72,7 +72,7 @@
                                     <constraints>
                                         <constraint firstAttribute="height" constant="100" id="l86-YT-nae"/>
                                     </constraints>
-                                    <collectionViewLayout key="collectionViewLayout" id="3VZ-dd-SiT" customClass="StepCollectionViewFlowLayout" customModule="DateTimePicker" customModuleProvider="target"/>
+                                    <collectionViewLayout key="collectionViewLayout" id="3VZ-dd-SiT" customClass="StepCollectionViewFlowLayout" customModule="DateTimePicker"/>
                                 </collectionView>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6du-8S-6KX">
                                     <rect key="frame" x="0.0" y="101" width="414" height="1"/>

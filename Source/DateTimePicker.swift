@@ -285,9 +285,17 @@ public protocol DateTimePickerDelegate: class {
         }
     }
     
+    private static var resourceBundle: Bundle? {
+        let podBundle = Bundle(for: DateTimePicker.self)
+        guard let bundleURL = podBundle.url(forResource: "DateTimePicker", withExtension: "bundle") else {
+            return nil
+        }
+        return Bundle(url: bundleURL)
+    }
+    
     @objc open class func create(minimumDate: Date? = nil, maximumDate: Date? = nil) -> DateTimePicker {
         
-        guard let dateTimePicker = Bundle(for: DateTimePicker.self).loadNibNamed("DateTimePicker", owner: nil, options: nil)?.first as? DateTimePicker else {
+        guard let dateTimePicker = resourceBundle?.loadNibNamed("DateTimePicker", owner: nil, options: nil)?.first as? DateTimePicker else {
             fatalError("Error loading nib")
         }
         dateTimePicker.minimumDate = minimumDate ?? Date(timeIntervalSinceNow: -3600 * 24 * 10)
@@ -407,7 +415,7 @@ public protocol DateTimePickerDelegate: class {
             layout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
             layout.itemSize = CGSize(width: 75, height: 80)
         }
-        dayCollectionView.register(UINib(nibName: "FullDateCollectionViewCell", bundle: Bundle(for: FullDateCollectionViewCell.self)), forCellWithReuseIdentifier: "dateCell")
+        dayCollectionView.register(UINib(nibName: "FullDateCollectionViewCell", bundle: DateTimePicker.resourceBundle), forCellWithReuseIdentifier: "dateCell")
         dayCollectionView.dataSource = self
         dayCollectionView.delegate = self
         dayCollectionView.isHidden = isTimePickerOnly
@@ -418,7 +426,7 @@ public protocol DateTimePickerDelegate: class {
         // top & bottom borders on day collection view
         borderTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
         borderBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
-        borderBottomView.isHidden = isTimePickerOnly
+        borderBottomView.isHidden = isTimePickerOnly || isDatePickerOnly
         
         // done button
         doneButton.setTitle(doneButtonTitle, for: .normal)
@@ -487,10 +495,9 @@ public protocol DateTimePickerDelegate: class {
         
         // time separators
         separatorTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
-        separatorTopView.isHidden = isDatePickerOnly
-
+        separatorTopView.isHidden = isDatePickerOnly || isTimePickerOnly
         separatorBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
-        separatorBottomView.isHidden = isDatePickerOnly
+        separatorBottomView.isHidden = isDatePickerOnly || isTimePickerOnly
 		
         // fill date
         fillDates(fromDate: minimumDate, toDate: maximumDate)

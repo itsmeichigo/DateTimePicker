@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "DateTimePicker"
-  s.version      = "2.3.1"
+  s.version      = "2.4.0"
   s.summary      = "A nicer iOS UI component for picking date and time."
 
   s.description  = "DateTimePicker makes it easy to select date and time with an attractive looking component."
@@ -31,7 +31,7 @@ Pod::Spec.new do |s|
   #  the deployment target. You can optionally include the target after the platform.
   #
 
-  s.platform     = :ios, "9.0"
+  s.platform     = :ios, "10.0"
 
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -43,7 +43,10 @@ Pod::Spec.new do |s|
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
 
-  s.source_files  = "Source"
+  s.source_files  = "Source/**/*.{swift}"
+  s.resource_bundles = {
+    'DateTimePicker' => ['Source/**/*.{xib}']
+  }
   s.framework  = "UIKit"
 
   s.requires_arc = true
