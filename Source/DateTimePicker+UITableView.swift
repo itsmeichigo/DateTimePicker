@@ -21,7 +21,8 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
             return 2
         }
         
-        if timeInterval != .default {
+        if tableView == minuteTableView,
+            timeInterval != .default {
             return 60 / timeInterval.rawValue
         }
         // need triple of origin storage to scroll infinitely
@@ -91,6 +92,9 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
                 components.minute = indexPath.row * timeInterval.rawValue
             }
             
+        } else if tableView == secondTableView {
+            components.second = indexPath.row < 60 ? indexPath.row : (indexPath.row - 60)%60
+            
         } else if tableView == amPmTableView {
             if let hour = components.hour,
                 indexPath.row == 0 && hour >= 12 {
@@ -132,7 +136,8 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
             !is12HourFormat,
             selectedRow > 24 * 3 - 1 {
             return selectedRow - 24
-        } else if tableView == minuteTableView,
+        } else if (tableView == minuteTableView ||
+            tableView == secondTableView),
             selectedRow > 60 * 3 - 1 {
             return selectedRow - 60
         }

@@ -15,10 +15,12 @@
 		2C788A1E2116AF2E00B26F02 /* StepCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58808E1D9A5F2E000C93E3 /* StepCollectionViewFlowLayout.swift */; };
 		2C788A232116AFAD00B26F02 /* DateTimePicker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C788A222116AFAD00B26F02 /* DateTimePicker.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C8BBF8181F91EAA2005D807B /* FullDateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8BBF8171F91EAA2005D807B /* FullDateCollectionViewCell.swift */; };
+		DE20B66D23DACE1C009532AE /* DateTimePicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE29D3FA23DAC502007CC0F4 /* DateTimePicker.xib */; };
 		DE29D3F323C1B2C1007CC0F4 /* DateTimePicker+UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE29D3F223C1B2C1007CC0F4 /* DateTimePicker+UITableView.swift */; };
 		DE29D3F523C1B301007CC0F4 /* DateTimePicker+CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE29D3F423C1B301007CC0F4 /* DateTimePicker+CollectionView.swift */; };
 		DE29D3F623C1B49C007CC0F4 /* DateTimePicker+UITableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE29D3F223C1B2C1007CC0F4 /* DateTimePicker+UITableView.swift */; };
 		DE29D3F723C1B49F007CC0F4 /* DateTimePicker+CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE29D3F423C1B301007CC0F4 /* DateTimePicker+CollectionView.swift */; };
+		DE29D3FB23DAC502007CC0F4 /* DateTimePicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE29D3FA23DAC502007CC0F4 /* DateTimePicker.xib */; };
 		DE54880F1D990C36002712DB /* DateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE54880E1D990C36002712DB /* DateCollectionViewCell.swift */; };
 		DE58808F1D9A5F2E000C93E3 /* StepCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58808E1D9A5F2E000C93E3 /* StepCollectionViewFlowLayout.swift */; };
 		DEF7C3641D8B9EBC0043D9C4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEF7C3631D8B9EBC0043D9C4 /* AppDelegate.swift */; };
@@ -60,6 +62,7 @@
 		C8BBF8171F91EAA2005D807B /* FullDateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullDateCollectionViewCell.swift; sourceTree = "<group>"; };
 		DE29D3F223C1B2C1007CC0F4 /* DateTimePicker+UITableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateTimePicker+UITableView.swift"; sourceTree = "<group>"; };
 		DE29D3F423C1B301007CC0F4 /* DateTimePicker+CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateTimePicker+CollectionView.swift"; sourceTree = "<group>"; };
+		DE29D3FA23DAC502007CC0F4 /* DateTimePicker.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateTimePicker.xib; sourceTree = "<group>"; };
 		DE54880E1D990C36002712DB /* DateCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateCollectionViewCell.swift; sourceTree = "<group>"; };
 		DE58808E1D9A5F2E000C93E3 /* StepCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StepCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		DEF7C3601D8B9EBC0043D9C4 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -141,6 +144,7 @@
 				DE58808E1D9A5F2E000C93E3 /* StepCollectionViewFlowLayout.swift */,
 				DE29D3F223C1B2C1007CC0F4 /* DateTimePicker+UITableView.swift */,
 				DE29D3F423C1B301007CC0F4 /* DateTimePicker+CollectionView.swift */,
+				DE29D3FA23DAC502007CC0F4 /* DateTimePicker.xib */,
 			);
 			path = Source;
 			sourceTree = SOURCE_ROOT;
@@ -243,6 +247,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE29D3FB23DAC502007CC0F4 /* DateTimePicker.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +257,7 @@
 			files = (
 				DEF7C36E1D8B9EBC0043D9C4 /* LaunchScreen.storyboard in Resources */,
 				DEF7C36B1D8B9EBC0043D9C4 /* Assets.xcassets in Resources */,
+				DE20B66D23DACE1C009532AE /* DateTimePicker.xib in Resources */,
 				DEF7C3691D8B9EBC0043D9C4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

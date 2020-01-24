@@ -123,7 +123,8 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
             } else {
                 firstVisibleRow = (tableView.indexPath(for: firstVisibleCell)?.row ?? 0)
             }
-            if tableView == minuteTableView && timeInterval != .default {
+            if tableView == minuteTableView,
+                timeInterval != .default {
                 selectedRow = min(max(firstVisibleRow, 0), self.tableView(tableView, numberOfRowsInSection: 0)-1)
             } else {
                 selectedRow = firstVisibleRow + 1
@@ -142,6 +143,7 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
         }
         
         tableView.selectRow(at: IndexPath(row: selectedRow, section: 0), animated: false, scrollPosition: scrollPosition)
+        
         if tableView == hourTableView {
             if is12HourFormat {
                 components.hour = selectedRow < 12 ? selectedRow + 1 : (selectedRow - 12)%12 + 1
@@ -162,6 +164,8 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
             } else {
                 components.minute = selectedRow * timeInterval.rawValue
             }
+        } else if tableView == secondTableView {
+            components.second = selectedRow < 60 ? selectedRow : (selectedRow - 60)%60
         } else if tableView == amPmTableView {
             if let hour = components.hour,
                 selectedRow == 0 && hour >= 12 {
