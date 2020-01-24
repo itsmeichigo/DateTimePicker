@@ -18,30 +18,17 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if includesMonth {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! FullDateCollectionViewCell
-            let date = dates[indexPath.item]
-            let style = FullDateCollectionViewCell.Style(highlightColor: highlightColor,
-                                                         normalColor: normalColor,
-                                                         darkColor: darkColor,
-                                                         dayLabelFont: customFontSetting.dateCellDayMonthLabelFont,
-                                                         numberLabelFont: customFontSetting.dateCellNumberLabelFont,
-                                                         monthLabelFont: customFontSetting.dateCellDayMonthLabelFont)
-            cell.populateItem(date: date, style: style, locale: locale)
-
-            return cell
-        } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCollectionViewCell
-            let date = dates[indexPath.item]
-            let style = DateCollectionViewCell.Style(highlightColor: highlightColor,
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "dateCell", for: indexPath) as! FullDateCollectionViewCell
+        let date = dates[indexPath.item]
+        let style = FullDateCollectionViewCell.Style(highlightColor: highlightColor,
                                                      normalColor: normalColor,
                                                      darkColor: darkColor,
                                                      dayLabelFont: customFontSetting.dateCellDayMonthLabelFont,
-                                                     numberLabelFont: customFontSetting.dateCellNumberLabelFont)
-            cell.populateItem(date: date, style: style, locale: locale)
+                                                     numberLabelFont: customFontSetting.dateCellNumberLabelFont,
+                                                     monthLabelFont: customFontSetting.dateCellDayMonthLabelFont)
+        cell.populateItem(date: date, style: style, locale: locale, includesMonth: includesMonth)
 
-            return cell
-        }
+        return cell
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

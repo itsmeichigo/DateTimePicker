@@ -407,13 +407,7 @@ public protocol DateTimePickerDelegate: class {
             layout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
             layout.itemSize = CGSize(width: 75, height: 80)
         }
-        
-        if includesMonth {
-            dayCollectionView.register(FullDateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
-        } else {
-            dayCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
-        }
-        
+        dayCollectionView.register(UINib(nibName: "FullDateCollectionViewCell", bundle: Bundle(for: FullDateCollectionViewCell.self)), forCellWithReuseIdentifier: "dateCell")
         dayCollectionView.dataSource = self
         dayCollectionView.delegate = self
         dayCollectionView.isHidden = isTimePickerOnly
@@ -476,6 +470,7 @@ public protocol DateTimePickerDelegate: class {
         amPmTableView.dataSource = self
         amPmTableView.isHidden = !is12HourFormat || isDatePickerOnly
         amPmTableView.backgroundColor = .clear
+        amPmTableView.contentInset = UIEdgeInsets(top: 41, left: 0, bottom: 41, right: 0)
         
         // colon
         colonLabel1.font = customFontSetting.colonLabelFont

@@ -85,7 +85,7 @@
                                     <rect key="frame" x="0.0" y="102" width="414" height="120"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" translatesAutoresizingMaskIntoConstraints="NO" id="uG4-RF-K2F">
-                                            <rect key="frame" x="77" y="0.0" width="260" height="120"/>
+                                            <rect key="frame" x="73" y="0.0" width="268" height="120"/>
                                             <subviews>
                                                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="aG3-VH-4YD">
                                                     <rect key="frame" x="0.0" y="0.0" width="60" height="120"/>
@@ -127,10 +127,10 @@
                                                     </constraints>
                                                 </tableView>
                                                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="cPP-2P-dPd">
-                                                    <rect key="frame" x="200" y="0.0" width="60" height="120"/>
+                                                    <rect key="frame" x="200" y="0.0" width="68" height="120"/>
                                                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="60" id="Bjc-c6-g0h"/>
+                                                        <constraint firstAttribute="width" constant="68" id="Bjc-c6-g0h"/>
                                                     </constraints>
                                                 </tableView>
                                             </subviews>

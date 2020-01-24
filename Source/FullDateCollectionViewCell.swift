@@ -19,36 +19,20 @@ class FullDateCollectionViewCell: UICollectionViewCell {
         let monthLabelFont: UIFont
     }
     
-    var monthLabel: UILabel!
-    var dayLabel: UILabel! // rgb(128,138,147)
-    var numberLabel: UILabel!
+    @IBOutlet var monthLabel: UILabel!
+    @IBOutlet var dayLabel: UILabel! // rgb(128,138,147)
+    @IBOutlet var numberLabel: UILabel!
+    
     var darkColor = UIColor(red: 0, green: 22.0/255.0, blue: 39.0/255.0, alpha: 1)
     var highlightColor = UIColor(red: 0/255.0, green: 199.0/255.0, blue: 194.0/255.0, alpha: 1)
     var normalColor = UIColor.white
-
-    override init(frame: CGRect) {
-        dayLabel = UILabel(frame: CGRect(x: 5, y: 7, width: frame.width - 10, height: 20))
-        dayLabel.textAlignment = .center
-
-        numberLabel = UILabel(frame: CGRect(x: 5, y: 20, width: frame.width - 10, height: 40))
-        numberLabel.textAlignment = .center
-
-        monthLabel = UILabel(frame: CGRect(x: 5, y: 53, width: frame.width - 10, height: 20))
-        monthLabel.textAlignment = .center
-        
-        super.init(frame: frame)
-
-        contentView.addSubview(monthLabel)
-        contentView.addSubview(dayLabel)
-        contentView.addSubview(numberLabel)
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
         contentView.backgroundColor = normalColor
         contentView.layer.cornerRadius = 3
         contentView.layer.masksToBounds = true
         contentView.layer.borderWidth = 1
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     override var isSelected: Bool {
@@ -61,7 +45,7 @@ class FullDateCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    func populateItem(date: Date, style: Style, locale: Locale) {
+    func populateItem(date: Date, style: Style, locale: Locale, includesMonth: Bool) {
         self.highlightColor = style.highlightColor
         self.normalColor = style.normalColor
         self.darkColor = style.darkColor
@@ -72,6 +56,7 @@ class FullDateCollectionViewCell: UICollectionViewCell {
         monthLabel.text = mdateFormatter.string(from: date)
         monthLabel.textColor = isSelected == true ? .white : darkColor.withAlphaComponent(0.5)
         monthLabel.font = style.monthLabelFont
+        monthLabel.isHidden = !includesMonth
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE"
