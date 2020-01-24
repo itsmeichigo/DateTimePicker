@@ -47,7 +47,8 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
             } else {
                 cell.textLabel?.text = String(format: "%02i", indexPath.row * timeInterval.rawValue)
             }
-            
+        } else if tableView == secondTableView {
+            cell.textLabel?.text = String(format: "%02i", indexPath.row % 60)
         } else {
             if is12HourFormat {
                 cell.textLabel?.text = String(format: "%02i", (indexPath.row % 12) + 1)

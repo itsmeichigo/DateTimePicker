@@ -210,6 +210,13 @@ public protocol DateTimePickerDelegate: class {
         }
     }
     
+    /// whether to include second in time selection, default to false
+    public var includesSecond = false {
+        didSet {
+            configureView()
+        }
+    }
+    
     /// whether to show only time in picker view, default to false
     public var isTimePickerOnly = false {
         didSet {
@@ -221,7 +228,7 @@ public protocol DateTimePickerDelegate: class {
     }
 
     /// whether to include month in date cells, default to false
-    public var includeMonth = false {
+    public var includesMonth = false {
         didSet {
             configureView()
         }
@@ -401,9 +408,9 @@ public protocol DateTimePickerDelegate: class {
             layout.itemSize = CGSize(width: 75, height: 80)
         }
         
-        if includeMonth {
+        if includesMonth {
             dayCollectionView.register(FullDateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
-        } else if includeMonth == false {
+        } else {
             dayCollectionView.register(DateCollectionViewCell.self, forCellWithReuseIdentifier: "dateCell")
         }
         
@@ -458,7 +465,7 @@ public protocol DateTimePickerDelegate: class {
         secondTableView.separatorStyle = .none
         secondTableView.delegate = self
         secondTableView.dataSource = self
-        secondTableView.isHidden = isDatePickerOnly
+        secondTableView.isHidden = isDatePickerOnly || !includesSecond
         secondTableView.backgroundColor = .clear
         
         // am/pm table view
@@ -481,7 +488,7 @@ public protocol DateTimePickerDelegate: class {
         colonLabel2.textColor = highlightColor
         colonLabel2.backgroundColor = .clear
         colonLabel2.textAlignment = .center
-        colonLabel2.isHidden = isDatePickerOnly
+        colonLabel2.isHidden = isDatePickerOnly || !includesSecond
         
         // time separators
         separatorTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
