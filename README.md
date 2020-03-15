@@ -49,6 +49,11 @@ Run `carthage update` to build the framework and drag the built `DateTimePicker.
 #### Manual install
 
 Drag and drop folder `Source` to your project.
+Please make sure to update the nib files custom class module to inherit from your current target so that the custom files can be found:
+
+<img width="259" alt="Screen Shot 2020-03-15 at 11 21 31 AM" src="https://user-images.githubusercontent.com/5533851/76695246-5f282d80-66af-11ea-9148-59391c834df5.png">
+<img width="258" alt="Screen Shot 2020-03-15 at 11 37 20 AM" src="https://user-images.githubusercontent.com/5533851/76695402-79630b00-66b1-11ea-8d6b-590e85cb4e2e.png">
+<img width="256" alt="Screen Shot 2020-03-15 at 11 37 34 AM" src="https://user-images.githubusercontent.com/5533851/76695405-7ec05580-66b1-11ea-874a-3a087d476300.png">
 
 ## Demo
 Navigation to folder named `DateTimePickerDemo`, run `pod install` and open the workspace file to play around with `DateTimePicker`.
