@@ -9,13 +9,14 @@ A nicer iOS UI component for picking date and time.
 - Date and Time Picker / Date Picker only / Time Picker only - your choice!
 - Limit selected date within a defined range of time
 - Show or hide month on date cell
-- Inifnite scrolling for time
+- Infinite scrolling for time
 - Customize colors and date format
 - (v1.3) Constraint-based UI
 - (v2.0) Now you can create picker view as a separate view!
 - (v2.1.0) Carthage is now supported (a bit late - sorry)
 - (v2.3.0) Options to select custom font and colors
 - (v2.4.0) Option to show seconds column
+- Custom TimeZone and Calendar
 
 ## To-dos (HELP NEEDED! 🎯)
 
