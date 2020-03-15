@@ -242,7 +242,9 @@ public protocol DateTimePickerDelegate: class {
         }
     }
     
-    public var timeZone = TimeZone.current
+    public var timeZone: TimeZone = .current
+    public var calendar: Calendar = .current
+    
     public var completionHandler: ((Date)->Void)?
     public var dismissHandler: (() -> Void)?
     public weak var delegate: DateTimePickerDelegate?
@@ -279,7 +281,6 @@ public protocol DateTimePickerDelegate: class {
     internal var minimumDate: Date!
     internal var maximumDate: Date!
     
-    internal var calendar: Calendar = .current
     internal var dates: [Date]! = []
     internal var components: DateComponents! {
         didSet {
@@ -290,13 +291,13 @@ public protocol DateTimePickerDelegate: class {
     private static var resourceBundle: Bundle? {
         let podBundle = Bundle(for: DateTimePicker.self)
         guard let bundleURL = podBundle.url(forResource: "DateTimePicker", withExtension: "bundle") else {
-            return nil
+            return Bundle.main
         }
         return Bundle(url: bundleURL)
     }
     
     @objc open class func create(minimumDate: Date? = nil, maximumDate: Date? = nil) -> DateTimePicker {
-        
+         
         guard let dateTimePicker = resourceBundle?.loadNibNamed("DateTimePicker", owner: nil, options: nil)?.first as? DateTimePicker else {
             fatalError("Error loading nib")
         }
