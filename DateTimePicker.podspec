@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.description  = "DateTimePicker makes it easy to select date and time with an attractive looking component."
 
   s.homepage     = "https://github.com/itsmeichigo/DateTimePicker"
-  s.screenshots  = "https://raw.githubusercontent.com/itsmeichigo/DateTimePicker/master/screenshot.png"
+  s.screenshots  = "https://github.com/itsmeichigo/DateTimePicker/blob/master/screenshot.jpg"
 
 
   # ―――  Spec License  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
