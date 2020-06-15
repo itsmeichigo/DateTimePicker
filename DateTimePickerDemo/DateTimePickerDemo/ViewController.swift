@@ -20,16 +20,17 @@ class ViewController: UIViewController, DateTimePickerDelegate {
 //        picker.timeInterval = DateTimePicker.MinuteInterval.thirty
 //        picker.locale = Locale(identifier: "en_GB")
 
+        picker.dateFormat = "MMM d, h:mm a"
 //        picker.todayButtonTitle = "Today"
-//        picker.is12HourFormat = true
-        picker.dateFormat = "hh:mm:ss aa dd/MM/YYYY"
-//        picker.isDatePickerOnly = true
+        picker.is12HourFormat = true
+        picker.isDatePickerOnly = true
+//      picker.isTimePickerOnly = true
         picker.includesMonth = true
-        picker.includesSecond = true
-        picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
-        picker.doneButtonTitle = "!! DONE DONE !!"
-        picker.doneBackgroundColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
-        picker.customFontSetting = DateTimePicker.CustomFontSetting(selectedDateLabelFont: .boldSystemFont(ofSize: 20))
+//        picker.includesSecond = true
+//        picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
+//        picker.doneButtonTitle = "!! DONE DONE !!"
+//        picker.doneBackgroundColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
+//        picker.customFontSetting = DateTimePicker.CustomFontSetting(selectedDateLabelFont: .boldSystemFont(ofSize: 20))
 //        if #available(iOS 13.0, *) {
 //            picker.normalColor = UIColor.secondarySystemGroupedBackground
 //            picker.darkColor = UIColor.label

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -61,7 +60,7 @@
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ti4-Zb-cs4">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="1"/>
-                                    <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058823529413" green="0.77647058823529413" blue="0.78431372549019607" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058820000003" green="0.77647058820000003" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="1" id="Tmj-6I-Kbg"/>
                                     </constraints>
@@ -76,7 +75,7 @@
                                 </collectionView>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6du-8S-6KX">
                                     <rect key="frame" x="0.0" y="101" width="414" height="1"/>
-                                    <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058823529413" green="0.77647058823529413" blue="0.78431372549019607" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058820000003" green="0.77647058820000003" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="1" id="v9F-UA-jgT"/>
                                     </constraints>
@@ -147,9 +146,16 @@
                                 </view>
                             </subviews>
                         </stackView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ftT-Ry-IQG" userLabel="Set Time Button">
+                            <rect key="frame" x="16" y="145" width="382" height="44"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="44" id="zL2-G4-qBi"/>
+                            </constraints>
+                            <state key="normal" title="Set Time"/>
+                        </button>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K7h-lq-Fpy">
                             <rect key="frame" x="77" y="225" width="260" height="1"/>
-                            <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058823529413" green="0.77647058823529413" blue="0.78431372549019607" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058820000003" green="0.77647058820000003" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="1" id="PeV-BT-4cg"/>
                                 <constraint firstAttribute="width" constant="260" id="c56-bS-553"/>
@@ -157,12 +163,19 @@
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lVg-4m-JC2">
                             <rect key="frame" x="77" y="184" width="260" height="1"/>
-                            <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058823529413" green="0.77647058823529413" blue="0.78431372549019607" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058820000003" green="0.77647058820000003" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="1" id="1mh-5c-7bC"/>
                                 <constraint firstAttribute="width" constant="260" id="gxn-Gg-aN5"/>
                             </constraints>
                         </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QAr-SL-vph" userLabel="Set Date Button">
+                            <rect key="frame" x="16" y="44" width="382" height="44"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="44" id="vHi-HM-IXK"/>
+                            </constraints>
+                            <state key="normal" title="Set Date"/>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
@@ -170,16 +183,23 @@
                         <constraint firstItem="DNy-kS-2jV" firstAttribute="top" secondItem="gWq-wF-qaT" secondAttribute="bottom" id="69S-uM-bKy"/>
                         <constraint firstItem="DNy-kS-2jV" firstAttribute="leading" secondItem="q9d-RF-GrX" secondAttribute="leading" id="9ha-A3-ang"/>
                         <constraint firstAttribute="trailing" secondItem="gWq-wF-qaT" secondAttribute="trailing" id="C6V-FU-0Za"/>
+                        <constraint firstAttribute="trailing" secondItem="QAr-SL-vph" secondAttribute="trailing" constant="16" id="FMX-aH-w7u"/>
                         <constraint firstItem="DNy-kS-2jV" firstAttribute="trailing" secondItem="q9d-RF-GrX" secondAttribute="trailing" id="Vhb-he-JK8"/>
                         <constraint firstAttribute="trailing" secondItem="PGW-1b-76M" secondAttribute="trailing" constant="16" id="WsY-04-iIj"/>
                         <constraint firstItem="gWq-wF-qaT" firstAttribute="leading" secondItem="q9d-RF-GrX" secondAttribute="leading" id="a7O-mg-zNA"/>
+                        <constraint firstAttribute="trailing" secondItem="ftT-Ry-IQG" secondAttribute="trailing" constant="16" id="acc-Ot-Vg3"/>
                         <constraint firstItem="PGW-1b-76M" firstAttribute="top" secondItem="DNy-kS-2jV" secondAttribute="bottom" id="bm8-Uw-HcX"/>
                         <constraint firstItem="K7h-lq-Fpy" firstAttribute="top" secondItem="lVg-4m-JC2" secondAttribute="bottom" constant="40" id="c1M-ap-Wkd"/>
+                        <constraint firstItem="uG4-RF-K2F" firstAttribute="top" secondItem="QAr-SL-vph" secondAttribute="bottom" id="fWs-93-iBZ"/>
+                        <constraint firstItem="ftT-Ry-IQG" firstAttribute="top" secondItem="0j6-O2-Yx4" secondAttribute="bottom" id="g0b-UY-dGT"/>
+                        <constraint firstItem="QAr-SL-vph" firstAttribute="leading" secondItem="q9d-RF-GrX" secondAttribute="leading" constant="16" id="gEW-5T-tkv"/>
                         <constraint firstAttribute="height" constant="330" id="kg6-af-apQ"/>
                         <constraint firstItem="K7h-lq-Fpy" firstAttribute="centerX" secondItem="q9d-RF-GrX" secondAttribute="centerX" id="lhq-3U-KHz"/>
+                        <constraint firstItem="ftT-Ry-IQG" firstAttribute="leading" secondItem="q9d-RF-GrX" secondAttribute="leading" constant="16" id="pBo-GR-Iep"/>
                         <constraint firstItem="gWq-wF-qaT" firstAttribute="top" secondItem="q9d-RF-GrX" secondAttribute="top" id="q10-AX-sWi"/>
                         <constraint firstItem="PGW-1b-76M" firstAttribute="top" secondItem="K7h-lq-Fpy" secondAttribute="bottom" constant="40" id="r9O-Xl-uni"/>
                         <constraint firstItem="lVg-4m-JC2" firstAttribute="centerX" secondItem="q9d-RF-GrX" secondAttribute="centerX" id="wgI-5n-RIF"/>
+                        <constraint firstItem="QAr-SL-vph" firstAttribute="top" secondItem="gWq-wF-qaT" secondAttribute="bottom" id="z5Y-AM-gNS"/>
                     </constraints>
                 </view>
             </subviews>
@@ -209,6 +229,8 @@
                 <outlet property="separatorBottomViewWidth" destination="c56-bS-553" id="WiZ-OB-bxM"/>
                 <outlet property="separatorTopView" destination="lVg-4m-JC2" id="qMO-pT-vYZ"/>
                 <outlet property="separatorTopViewWidth" destination="gxn-Gg-aN5" id="MSO-EP-WRc"/>
+                <outlet property="setDateButton" destination="QAr-SL-vph" id="pJu-6r-6Js"/>
+                <outlet property="setTimeButton" destination="ftT-Ry-IQG" id="ITh-xc-8d8"/>
                 <outlet property="timeView" destination="XZO-Sz-2xy" id="7Zi-lE-bch"/>
                 <outlet property="titleView" destination="gWq-wF-qaT" id="aD5-80-bRL"/>
                 <outlet property="todayButton" destination="aFz-1K-pXz" id="h9R-Tv-MFY"/>
