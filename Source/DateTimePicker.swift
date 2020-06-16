@@ -39,15 +39,17 @@ public protocol DateTimePickerDelegate: class {
       toggleModeButtonFont: .systemFont(ofSize: 15, weight: .light)
     )
 
-    public init(cancelButtonFont: UIFont = .boldSystemFont(ofSize: 15),
-                todayButtonFont: UIFont = .boldSystemFont(ofSize: 15),
-                doneButtonFont: UIFont = .boldSystemFont(ofSize: 13),
-                selectedDateLabelFont: UIFont = .systemFont(ofSize: 15),
-                timeLabelFont: UIFont = .boldSystemFont(ofSize: 18),
-                colonLabelFont: UIFont = .boldSystemFont(ofSize: 18),
-                dateCellNumberLabelFont: UIFont = .systemFont(ofSize: 25),
-                dateCellDayMonthLabelFont: UIFont = .systemFont(ofSize: 10),
-                toggleModeButtonFont: UIFont = .systemFont(ofSize: 15, weight: .light)) {
+    public init(
+      cancelButtonFont: UIFont = .boldSystemFont(ofSize: 15),
+      todayButtonFont: UIFont = .boldSystemFont(ofSize: 15),
+      doneButtonFont: UIFont = .boldSystemFont(ofSize: 13),
+      selectedDateLabelFont: UIFont = .systemFont(ofSize: 15),
+      timeLabelFont: UIFont = .boldSystemFont(ofSize: 18),
+      colonLabelFont: UIFont = .boldSystemFont(ofSize: 18),
+      dateCellNumberLabelFont: UIFont = .systemFont(ofSize: 25),
+      dateCellDayMonthLabelFont: UIFont = .systemFont(ofSize: 10),
+      toggleModeButtonFont: UIFont = .systemFont(ofSize: 15, weight: .light)
+    ) {
       self.cancelButtonFont = cancelButtonFont
       self.todayButtonFont = todayButtonFont
       self.doneButtonFont = doneButtonFont
@@ -273,7 +275,8 @@ public protocol DateTimePickerDelegate: class {
   @IBOutlet private var setTimeButton: UIButton!
   @IBOutlet private var setDateButton: UIButton!
 
-  @IBOutlet private var timeView: UIView!
+  @IBOutlet private var dayView: UIStackView!
+  @IBOutlet private var timeView: UIStackView!
   @IBOutlet private var borderTopView: UIView!
   @IBOutlet private var borderBottomView: UIView!
   @IBOutlet private var separatorTopView: UIView!
@@ -318,7 +321,6 @@ public protocol DateTimePickerDelegate: class {
 
 
   @objc open func show() {
-
     if let window = UIApplication.shared.keyWindow {
       let shadowView = UIView()
       shadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
@@ -342,23 +344,29 @@ public protocol DateTimePickerDelegate: class {
 
       // animate to show contentView
       contentViewBottomConstraint.constant = 0
-      UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.4, options: .curveEaseIn, animations: {
+      let entranceSpring = UISpringTimingParameters(dampingRatio: 0.8, initialVelocity: CGVector(dx: 0, dy: 0.4))
+      let entranceAnimation = UIViewPropertyAnimator(duration: 0.3, timingParameters: entranceSpring)
+      entranceAnimation.addAnimations {
         self.layoutIfNeeded()
-      }, completion: { completed in
+      }
+      entranceAnimation.addCompletion { completed in
         self.resetTime()
-      })
+      }
+      entranceAnimation.startAnimation()
 
       modalCloseHandler = {
         contentViewBottomConstraint.constant = self.contentHeight
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.8, options: .curveLinear, animations: {
-          // animate to hide pickerView
+        let exitSpring = UISpringTimingParameters(dampingRatio: 1, initialVelocity: CGVector(dx: 0, dy: 0.8))
+        let exitAnimation = UIViewPropertyAnimator(duration: 0.5, timingParameters: exitSpring)
+        exitAnimation.addAnimations {
           shadowView.alpha = 0
           self.layoutIfNeeded()
-        }, completion: { (completed) in
+        }
+        exitAnimation.addCompletion { completed in
           self.removeFromSuperview()
           shadowView.removeFromSuperview()
-
-        })
+        }
+        exitAnimation.startAnimation()
       };
     }
   }
@@ -575,7 +583,6 @@ public protocol DateTimePickerDelegate: class {
     components = calendar.dateComponents([.day, .month, .year, .hour, .minute, .second], from: selectedDate)
     updateCollectionView(to: selectedDate)
     if let hour = components.hour {
-      print(hour)
       var expectedRow = hour + 24
       if is12HourFormat {
         if hour < 12 {
@@ -624,7 +631,7 @@ private extension DateTimePicker {
       days.day = dayCount
       dayCount += 1
       guard let date = calendar.date(byAdding: days, to: fromDate) else {
-        break;
+        break
       }
       if date.compare(toDate) == .orderedDescending {
         break
@@ -675,9 +682,19 @@ private extension DateTimePicker {
 
   @objc func toggleDate() {
     isDatePickerOnly = !isDatePickerOnly
+    dayView.alpha = 0
+    UIViewPropertyAnimator(duration: 0.2, curve: .easeIn, animations: {
+      self.dayView.alpha = 1.0
+      self.dayView.frame = self.dayView.frame.offsetBy(dx: 0, dy: 100)
+    }).startAnimation()
   }
 
   @objc func toggleTime() {
     isTimePickerOnly = !isTimePickerOnly
+    timeView.alpha = 0
+    UIViewPropertyAnimator(duration: 0.2, curve: .easeIn, animations: {
+      self.timeView.alpha = 1.0
+      self.timeView.frame = self.timeView.frame.offsetBy(dx: 0, dy: -100)
+    }).startAnimation()
   }
 }
