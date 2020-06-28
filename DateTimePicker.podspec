@@ -4,13 +4,13 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "DateTimePicker"
-  s.version      = "2.4.1"
+  s.version      = "3.0.0"
   s.summary      = "A nicer iOS UI component for picking date and time."
 
   s.description  = "DateTimePicker makes it easy to select date and time with an attractive looking component."
 
-  s.homepage     = "https://github.com/itsmeichigo/DateTimePicker"
-  s.screenshots  = "https://raw.githubusercontent.com/itsmeichigo/DateTimePicker/master/screenshot.jpg"
+  s.homepage     = "https://github.com/niftysteve/DateTimePicker"
+  s.screenshots  = "https://raw.githubusercontent.com/niftysteve/DateTimePicker/master/screenshot.jpg"
 
 
   # ―――  Spec License  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -37,7 +37,7 @@ Pod::Spec.new do |s|
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
 
-  s.source       = { :git => "https://github.com/itsmeichigo/DateTimePicker.git", :tag => s.version }
+  s.source       = { :git => "https://github.com/niftysteve/DateTimePicker.git", :tag => s.version }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

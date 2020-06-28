@@ -48,10 +48,7 @@ class StepCollectionViewFlowLayout: UICollectionViewFlowLayout {
       let deltaX = proposedContentOffset.x - self.collectionView!.contentOffset.x
       let velX = velocity.x
 
-      if
-        deltaX == 0.0 || velX == 0 || (velX > 0.0 && deltaX > 0.0) ||
-          (velX < 0.0 && deltaX < 0.0)
-      {
+      if deltaX == 0.0 || velX == 0 || (velX > 0.0 && deltaX > 0.0) || (velX < 0.0 && deltaX < 0.0) {
         break
       }
 
@@ -71,7 +68,7 @@ class StepCollectionViewFlowLayout: UICollectionViewFlowLayout {
     return (offset >= CGFloat(self.minContentOffset()) &&
       offset <= CGFloat(self.maxContentOffset()))
   }
-
+  
   func minContentOffset() -> CGFloat {
     return -CGFloat(self.collectionView!.contentInset.left)
   }

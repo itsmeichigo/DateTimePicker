@@ -64,6 +64,15 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
     alignScrollView(scrollView)
   }
 
+  public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    // Stop scrolling immediately if decelerating
+    // Prevents scrolling animation from lingering when tapping view during deceleration
+    if scrollView.isDecelerating {
+      scrollView.isScrollEnabled = false
+      scrollView.isScrollEnabled = true
+    }
+  }
+
   func alignScrollView(_ scrollView: UIScrollView) {
     if let collectionView = scrollView as? UICollectionView {
       alignCollectionView(collectionView)
@@ -172,7 +181,6 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
       } else {
         selectedDate = selected
       }
-
     }
   }
 }

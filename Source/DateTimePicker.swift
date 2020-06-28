@@ -12,7 +12,8 @@ public protocol DateTimePickerDelegate: class {
   func dateTimePicker(_ picker: DateTimePicker, didSelectDate: Date)
 }
 
-@objc public class DateTimePicker: UIView {
+@objc
+public class DateTimePicker: UIView {
 
   var contentHeight: CGFloat = 330
 
@@ -74,7 +75,7 @@ public protocol DateTimePickerDelegate: class {
   /// custom font settings
   public var customFontSetting: CustomFontSetting = .default {
     didSet {
-      configureView()
+      configureStyling()
     }
   }
 
@@ -126,14 +127,14 @@ public protocol DateTimePickerDelegate: class {
   /// custom background color for title
   public var titleBackgroundColor = UIColor.white {
     didSet {
-      configureView()
+      configureStyling()
     }
   }
 
   /// custom background color for date cells
   public var daysBackgroundColor = UIColor(red: 239.0/255.0, green: 243.0/255.0, blue: 244.0/255.0, alpha: 1) {
     didSet {
-      configureView()
+      configureStyling()
     }
   }
 
@@ -150,7 +151,6 @@ public protocol DateTimePickerDelegate: class {
       if minimumDate.compare(selectedDate) == .orderedDescending {
         selectedDate = minimumDate;
       }
-
       if selectedDate.compare(maximumDate) == .orderedDescending {
         selectedDate = maximumDate
       }
@@ -166,13 +166,25 @@ public protocol DateTimePickerDelegate: class {
   public var selectedDateString: String {
     get {
       let formatter = DateFormatter()
-      formatter.dateFormat = self.dateFormat
+      if timeSelected || (!isDatePickerOnly && !isTimePickerOnly) {
+        formatter.dateFormat = self.dateTimeFormat
+      }
+      else {
+        formatter.dateFormat = self.dateFormat
+      }
       return formatter.string(from: self.selectedDate)
     }
   }
 
-  /// custom date format to be displayed, default to HH:mm dd/MM/YYYY
-  public var dateFormat = "HH:mm dd/MM/YYYY" {
+  /// custom date format to be displayed, default to dd/MM/YYYY
+  public var dateFormat = "dd/MM/YYYY" {
+    didSet {
+      resetDateTitle()
+    }
+  }
+
+  /// custom date time format to be displayed, default to HH:mm dd/MM/YYYY
+  public var dateTimeFormat = "HH:mm dd/MM/YYYY" {
     didSet {
       resetDateTitle()
     }
@@ -199,28 +211,13 @@ public protocol DateTimePickerDelegate: class {
     }
   }
 
-  /// whether to display time in 12 hour format, default to false
-  public var is12HourFormat = false {
-    didSet {
-      configureView()
-    }
-  }
-
-
   /// whether to only show date in picker view, default to false
   public var isDatePickerOnly = false {
     didSet {
       if isDatePickerOnly {
         isTimePickerOnly = false
       }
-      configureView()
-    }
-  }
-
-  /// whether to include second in time selection, default to false
-  public var includesSecond = false {
-    didSet {
-      configureView()
+      configureVisibility()
     }
   }
 
@@ -228,16 +225,31 @@ public protocol DateTimePickerDelegate: class {
   public var isTimePickerOnly = false {
     didSet {
       if isTimePickerOnly {
+        timeSelected = true
         isDatePickerOnly = false
       }
-      configureView()
+      configureVisibility()
+    }
+  }
+
+  /// whether to display time in 12 hour format, default to false
+  public var is12HourFormat = false {
+    didSet {
+      configureStyling()
+    }
+  }
+
+  /// whether to include second in time selection, default to false
+  public var includesSecond = false {
+    didSet {
+      configureStyling()
     }
   }
 
   /// whether to include month in date cells, default to false
   public var includesMonth = false {
     didSet {
-      configureView()
+      configureStyling()
     }
   }
 
@@ -252,7 +264,7 @@ public protocol DateTimePickerDelegate: class {
   public var timeZone: TimeZone = .current
   public var calendar: Calendar = .current
 
-  public var completionHandler: ((Date)->Void)?
+  public var completionHandler: ((Date, Bool) -> Void)?
   public var dismissHandler: (() -> Void)?
   public weak var delegate: DateTimePickerDelegate?
 
@@ -272,9 +284,11 @@ public protocol DateTimePickerDelegate: class {
   @IBOutlet private var colonLabel1: UILabel!
   @IBOutlet private var colonLabel2: UILabel!
 
+  @IBOutlet private var removeTimeMark: UIImageView!
   @IBOutlet private var setTimeButton: UIButton!
   @IBOutlet private var setDateButton: UIButton!
 
+  @IBOutlet private var timeInteractionView: UIStackView!
   @IBOutlet private var dayView: UIStackView!
   @IBOutlet private var timeView: UIStackView!
   @IBOutlet private var borderTopView: UIView!
@@ -287,6 +301,7 @@ public protocol DateTimePickerDelegate: class {
   @IBOutlet private var separatorBottomViewWidth: NSLayoutConstraint!
   @IBOutlet private var separatorTopViewWidth: NSLayoutConstraint!
 
+  private var timeSelected = false
   private var modalCloseHandler: (() -> Void)?
 
   internal var minimumDate: Date!
@@ -308,7 +323,6 @@ public protocol DateTimePickerDelegate: class {
   }
 
   @objc open class func create(minimumDate: Date? = nil, maximumDate: Date? = nil) -> DateTimePicker {
-
     guard let dateTimePicker = resourceBundle?.loadNibNamed("DateTimePicker", owner: nil, options: nil)?.first as? DateTimePicker else {
       fatalError("Error loading nib")
     }
@@ -320,7 +334,8 @@ public protocol DateTimePickerDelegate: class {
   }
 
 
-  @objc open func show() {
+  @objc
+  open func show() {
     if let window = UIApplication.shared.keyWindow {
       let shadowView = UIView()
       shadowView.backgroundColor = UIColor.black.withAlphaComponent(0.3)
@@ -390,55 +405,41 @@ public protocol DateTimePickerDelegate: class {
   }
 
   private func configureView() {
-
-    // content view
-    contentHeight = isDatePickerOnly ? 274 : isTimePickerOnly ? 274 : 330
-
     contentView.layer.shadowColor = UIColor(white: 0, alpha: 0.3).cgColor
     contentView.layer.shadowOffset = CGSize(width: 0, height: -2.0)
     contentView.layer.shadowRadius = 1.5
     contentView.layer.shadowOpacity = 0.5
     contentView.backgroundColor = contentViewBackgroundColor
     contentView.isHidden = true
-    contentViewHeight.constant = contentHeight
-
-    // title view
-    titleView.backgroundColor = titleBackgroundColor
 
     dateTitleLabel.textColor = darkColor
     dateTitleLabel.textAlignment = .center
-    dateTitleLabel.font = customFontSetting.selectedDateLabelFont
-    resetDateTitle()
 
     let isRTL = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
 
     cancelButton.setTitle(cancelButtonTitle, for: .normal)
     cancelButton.setTitleColor(darkColor.withAlphaComponent(0.5), for: .normal)
     cancelButton.contentHorizontalAlignment = isRTL ? .right : .left
-    cancelButton.titleLabel?.font = customFontSetting.cancelButtonFont
     cancelButton.addTarget(self, action: #selector(DateTimePicker.dismissView(sender:)), for: .touchUpInside)
 
     todayButton.setTitle(todayButtonTitle, for: .normal)
     todayButton.setTitleColor(highlightColor, for: .normal)
     todayButton.contentHorizontalAlignment = isRTL ? .left : .right
-    todayButton.titleLabel?.font = customFontSetting.todayButtonFont
     todayButton.addTarget(self, action: #selector(DateTimePicker.setToday), for: .touchUpInside)
-    todayButton.isHidden = self.minimumDate.compare(Date()) == .orderedDescending || self.maximumDate.compare(Date()) == .orderedAscending
+
+    let removeTimeGesture = UITapGestureRecognizer(target: self, action: #selector(DateTimePicker.removeTime))
+    removeTimeMark.isUserInteractionEnabled = true
+    removeTimeMark.addGestureRecognizer(removeTimeGesture)
+    removeTimeMark.tintColor = darkColor
 
     setTimeButton.setTitleColor(darkColor, for: .normal)
     setTimeButton.contentHorizontalAlignment = .left
-    setTimeButton.titleLabel?.font = customFontSetting.toggleModeButtonFont
     setTimeButton.addTarget(self, action: #selector(DateTimePicker.toggleTime), for: .touchUpInside)
-    setTimeButton.isHidden = !isDatePickerOnly
 
     setDateButton.setTitleColor(darkColor, for: .normal)
     setDateButton.contentHorizontalAlignment = .left
-    setDateButton.titleLabel?.font = customFontSetting.toggleModeButtonFont
     setDateButton.addTarget(self, action: #selector(DateTimePicker.toggleDate), for: .touchUpInside)
-    setDateButton.isHidden = !isTimePickerOnly
 
-    // day collection view
-    dayCollectionView.backgroundColor = daysBackgroundColor
     dayCollectionView.showsHorizontalScrollIndicator = false
     if let layout = dayCollectionView.collectionViewLayout as? StepCollectionViewFlowLayout {
       layout.scrollDirection = .horizontal
@@ -449,7 +450,6 @@ public protocol DateTimePickerDelegate: class {
     dayCollectionView.register(UINib(nibName: "FullDateCollectionViewCell", bundle: DateTimePicker.resourceBundle), forCellWithReuseIdentifier: "dateCell")
     dayCollectionView.dataSource = self
     dayCollectionView.delegate = self
-    dayCollectionView.isHidden = isTimePickerOnly
     dayCollectionView.layoutIfNeeded()
     let inset = (dayCollectionView.frame.width - 75) / 2
     dayCollectionView.contentInset = UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
@@ -457,13 +457,11 @@ public protocol DateTimePickerDelegate: class {
     // top & bottom borders on day collection view
     borderTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
     borderBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
-    borderBottomView.isHidden = isTimePickerOnly || isDatePickerOnly
 
     // done button
     doneButton.setTitle(doneButtonTitle, for: .normal)
     doneButton.setTitleColor(.white, for: .normal)
     doneButton.backgroundColor = doneBackgroundColor ?? darkColor.withAlphaComponent(0.5)
-    doneButton.titleLabel?.font = customFontSetting.doneButtonFont
     doneButton.layer.cornerRadius = 3
     doneButton.layer.masksToBounds = true
     doneButton.addTarget(self, action: #selector(DateTimePicker.donePicking(sender:)), for: .touchUpInside)
@@ -474,7 +472,6 @@ public protocol DateTimePickerDelegate: class {
     hourTableView.separatorStyle = .none
     hourTableView.delegate = self
     hourTableView.dataSource = self
-    hourTableView.isHidden = isDatePickerOnly
     hourTableView.backgroundColor = .clear
 
     // minute table view
@@ -483,7 +480,6 @@ public protocol DateTimePickerDelegate: class {
     minuteTableView.separatorStyle = .none
     minuteTableView.delegate = self
     minuteTableView.dataSource = self
-    minuteTableView.isHidden = isDatePickerOnly
     minuteTableView.backgroundColor = .clear
 
     if timeInterval != .default {
@@ -498,7 +494,6 @@ public protocol DateTimePickerDelegate: class {
     secondTableView.separatorStyle = .none
     secondTableView.delegate = self
     secondTableView.dataSource = self
-    secondTableView.isHidden = isDatePickerOnly || !includesSecond
     secondTableView.backgroundColor = .clear
 
     // am/pm table view
@@ -507,42 +502,20 @@ public protocol DateTimePickerDelegate: class {
     amPmTableView.separatorStyle = .none
     amPmTableView.delegate = self
     amPmTableView.dataSource = self
-    amPmTableView.isHidden = !is12HourFormat || isDatePickerOnly
     amPmTableView.backgroundColor = .clear
     amPmTableView.contentInset = UIEdgeInsets(top: 41, left: 0, bottom: 41, right: 0)
 
     // colon
-    colonLabel1.font = customFontSetting.colonLabelFont
     colonLabel1.textColor = highlightColor
     colonLabel1.backgroundColor = .clear
     colonLabel1.textAlignment = .center
-    colonLabel1.isHidden = isDatePickerOnly
 
-    colonLabel2.font = customFontSetting.colonLabelFont
     colonLabel2.textColor = highlightColor
     colonLabel2.backgroundColor = .clear
     colonLabel2.textAlignment = .center
-    colonLabel2.isHidden = isDatePickerOnly || !includesSecond
-
-    // time separators
-    var separatorWidth: CGFloat = 0
-    switch (is12HourFormat, includesSecond) {
-    case (true, true):
-      separatorWidth = 260
-    case (true, false),
-         (false, true):
-      separatorWidth = 200
-    case (false, false):
-      separatorWidth = 130
-    }
 
     separatorTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
-    separatorTopView.isHidden = isDatePickerOnly || isTimePickerOnly
     separatorBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
-    separatorBottomView.isHidden = isDatePickerOnly || isTimePickerOnly
-
-    separatorBottomViewWidth.constant = separatorWidth
-    separatorTopViewWidth.constant = separatorWidth
 
     // fill date
     fillDates(fromDate: minimumDate, toDate: maximumDate)
@@ -558,12 +531,10 @@ public protocol DateTimePickerDelegate: class {
       }
     }
     components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: selectedDate)
-    contentView.isHidden = false
 
-    // Small delay to allow graphics to catch up
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-      self.resetTime()
-    }
+    configureStyling()
+    configureVisibility()
+    contentView.isHidden = false
   }
 
   @objc
@@ -574,7 +545,7 @@ public protocol DateTimePickerDelegate: class {
 
   @objc
   public func donePicking(sender: UIButton?=nil) {
-    completionHandler?(selectedDate)
+    completionHandler?(selectedDate, timeSelected)
     modalCloseHandler?()
     dismissHandler?()
   }
@@ -672,7 +643,8 @@ private extension DateTimePicker {
     dateTitleLabel.text = selectedDateString
   }
 
-  @objc func setToday() {
+  @objc
+  func setToday() {
     selectedDate = Date()
     resetTime()
   }
@@ -680,7 +652,76 @@ private extension DateTimePicker {
 
 private extension DateTimePicker {
 
-  @objc func toggleDate() {
+  /// Configures visibility of the view components
+  func configureVisibility() {
+    contentHeight = (isDatePickerOnly || isTimePickerOnly) ? 274 : 330
+    contentViewHeight.constant = contentHeight
+
+    todayButton.isHidden = self.minimumDate.compare(Date()) == .orderedDescending ||
+      self.maximumDate.compare(Date()) == .orderedAscending
+
+    // Day view and components
+    dayView.isHidden = isTimePickerOnly
+    dayCollectionView.isHidden = isTimePickerOnly
+    borderBottomView.isHidden = isTimePickerOnly || isDatePickerOnly
+    timeInteractionView.isHidden = !isDatePickerOnly && !isTimePickerOnly
+    setTimeButton.isHidden = !isDatePickerOnly
+    removeTimeMark.isHidden = !timeSelected || isTimePickerOnly
+
+    // Time view and components
+    timeView.isHidden = isDatePickerOnly
+    setDateButton.isHidden = !isTimePickerOnly
+    hourTableView.isHidden = isDatePickerOnly
+    minuteTableView.isHidden = isDatePickerOnly
+    secondTableView.isHidden = isDatePickerOnly || !includesSecond
+    amPmTableView.isHidden = !is12HourFormat || isDatePickerOnly
+    colonLabel1.isHidden = isDatePickerOnly
+    colonLabel2.isHidden = isDatePickerOnly || !includesSecond
+    separatorTopView.isHidden = isDatePickerOnly || isTimePickerOnly
+    separatorBottomView.isHidden = isDatePickerOnly || isTimePickerOnly
+
+    resetDateTitle()
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+      self.resetTime()
+    }
+  }
+
+  /// Configures styling of the view components
+  func configureStyling() {
+    // Background colors
+    titleView.backgroundColor = titleBackgroundColor
+    dayCollectionView.backgroundColor = daysBackgroundColor
+
+    // Fonts
+    dateTitleLabel.font = customFontSetting.selectedDateLabelFont
+    cancelButton.titleLabel?.font = customFontSetting.cancelButtonFont
+    todayButton.titleLabel?.font = customFontSetting.todayButtonFont
+    setTimeButton.titleLabel?.font = customFontSetting.toggleModeButtonFont
+    setDateButton.titleLabel?.font = customFontSetting.toggleModeButtonFont
+    doneButton.titleLabel?.font = customFontSetting.doneButtonFont
+    doneButton.titleLabel?.font = customFontSetting.doneButtonFont
+    colonLabel1.font = customFontSetting.colonLabelFont
+    colonLabel2.font = customFontSetting.colonLabelFont
+
+    // Time separators
+    var separatorWidth: CGFloat = 0
+    switch (is12HourFormat, includesSecond) {
+    case (true, true):
+      separatorWidth = 260
+    case (true, false),
+         (false, true):
+      separatorWidth = 200
+    case (false, false):
+      separatorWidth = 130
+    }
+    separatorBottomViewWidth.constant = separatorWidth
+    separatorTopViewWidth.constant = separatorWidth
+  }
+}
+
+private extension DateTimePicker {
+  @objc
+  func toggleDate() {
     isDatePickerOnly = !isDatePickerOnly
     dayView.alpha = 0
     UIViewPropertyAnimator(duration: 0.2, curve: .easeIn, animations: {
@@ -689,12 +730,21 @@ private extension DateTimePicker {
     }).startAnimation()
   }
 
-  @objc func toggleTime() {
+  @objc
+  func toggleTime() {
     isTimePickerOnly = !isTimePickerOnly
+    setTimeButton.setTitle("Change Time", for: .normal)
     timeView.alpha = 0
     UIViewPropertyAnimator(duration: 0.2, curve: .easeIn, animations: {
       self.timeView.alpha = 1.0
       self.timeView.frame = self.timeView.frame.offsetBy(dx: 0, dy: -100)
     }).startAnimation()
+  }
+
+  @objc
+  func removeTime() {
+    timeSelected = false
+    setTimeButton.setTitle("Set Date", for: .normal)
+    configureVisibility()
   }
 }

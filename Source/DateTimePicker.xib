@@ -15,7 +15,7 @@
                 <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q9d-RF-GrX">
                     <rect key="frame" x="0.0" y="566" width="414" height="330"/>
                     <subviews>
-                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="DNy-kS-2jV">
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="DNy-kS-2jV" userLabel="Date Time View">
                             <rect key="frame" x="0.0" y="44" width="414" height="222"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="weE-nJ-Tdh" userLabel="Day View">
@@ -43,21 +43,30 @@
                                                 <constraint firstAttribute="height" constant="1" id="v9F-UA-jgT"/>
                                             </constraints>
                                         </view>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ftT-Ry-IQG" userLabel="Set Time Button">
+                                        <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X6V-kj-93n" userLabel="Time Interaction View">
                                             <rect key="frame" x="0.0" y="102" width="414" height="44"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="44" id="zL2-G4-qBi"/>
-                                            </constraints>
-                                            <state key="normal" title="Set Time"/>
-                                        </button>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ftT-Ry-IQG" userLabel="Set Time Button">
+                                                    <rect key="frame" x="0.0" y="0.0" width="399" height="44"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="44" id="zL2-G4-qBi"/>
+                                                    </constraints>
+                                                    <state key="normal" title="Set Time"/>
+                                                </button>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xmark" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="zpi-nZ-K9w" userLabel="Remove Time Mark">
+                                                    <rect key="frame" x="399" y="3.5" width="15" height="37"/>
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="small"/>
+                                                </imageView>
+                                            </subviews>
+                                        </stackView>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="6du-8S-6KX" firstAttribute="leading" secondItem="weE-nJ-Tdh" secondAttribute="leading" id="0tO-vm-eSH"/>
-                                        <constraint firstAttribute="trailing" secondItem="ftT-Ry-IQG" secondAttribute="trailing" constant="16" id="5Nb-IG-MbY"/>
+                                        <constraint firstItem="X6V-kj-93n" firstAttribute="leading" secondItem="weE-nJ-Tdh" secondAttribute="leading" constant="16" id="KVd-gx-qIK"/>
                                         <constraint firstItem="ti4-Zb-cs4" firstAttribute="leading" secondItem="weE-nJ-Tdh" secondAttribute="leading" id="aq5-o3-wye"/>
                                         <constraint firstItem="0j6-O2-Yx4" firstAttribute="leading" secondItem="weE-nJ-Tdh" secondAttribute="leading" id="gR5-E9-iSQ"/>
                                         <constraint firstAttribute="trailing" secondItem="6du-8S-6KX" secondAttribute="trailing" id="hCr-dP-Ije"/>
-                                        <constraint firstItem="ftT-Ry-IQG" firstAttribute="leading" secondItem="weE-nJ-Tdh" secondAttribute="leading" constant="16" id="mgN-dT-7lc"/>
+                                        <constraint firstAttribute="trailing" secondItem="X6V-kj-93n" secondAttribute="trailing" constant="16" id="hE7-4v-jSk"/>
                                         <constraint firstAttribute="trailing" secondItem="0j6-O2-Yx4" secondAttribute="trailing" id="wWI-X6-s24"/>
                                         <constraint firstAttribute="trailing" secondItem="ti4-Zb-cs4" secondAttribute="trailing" id="wlh-1o-DtN"/>
                                     </constraints>
@@ -65,7 +74,7 @@
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="PhX-hX-RAl" userLabel="Time View">
                                     <rect key="frame" x="0.0" y="146" width="414" height="76"/>
                                     <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QAr-SL-vph" userLabel="Set Date Button">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QAr-SL-vph" userLabel="Set Date Button">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="44" id="vHi-HM-IXK"/>
@@ -137,14 +146,12 @@
                                             </constraints>
                                         </view>
                                     </subviews>
-                                    <constraints>
-                                        <constraint firstItem="QAr-SL-vph" firstAttribute="leading" secondItem="PhX-hX-RAl" secondAttribute="leading" constant="16" id="Lfg-fs-Ffv"/>
-                                        <constraint firstAttribute="trailing" secondItem="QAr-SL-vph" secondAttribute="trailing" constant="16" id="YDu-Qw-Fe6"/>
-                                    </constraints>
                                 </stackView>
                             </subviews>
                             <constraints>
                                 <constraint firstItem="weE-nJ-Tdh" firstAttribute="leading" secondItem="DNy-kS-2jV" secondAttribute="leading" id="5af-uP-Hfd"/>
+                                <constraint firstItem="QAr-SL-vph" firstAttribute="leading" secondItem="DNy-kS-2jV" secondAttribute="leading" constant="16" id="EUY-2M-kt6"/>
+                                <constraint firstAttribute="trailing" secondItem="QAr-SL-vph" secondAttribute="trailing" constant="16" id="kqX-6h-uiM"/>
                                 <constraint firstAttribute="trailing" secondItem="weE-nJ-Tdh" secondAttribute="trailing" id="r2a-sz-cHN"/>
                             </constraints>
                         </stackView>
@@ -211,6 +218,7 @@
                         <constraint firstItem="DNy-kS-2jV" firstAttribute="top" secondItem="gWq-wF-qaT" secondAttribute="bottom" id="69S-uM-bKy"/>
                         <constraint firstItem="DNy-kS-2jV" firstAttribute="leading" secondItem="q9d-RF-GrX" secondAttribute="leading" id="9ha-A3-ang"/>
                         <constraint firstAttribute="trailing" secondItem="gWq-wF-qaT" secondAttribute="trailing" id="C6V-FU-0Za"/>
+                        <constraint firstItem="PGW-1b-76M" firstAttribute="top" secondItem="X6V-kj-93n" secondAttribute="bottom" constant="16" id="L6m-8V-CqP"/>
                         <constraint firstItem="DNy-kS-2jV" firstAttribute="trailing" secondItem="q9d-RF-GrX" secondAttribute="trailing" id="Vhb-he-JK8"/>
                         <constraint firstAttribute="trailing" secondItem="PGW-1b-76M" secondAttribute="trailing" constant="16" id="WsY-04-iIj"/>
                         <constraint firstItem="gWq-wF-qaT" firstAttribute="leading" secondItem="q9d-RF-GrX" secondAttribute="leading" id="a7O-mg-zNA"/>
@@ -246,6 +254,7 @@
                 <outlet property="doneButton" destination="PGW-1b-76M" id="fLK-tx-ouc"/>
                 <outlet property="hourTableView" destination="aG3-VH-4YD" id="KIR-g5-Orl"/>
                 <outlet property="minuteTableView" destination="Y8i-6h-Vwq" id="nyo-PG-1nl"/>
+                <outlet property="removeTimeMark" destination="zpi-nZ-K9w" id="2pz-EC-0gn"/>
                 <outlet property="secondTableView" destination="TPi-88-rp3" id="dTJ-S4-NR3"/>
                 <outlet property="separatorBottomView" destination="K7h-lq-Fpy" id="Cmh-Br-rhd"/>
                 <outlet property="separatorBottomViewWidth" destination="c56-bS-553" id="WiZ-OB-bxM"/>
@@ -253,6 +262,7 @@
                 <outlet property="separatorTopViewWidth" destination="gxn-Gg-aN5" id="MSO-EP-WRc"/>
                 <outlet property="setDateButton" destination="QAr-SL-vph" id="pJu-6r-6Js"/>
                 <outlet property="setTimeButton" destination="ftT-Ry-IQG" id="ITh-xc-8d8"/>
+                <outlet property="timeInteractionView" destination="X6V-kj-93n" id="Z2U-yq-dqh"/>
                 <outlet property="timeView" destination="PhX-hX-RAl" id="txX-Hg-XbT"/>
                 <outlet property="titleView" destination="gWq-wF-qaT" id="aD5-80-bRL"/>
                 <outlet property="todayButton" destination="aFz-1K-pXz" id="h9R-Tv-MFY"/>
@@ -260,4 +270,7 @@
             <point key="canvasLocation" x="139" y="121"/>
         </view>
     </objects>
+    <resources>
+        <image name="xmark" catalog="system" width="128" height="113"/>
+    </resources>
 </document>

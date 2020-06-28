@@ -20,7 +20,8 @@ class ViewController: UIViewController, DateTimePickerDelegate {
 //    picker.timeInterval = DateTimePicker.MinuteInterval.thirty
 //    picker.locale = Locale(identifier: "en_GB")
 
-    picker.dateFormat = "MMM d, h:mm a"
+    picker.dateFormat = "MMM d"
+    picker.dateTimeFormat = "MMM d, h:mm a"
     picker.todayButtonTitle = "Today"
     picker.is12HourFormat = true
     picker.isDatePickerOnly = true
@@ -42,9 +43,15 @@ class ViewController: UIViewController, DateTimePickerDelegate {
 //      picker.darkColor = UIColor.black
 //      picker.contentViewBackgroundColor = UIColor.white
 //    }
-    picker.completionHandler = { date in
+    picker.completionHandler = { date, timeSelected in
       let formatter = DateFormatter()
-      formatter.dateFormat = "hh:mm:ss aa dd/MM/YYYY"
+      if timeSelected {
+        formatter.dateFormat = "hh:mm:ss aa dd/MM/YYYY"
+      }
+      else {
+        formatter.dateFormat = "dd/MM/YYYY"
+
+      }
       self.title = formatter.string(from: date)
     }
     picker.delegate = self
