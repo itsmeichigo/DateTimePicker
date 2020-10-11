@@ -13,6 +13,8 @@
 		2C788A1D2116AF2E00B26F02 /* FullDateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8BBF8171F91EAA2005D807B /* FullDateCollectionViewCell.swift */; };
 		2C788A1E2116AF2E00B26F02 /* StepCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE58808E1D9A5F2E000C93E3 /* StepCollectionViewFlowLayout.swift */; };
 		2C788A232116AFAD00B26F02 /* DateTimePicker.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C788A222116AFAD00B26F02 /* DateTimePicker.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		966066EE2530AF7000427563 /* Bundle+Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966066ED2530AF7000427563 /* Bundle+Resource.swift */; };
+		966066EF2530AF7000427563 /* Bundle+Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966066ED2530AF7000427563 /* Bundle+Resource.swift */; };
 		C8BBF8181F91EAA2005D807B /* FullDateCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8BBF8171F91EAA2005D807B /* FullDateCollectionViewCell.swift */; };
 		DE20B66D23DACE1C009532AE /* DateTimePicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE29D3FA23DAC502007CC0F4 /* DateTimePicker.xib */; };
 		DE20B66F23DAE1E5009532AE /* FullDateCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE20B66E23DAE1E5009532AE /* FullDateCollectionViewCell.xib */; };
@@ -54,6 +56,7 @@
 		2C7889C32116AC4900B26F02 /* DateTimePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DateTimePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C7889C62116AC4A00B26F02 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2C788A222116AFAD00B26F02 /* DateTimePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateTimePicker.h; sourceTree = "<group>"; };
+		966066ED2530AF7000427563 /* Bundle+Resource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+Resource.swift"; sourceTree = "<group>"; };
 		C8BBF8171F91EAA2005D807B /* FullDateCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullDateCollectionViewCell.swift; sourceTree = "<group>"; };
 		DE20B66E23DAE1E5009532AE /* FullDateCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FullDateCollectionViewCell.xib; sourceTree = "<group>"; };
 		DE29D3F223C1B2C1007CC0F4 /* DateTimePicker+UITableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateTimePicker+UITableView.swift"; sourceTree = "<group>"; };
@@ -113,13 +116,14 @@
 		DEF7C3781D8B9F590043D9C4 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				966066ED2530AF7000427563 /* Bundle+Resource.swift */,
 				DEF7C3791D8B9F590043D9C4 /* DateTimePicker.swift */,
-				C8BBF8171F91EAA2005D807B /* FullDateCollectionViewCell.swift */,
-				DE58808E1D9A5F2E000C93E3 /* StepCollectionViewFlowLayout.swift */,
-				DE29D3F223C1B2C1007CC0F4 /* DateTimePicker+UITableView.swift */,
-				DE29D3F423C1B301007CC0F4 /* DateTimePicker+CollectionView.swift */,
 				DE29D3FA23DAC502007CC0F4 /* DateTimePicker.xib */,
+				DE29D3F423C1B301007CC0F4 /* DateTimePicker+CollectionView.swift */,
+				DE29D3F223C1B2C1007CC0F4 /* DateTimePicker+UITableView.swift */,
+				C8BBF8171F91EAA2005D807B /* FullDateCollectionViewCell.swift */,
 				DE20B66E23DAE1E5009532AE /* FullDateCollectionViewCell.xib */,
+				DE58808E1D9A5F2E000C93E3 /* StepCollectionViewFlowLayout.swift */,
 			);
 			path = Source;
 			sourceTree = SOURCE_ROOT;
@@ -182,7 +186,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = ichigo;
 				TargetAttributes = {
 					2C7889C22116AC4900B26F02 = {
@@ -248,6 +252,7 @@
 				2C788A1D2116AF2E00B26F02 /* FullDateCollectionViewCell.swift in Sources */,
 				2C788A1E2116AF2E00B26F02 /* StepCollectionViewFlowLayout.swift in Sources */,
 				DE29D3F523C1B301007CC0F4 /* DateTimePicker+CollectionView.swift in Sources */,
+				966066EF2530AF7000427563 /* Bundle+Resource.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,6 +265,7 @@
 				DE29D3F723C1B49F007CC0F4 /* DateTimePicker+CollectionView.swift in Sources */,
 				DE29D3F623C1B49C007CC0F4 /* DateTimePicker+UITableView.swift in Sources */,
 				DEF7C37A1D8B9F590043D9C4 /* DateTimePicker.swift in Sources */,
+				966066EE2530AF7000427563 /* Bundle+Resource.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,7 +299,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = DateTimePicker/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ichigo.DateTimePicker;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -324,7 +330,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = DateTimePicker/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ichigo.DateTimePicker;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -360,6 +366,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -384,11 +391,12 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -416,6 +424,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -434,10 +443,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -451,7 +461,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2L9U9J29G7;
 				INFOPLIST_FILE = Demo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ichigo.DateTimePickerDemo;
@@ -469,7 +479,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = T4WYNJ2VYX;
 				INFOPLIST_FILE = Demo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ichigo.DateTimePickerDemo;
