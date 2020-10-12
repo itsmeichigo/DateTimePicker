@@ -16,6 +16,7 @@ A nicer iOS UI component for picking date and time.
 - (v2.1.0) Carthage is now supported (a bit late - sorry)
 - (v2.3.0) Options to select custom font and colors
 - (v2.4.0) Option to show seconds column
+- (v2.5.0) SMP support
 - Custom TimeZone and Calendar
 
 ## To-dos (HELP NEEDED! 🎯)
@@ -24,7 +25,7 @@ A nicer iOS UI component for picking date and time.
 
 ## Requirements
 
-- Swift 5 & Xcode 10.2
+- Swift 5 & Xcode 12
 - For Swift 4.2 please use branch `swift4.2`
 - For Swift 4.1 please use branch `swift4.1`
 - For Swift 3.0 please use version 1.1.4
@@ -39,13 +40,17 @@ Just add the following to your `podfile`
 
 #### Using Carthage
 
-From 2.1.0 onward, you can integrate DateTimePicker into your Xcode project using Carthage by specifying it in your `Cartfile`:
+From v2.1.0 onward, you can integrate DateTimePicker into your Xcode project using Carthage by specifying it in your `Cartfile`:
 
 ```ogdl
 github "itsmeichigo/DateTimePicker" ~> 2.1.0
 ```
 
 Run `carthage update` to build the framework and drag the built `DateTimePicker.framework` into your Xcode project.
+
+#### Using Swift Package Manager
+
+From v2.5.0 you can add DateTimePicker to your project via SPM. Paste link to this repo in SPM configuration window and you're good to go.
 
 #### Manual install
 
