@@ -16,7 +16,7 @@ A nicer iOS UI component for picking date and time.
 - (v2.1.0) Carthage is now supported (a bit late - sorry)
 - (v2.3.0) Options to select custom font and colors
 - (v2.4.0) Option to show seconds column
-- (v2.5.0) SMP support
+- (v2.5.0) SPM support
 - Custom TimeZone and Calendar
 
 ## To-dos (HELP NEEDED! 🎯)
