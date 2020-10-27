@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -17,44 +17,39 @@
                 <rect key="frame" x="0.0" y="0.0" width="75" height="100"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="-5" translatesAutoresizingMaskIntoConstraints="NO" id="WnS-uE-DCR">
-                        <rect key="frame" x="5" y="15" width="65" height="70"/>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="WnS-uE-DCR">
+                        <rect key="frame" x="5" y="20" width="65" height="60"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gWW-Vs-Nj2">
-                                <rect key="frame" x="0.0" y="0.0" width="65" height="20"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="20" id="Tr8-JI-vuf"/>
-                                </constraints>
+                                <rect key="frame" x="0.0" y="0.0" width="65" height="15"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gxb-lJ-6rI">
-                                <rect key="frame" x="0.0" y="15" width="65" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="VHO-a1-aaS"/>
-                                </constraints>
+                                <rect key="frame" x="0.0" y="15" width="65" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LyH-8K-Gro">
-                                <rect key="frame" x="0.0" y="50" width="65" height="20"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="20" id="6ls-7h-MIV"/>
-                                </constraints>
+                                <rect key="frame" x="0.0" y="45" width="65" height="15"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
+                        <constraints>
+                            <constraint firstItem="gWW-Vs-Nj2" firstAttribute="height" secondItem="gxb-lJ-6rI" secondAttribute="height" multiplier="0.5" id="VWX-E1-P69"/>
+                            <constraint firstAttribute="height" constant="60" id="vsh-f4-r7c"/>
+                            <constraint firstItem="LyH-8K-Gro" firstAttribute="height" secondItem="gxb-lJ-6rI" secondAttribute="height" multiplier="0.5" id="yMh-oh-H44"/>
+                        </constraints>
                     </stackView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="WnS-uE-DCR" firstAttribute="leading" secondItem="uIy-0h-KKd" secondAttribute="leading" constant="5" id="CIL-gF-GTn"/>
                     <constraint firstItem="WnS-uE-DCR" firstAttribute="centerY" secondItem="uIy-0h-KKd" secondAttribute="centerY" id="SRa-BV-TaU"/>
                     <constraint firstAttribute="trailing" secondItem="WnS-uE-DCR" secondAttribute="trailing" constant="5" id="iR4-MY-xEI"/>
-                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="WnS-uE-DCR" secondAttribute="bottom" id="kMR-9e-1UP"/>
                     <constraint firstItem="WnS-uE-DCR" firstAttribute="top" relation="greaterThanOrEqual" secondItem="uIy-0h-KKd" secondAttribute="top" id="mtO-Ts-Eah"/>
                 </constraints>
             </collectionViewCellContentView>
