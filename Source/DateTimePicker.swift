@@ -432,6 +432,8 @@ public protocol DateTimePickerDelegate: class {
         doneButton.layer.masksToBounds = true
         doneButton.addTarget(self, action: #selector(DateTimePicker.donePicking(sender:)), for: .touchUpInside)
         
+        timeView.isHidden = isDatePickerOnly
+        
         // hour table view
         hourTableView.rowHeight = 36
         hourTableView.showsVerticalScrollIndicator = false
@@ -462,7 +464,7 @@ public protocol DateTimePickerDelegate: class {
         secondTableView.separatorStyle = .none
         secondTableView.delegate = self
         secondTableView.dataSource = self
-        secondTableView.isHidden = isDatePickerOnly || !includesSecond
+        secondTableView.isHidden = !includesSecond
         secondTableView.backgroundColor = .clear
         
         // am/pm table view
@@ -471,7 +473,7 @@ public protocol DateTimePickerDelegate: class {
         amPmTableView.separatorStyle = .none
         amPmTableView.delegate = self
         amPmTableView.dataSource = self
-        amPmTableView.isHidden = !is12HourFormat || isDatePickerOnly
+        amPmTableView.isHidden = !is12HourFormat
         amPmTableView.backgroundColor = .clear
         amPmTableView.contentInset = UIEdgeInsets(top: 41, left: 0, bottom: 41, right: 0)
         
@@ -480,13 +482,12 @@ public protocol DateTimePickerDelegate: class {
         colonLabel1.textColor = highlightColor
         colonLabel1.backgroundColor = .clear
         colonLabel1.textAlignment = .center
-        colonLabel1.isHidden = isDatePickerOnly
         
         colonLabel2.font = customFontSetting.colonLabelFont
         colonLabel2.textColor = highlightColor
         colonLabel2.backgroundColor = .clear
         colonLabel2.textAlignment = .center
-        colonLabel2.isHidden = isDatePickerOnly || !includesSecond
+        colonLabel2.isHidden = !includesSecond
         
         // time separators
         var separatorWidth: CGFloat = 0
