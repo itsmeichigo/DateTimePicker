@@ -15,7 +15,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q9d-RF-GrX">
-                    <rect key="frame" x="0.0" y="566" width="414" height="330"/>
+                    <rect key="frame" x="0.0" y="550" width="414" height="346"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gWq-wF-qaT">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -51,7 +51,7 @@
                             </constraints>
                         </view>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PGW-1b-76M">
-                            <rect key="frame" x="16" y="266" width="382" height="44"/>
+                            <rect key="frame" x="16" y="282" width="382" height="44"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="44" id="H6V-cd-H4J"/>
                             </constraints>
@@ -71,7 +71,7 @@
                                     <rect key="frame" x="0.0" y="1" width="414" height="100"/>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     <constraints>
-                                        <constraint firstAttribute="height" constant="100" id="l86-YT-nae"/>
+                                        <constraint firstAttribute="height" priority="999" constant="100" id="l86-YT-nae"/>
                                     </constraints>
                                     <collectionViewLayout key="collectionViewLayout" id="3VZ-dd-SiT" customClass="StepCollectionViewFlowLayout" customModule="DateTimePicker"/>
                                 </collectionView>
@@ -149,7 +149,7 @@
                             </subviews>
                         </stackView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K7h-lq-Fpy">
-                            <rect key="frame" x="77" y="225" width="260" height="1"/>
+                            <rect key="frame" x="77" y="241" width="260" height="1"/>
                             <color key="backgroundColor" systemColor="opaqueSeparatorColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="1" id="PeV-BT-4cg"/>
@@ -157,7 +157,7 @@
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lVg-4m-JC2">
-                            <rect key="frame" x="77" y="184" width="260" height="1"/>
+                            <rect key="frame" x="77" y="202" width="260" height="1"/>
                             <color key="backgroundColor" systemColor="opaqueSeparatorColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="1" id="1mh-5c-7bC"/>
@@ -174,9 +174,9 @@
                         <constraint firstItem="DNy-kS-2jV" firstAttribute="trailing" secondItem="q9d-RF-GrX" secondAttribute="trailing" id="Vhb-he-JK8"/>
                         <constraint firstAttribute="trailing" secondItem="PGW-1b-76M" secondAttribute="trailing" constant="16" id="WsY-04-iIj"/>
                         <constraint firstItem="gWq-wF-qaT" firstAttribute="leading" secondItem="q9d-RF-GrX" secondAttribute="leading" id="a7O-mg-zNA"/>
-                        <constraint firstItem="PGW-1b-76M" firstAttribute="top" secondItem="DNy-kS-2jV" secondAttribute="bottom" id="bm8-Uw-HcX"/>
-                        <constraint firstItem="K7h-lq-Fpy" firstAttribute="top" secondItem="lVg-4m-JC2" secondAttribute="bottom" constant="40" id="c1M-ap-Wkd"/>
-                        <constraint firstAttribute="height" constant="330" id="kg6-af-apQ"/>
+                        <constraint firstItem="PGW-1b-76M" firstAttribute="top" secondItem="DNy-kS-2jV" secondAttribute="bottom" constant="16" id="bm8-Uw-HcX"/>
+                        <constraint firstItem="K7h-lq-Fpy" firstAttribute="top" secondItem="lVg-4m-JC2" secondAttribute="bottom" constant="38" id="c1M-ap-Wkd"/>
+                        <constraint firstAttribute="height" constant="346" id="kg6-af-apQ"/>
                         <constraint firstItem="K7h-lq-Fpy" firstAttribute="centerX" secondItem="q9d-RF-GrX" secondAttribute="centerX" id="lhq-3U-KHz"/>
                         <constraint firstItem="gWq-wF-qaT" firstAttribute="top" secondItem="q9d-RF-GrX" secondAttribute="top" id="q10-AX-sWi"/>
                         <constraint firstItem="PGW-1b-76M" firstAttribute="top" secondItem="K7h-lq-Fpy" secondAttribute="bottom" constant="40" id="r9O-Xl-uni"/>
@@ -203,6 +203,7 @@
                 <outlet property="dateTitleLabel" destination="kYf-29-KCB" id="mOX-pO-dCc"/>
                 <outlet property="dayCollectionView" destination="0j6-O2-Yx4" id="Tfm-J4-zVl"/>
                 <outlet property="doneButton" destination="PGW-1b-76M" id="fLK-tx-ouc"/>
+                <outlet property="doneButtonTopSpace" destination="bm8-Uw-HcX" id="gw3-uE-KXf"/>
                 <outlet property="hourTableView" destination="aG3-VH-4YD" id="KIR-g5-Orl"/>
                 <outlet property="minuteTableView" destination="Y8i-6h-Vwq" id="nyo-PG-1nl"/>
                 <outlet property="secondTableView" destination="TPi-88-rp3" id="dTJ-S4-NR3"/>

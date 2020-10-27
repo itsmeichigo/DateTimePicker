@@ -41,13 +41,12 @@
                         </subviews>
                         <constraints>
                             <constraint firstItem="gWW-Vs-Nj2" firstAttribute="height" secondItem="gxb-lJ-6rI" secondAttribute="height" multiplier="0.5" id="VWX-E1-P69"/>
-                            <constraint firstAttribute="height" constant="60" id="vsh-f4-r7c"/>
                             <constraint firstItem="LyH-8K-Gro" firstAttribute="height" secondItem="gxb-lJ-6rI" secondAttribute="height" multiplier="0.5" id="yMh-oh-H44"/>
                         </constraints>
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="WnS-uE-DCR" firstAttribute="leading" secondItem="uIy-0h-KKd" secondAttribute="leading" constant="5" id="CIL-gF-GTn"/>
+                    <constraint firstItem="WnS-uE-DCR" firstAttribute="leading" secondItem="uIy-0h-KKd" secondAttribute="leading" priority="999" constant="5" id="CIL-gF-GTn"/>
                     <constraint firstItem="WnS-uE-DCR" firstAttribute="centerY" secondItem="uIy-0h-KKd" secondAttribute="centerY" id="SRa-BV-TaU"/>
                     <constraint firstAttribute="trailing" secondItem="WnS-uE-DCR" secondAttribute="trailing" constant="5" id="iR4-MY-xEI"/>
                     <constraint firstItem="WnS-uE-DCR" firstAttribute="top" relation="greaterThanOrEqual" secondItem="uIy-0h-KKd" secondAttribute="top" id="mtO-Ts-Eah"/>

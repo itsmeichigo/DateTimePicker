@@ -275,6 +275,7 @@ public protocol DateTimePickerDelegate: class {
     @IBOutlet private var contentViewHeight: NSLayoutConstraint!
     @IBOutlet private var separatorBottomViewWidth: NSLayoutConstraint!
     @IBOutlet private var separatorTopViewWidth: NSLayoutConstraint!
+    @IBOutlet private weak var doneButtonTopSpace: NSLayoutConstraint!
     
     private var modalCloseHandler: (() -> Void)?
     
@@ -368,7 +369,7 @@ public protocol DateTimePickerDelegate: class {
     private func configureView() {
         
         // content view
-        contentHeight = isDatePickerOnly ? 228 : isTimePickerOnly ? 230 : 330
+        contentHeight = isDatePickerOnly ? 244 : isTimePickerOnly ? 230 : 330
         
         contentView.layer.shadowColor = UIColor(white: 0, alpha: 0.3).cgColor
         contentView.layer.shadowOffset = CGSize(width: 0, height: -2.0)
@@ -432,7 +433,10 @@ public protocol DateTimePickerDelegate: class {
         doneButton.layer.masksToBounds = true
         doneButton.addTarget(self, action: #selector(DateTimePicker.donePicking(sender:)), for: .touchUpInside)
         
+        // hide entire time view in date-only mode
         timeView.isHidden = isDatePickerOnly
+        // extra bottom space for day view
+        doneButtonTopSpace.constant = isDatePickerOnly ? 16 : 0
         
         // hour table view
         hourTableView.rowHeight = 36
@@ -502,9 +506,9 @@ public protocol DateTimePickerDelegate: class {
         }
         
         separatorTopView.backgroundColor = darkColor.withAlphaComponent(0.2)
-        separatorTopView.isHidden = isDatePickerOnly || isTimePickerOnly
+        separatorTopView.isHidden = isDatePickerOnly
         separatorBottomView.backgroundColor = darkColor.withAlphaComponent(0.2)
-        separatorBottomView.isHidden = isDatePickerOnly || isTimePickerOnly
+        separatorBottomView.isHidden = isDatePickerOnly
         
         separatorBottomViewWidth.constant = separatorWidth
         separatorTopViewWidth.constant = separatorWidth
