@@ -153,6 +153,11 @@ public protocol DateTimePickerDelegate: class {
             if selectedDate == minimumDate || selectedDate == maximumDate {
                 resetTime()
             }
+            
+            if hapticFeedbackEnabled {
+                triggerHaptic()
+            }
+            
         }
     }
     
@@ -244,6 +249,7 @@ public protocol DateTimePickerDelegate: class {
     
     public var timeZone: TimeZone = .current
     public var calendar: Calendar = .current
+    public var hapticFeedbackEnabled: Bool = true
     
     public var completionHandler: ((Date)->Void)?
     public var dismissHandler: (() -> Void)?
@@ -642,5 +648,11 @@ private extension DateTimePicker {
     func setToday() {
         selectedDate = Date()
         resetTime()
+    }
+    
+    func triggerHaptic() {
+        let haptic = UINotificationFeedbackGenerator()
+        haptic.prepare()
+        haptic.notificationOccurred(.success)
     }
 }

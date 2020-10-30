@@ -12,7 +12,6 @@ let package = Package(
             name: "DateTimePicker",
             targets: ["DateTimePicker"])
     ],
-    dependencies: [],
     targets: [
         .target(
             name: "DateTimePicker",
