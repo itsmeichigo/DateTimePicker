@@ -68,6 +68,8 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
         } else if let tableView = scrollView as? UITableView {
             alignTableView(tableView)
         }
+        
+        triggerHaptic()
     }
     
     private func alignCollectionView(_ collectionView: UICollectionView) {
@@ -172,5 +174,11 @@ extension DateTimePicker: UICollectionViewDataSource, UICollectionViewDelegate {
             }
             
         }
+    }
+    
+    private func triggerHaptic() {
+        let haptic = UINotificationFeedbackGenerator()
+        haptic.prepare()
+        haptic.notificationOccurred(.success)
     }
 }
