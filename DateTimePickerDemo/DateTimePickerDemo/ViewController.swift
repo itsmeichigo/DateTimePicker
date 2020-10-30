@@ -23,8 +23,8 @@ class ViewController: UIViewController, DateTimePickerDelegate {
 //        picker.todayButtonTitle = "Today"
 //        picker.is12HourFormat = true
         picker.dateFormat = "hh:mm:ss aa dd/MM/YYYY"
-        picker.isTimePickerOnly = true
-        picker.includesMonth = true
+        picker.isDatePickerOnly = true
+//        picker.includesMonth = true
         picker.includesSecond = true
         picker.highlightColor = UIColor(red: 255.0/255.0, green: 138.0/255.0, blue: 138.0/255.0, alpha: 1)
         picker.doneButtonTitle = "!! DONE DONE !!"
