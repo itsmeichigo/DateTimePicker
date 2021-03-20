@@ -250,11 +250,13 @@ public protocol DateTimePickerDelegate: class {
     
     public var timeZone: TimeZone = .current {
         didSet {
+            guard calendar.timeZone != timeZone else { return }
             calendar.timeZone = timeZone
         }
     }
     public var calendar: Calendar = .current {
         didSet {
+            guard timeZone != calendar.timeZone else { return }
             timeZone = calendar.timeZone
         }
     }
