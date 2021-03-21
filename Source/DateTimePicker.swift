@@ -165,6 +165,7 @@ public protocol DateTimePickerDelegate: class {
         get {
             let formatter = DateFormatter()
             formatter.dateFormat = self.dateFormat
+            formatter.timeZone = self.timeZone
             return formatter.string(from: self.selectedDate)
         }
     }
@@ -247,8 +248,18 @@ public protocol DateTimePickerDelegate: class {
         }
     }
     
-    public var timeZone: TimeZone = .current
-    public var calendar: Calendar = .current
+    public var timeZone: TimeZone = .current {
+        didSet {
+            guard calendar.timeZone != timeZone else { return }
+            calendar.timeZone = timeZone
+        }
+    }
+    public var calendar: Calendar = .current {
+        didSet {
+            guard timeZone != calendar.timeZone else { return }
+            timeZone = calendar.timeZone
+        }
+    }
     public var hapticFeedbackEnabled: Bool = true
     
     public var completionHandler: ((Date)->Void)?
@@ -525,6 +536,7 @@ public protocol DateTimePickerDelegate: class {
         
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/YYYY"
+        formatter.timeZone = self.timeZone
         for i in 0..<dates.count {
             let date = dates[i]
             if formatter.string(from: date) == formatter.string(from: selectedDate) {
@@ -622,6 +634,7 @@ private extension DateTimePicker {
     func updateCollectionView(to currentDate: Date) {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/YYYY"
+        formatter.timeZone = self.timeZone
         for i in 0..<dates.count {
             let date = dates[i]
             if formatter.string(from: date) == formatter.string(from: currentDate) {
