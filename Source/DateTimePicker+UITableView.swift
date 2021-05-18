@@ -38,6 +38,7 @@ extension DateTimePicker: UITableViewDataSource, UITableViewDelegate {
         cell.textLabel?.font = customFontSetting.timeLabelFont
         cell.textLabel?.textColor = darkColor.withAlphaComponent(0.4)
         cell.textLabel?.highlightedTextColor = highlightColor
+        cell.textLabel?.adjustsFontSizeToFitWidth = true
         // add module operation to set value same
         if tableView == amPmTableView {
             cell.textLabel?.text = (indexPath.row == 0) ? "AM" : "PM"
