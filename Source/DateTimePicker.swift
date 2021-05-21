@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol DateTimePickerDelegate: class {
+public protocol DateTimePickerDelegate: AnyObject {
     func dateTimePicker(_ picker: DateTimePicker, didSelectDate: Date)
 }
 
