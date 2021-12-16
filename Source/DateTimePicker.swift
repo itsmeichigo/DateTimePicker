@@ -14,6 +14,12 @@ public protocol DateTimePickerDelegate: AnyObject {
 
 @objc public class DateTimePicker: UIView {
     
+    public var doneButtonIsEnabled: Bool = true {
+            didSet {
+                doneButton.isEnabled = doneButtonIsEnabled
+            }
+    }
+    
     var contentHeight: CGFloat = 330
     
     public struct CustomFontSetting {
@@ -260,6 +266,9 @@ public protocol DateTimePickerDelegate: AnyObject {
             timeZone = calendar.timeZone
         }
     }
+    
+    public var autoSelectDayOnStopScroll: Bool = true
+    
     public var hapticFeedbackEnabled: Bool = true
     
     public var completionHandler: ((Date)->Void)?
