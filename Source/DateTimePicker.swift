@@ -266,6 +266,9 @@ public protocol DateTimePickerDelegate: AnyObject {
             timeZone = calendar.timeZone
         }
     }
+    
+    public var autoSelectDayOnStopScroll: Bool = true
+    
     public var hapticFeedbackEnabled: Bool = true
     
     public var completionHandler: ((Date)->Void)?

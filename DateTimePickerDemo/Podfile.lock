@@ -1,5 +1,5 @@
 PODS:
-  - DateTimePicker (2.5.1)
+  - DateTimePicker (2.5.3)
 
 DEPENDENCIES:
   - DateTimePicker (from `../`)
@@ -9,8 +9,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  DateTimePicker: f7d3305252c1d7a67c9cca58ce8592f8396841ca
+  DateTimePicker: 52701ddf656a50856d3510955933f767cd2c947c
 
 PODFILE CHECKSUM: a26e66cb94802972f6430185232278dc132b5b0e
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.11.2
